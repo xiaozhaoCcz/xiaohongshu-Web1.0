@@ -1,6 +1,5 @@
 package com.yanhuo.common.logger;
 
-import com.yanhuo.common.constant.Constant;
 import com.yanhuo.common.constant.GlobalConstant;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;

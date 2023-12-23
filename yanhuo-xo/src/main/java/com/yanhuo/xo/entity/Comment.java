@@ -4,6 +4,9 @@ import com.yanhuo.common.entity.BaseEntity;
 import io.swagger.models.auth.In;
 import lombok.Data;
 
+/**
+ * @author xiaozhao
+ */
 @Data
 public class Comment extends BaseEntity {
 

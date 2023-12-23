@@ -1,0 +1,38 @@
+package com.yanhuo.common.auth;
+
+import com.yanhuo.common.constant.TokenConstant;
+import com.yanhuo.common.exception.YanHuoException;
+import com.yanhuo.common.result.ResultCodeEnum;
+import com.yanhuo.common.utils.JwtUtils;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.web.servlet.HandlerInterceptor;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+/**
+ * @author xiaozhao
+ */
+@Slf4j
+public class UserLoginInterceptor implements HandlerInterceptor {
+
+    @Override
+    public boolean preHandle(HttpServletRequest request,
+                             HttpServletResponse response,
+                             Object handler){
+        String accessToken = request.getHeader(TokenConstant.ACCESS_TOKEN);
+        log.info("accessToken:{}",accessToken);
+        //判断token不为空
+        if(!StringUtils.isEmpty(accessToken)) {
+            boolean flag = JwtUtils.checkToken(accessToken);
+            if(!flag){
+                throw new YanHuoException(ResultCodeEnum.TOKEN_EXIST.getMessage(),ResultCodeEnum.TOKEN_EXIST.getCode());
+            }
+            String userId = JwtUtils.getUserId(accessToken);
+            AuthContextHolder.setUserId(userId);
+            return true;
+        }
+        throw new YanHuoException(ResultCodeEnum.TOKEN_FAIL.getMessage(),ResultCodeEnum.TOKEN_FAIL.getCode());
+    }
+}

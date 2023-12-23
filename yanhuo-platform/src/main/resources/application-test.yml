@@ -1,7 +1,3 @@
-server:
-  port: 8802
-  servlet:
-    context-path: /platform-test
 
 spring:
   datasource:

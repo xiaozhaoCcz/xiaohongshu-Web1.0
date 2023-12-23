@@ -13,12 +13,13 @@ public enum ResultCodeEnum {
     FAIL(201, "失败"),
     TOKEN_FAIL(401,"token异常"),
     TOKEN_EXIST(501,"token过期"),
+
     NOT_NULL(10001,"为空")
     ;
 
-    private Integer code;
+    private final Integer code;
 
-    private String message;
+    private final String message;
 
     private ResultCodeEnum(Integer code, String message) {
         this.code = code;

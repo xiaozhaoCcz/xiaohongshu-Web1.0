@@ -5,3 +5,8 @@ spring:
   profiles:
     active: test
 
+server:
+  port: 8803
+  servlet:
+    context-path: /platform
+

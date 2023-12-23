@@ -1,0 +1,34 @@
+
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: yanhuo-auth
+          uri: http://localhost:8801
+          predicates:
+            - Path=/api/auth/**
+        #          filters:
+        #            - RewritePath=/api/auth/(?<segment>.*),/auth/$\{segment}
+        - id: yanhuo-im
+          uri: http://localhost:8802
+          predicates:
+            - Path=/api/im/**
+        - id: yanhuo-platform
+          uri: http://localhost:8804
+          predicates:
+            - Path=/api/platform/**
+        - id: yanhuo-recommend
+          uri: http://localhost:8804
+          predicates:
+            - Path=/api/recommend/**
+        - id: yanhuo-search
+          uri: http://localhost:8805
+          predicates:
+            - Path=/api/search/**
+        - id: yanhuo-util
+          uri: http://localhost:8806
+          predicates:
+            - Path=/api/util/**

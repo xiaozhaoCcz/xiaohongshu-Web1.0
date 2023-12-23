@@ -1,0 +1,17 @@
+
+spring:
+  application:
+    name: yanhuo-im
+  profiles:
+    active: test
+
+server:
+  port: 8802
+  servlet:
+    context-path: /im
+
+goeasy:
+  host: rest-hz.goeasy.io
+  key: BC-c7d655043ac7461fbf755a1f231725ff
+
+
