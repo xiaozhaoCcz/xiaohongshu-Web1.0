@@ -1,5 +1,6 @@
 package com.yanhuo.xo.entity;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.yanhuo.common.entity.BaseEntity;
 import io.swagger.models.auth.In;
 import lombok.Data;
@@ -8,6 +9,7 @@ import lombok.Data;
  * @author xiaozhao
  */
 @Data
+@TableName("t_comment")
 public class Comment extends BaseEntity {
 
     private String nid;

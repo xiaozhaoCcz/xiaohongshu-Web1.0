@@ -20,7 +20,6 @@
         <module>yanhuo-common</module>
         <module>yanhuo-gateway</module>
         <module>yanhuo-platform</module>
-        <module>yanhuo-recommend</module>
         <module>yanhuo-search</module>
         <module>yanhuo-util</module>
         <module>yanhuo-im</module>

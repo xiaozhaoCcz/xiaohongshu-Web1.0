@@ -1,9 +1,11 @@
 package com.yanhuo.xo.entity;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.yanhuo.common.entity.BaseEntity;
 import lombok.Data;
 
 @Data
+@TableName("t_note")
 public class Note extends BaseEntity {
 
     private String content;
