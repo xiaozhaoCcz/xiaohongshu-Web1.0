@@ -12,10 +12,6 @@ public abstract class Payload {
 
     String content;
 
-    Integer notifyLikeOrCollectionCount;
-
-    Integer notifyFanCount;
-
-    Integer notifyCommentCount;
+    UserNoticeCount msgNotice;
 
 }

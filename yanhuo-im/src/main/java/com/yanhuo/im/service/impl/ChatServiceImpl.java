@@ -8,10 +8,12 @@ import com.yanhuo.im.enums.ChatTypeEnums;
 import com.yanhuo.im.goeasy.model.Message;
 import com.yanhuo.im.goeasy.model.User;
 import com.yanhuo.im.goeasy.result.Result;
+import com.yanhuo.im.send.NoticeUserMsg;
 import com.yanhuo.im.send.SendImgMsg;
 import com.yanhuo.im.send.SendMsgFactory;
 import com.yanhuo.im.send.SendTextMsg;
 import com.yanhuo.im.service.ChatService;
+import com.yanhuo.xo.dto.LikeOrCollectionDTO;
 import com.yanhuo.xo.entity.Chat;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -43,7 +45,7 @@ public class ChatServiceImpl implements ChatService {
         toUser.setType(ChatTypeEnums.getNameByType(chat.getChatType()));
         message.setTo(toUser);
 
-        SendMsgFactory sendMsgFactory = null;
+        SendMsgFactory<String> sendMsgFactory = null;
 
         switch (chat.getMsgType()){
             case 1:
@@ -57,9 +59,33 @@ public class ChatServiceImpl implements ChatService {
         }
 
         if(sendMsgFactory!=null){
-            sendMsgFactory.sendMsg(message);
+            sendMsgFactory.sendMsg(message,chat.getContent());
         }
 
+        String json = JSONUtil.toJsonStr(message);
+        String result = HttpRequest.post(url).body(json).execute().body();
+        log.info(result);
+        Result res = JSONUtil.toBean(result, Result.class);
+        if(res.getCode().equals(ResultCodeEnum.SUCCESS.getCode()) ){
+            // 进行数据库操作
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean noticeUser(LikeOrCollectionDTO likeOrCollectionDTO) {
+        String url = "http://"+host+"/v2/im/message";
+        Message message = new Message();
+        message.setAppkey(key);
+        message.setSenderId(likeOrCollectionDTO.getUid());
+        User toUser = new User();
+        toUser.setId(likeOrCollectionDTO.getPublishUid());
+        toUser.setType("private");
+        message.setTo(toUser);
+        SendMsgFactory<Integer> sendMsgFactory = new NoticeUserMsg();
+        sendMsgFactory.sendMsg(message,likeOrCollectionDTO.getType());
         String json = JSONUtil.toJsonStr(message);
         String result = HttpRequest.post(url).body(json).execute().body();
         log.info(result);
