@@ -6,7 +6,7 @@ import com.yanhuo.im.goeasy.model.msgPlayload.ImagePayload;
 /**
  * @author xiaozhao
  */
-public class SendTextMsg implements SendMsgFactory<String>{
+public class SendTextMsg implements SendMsgFactory{
 
     @Override
     public void sendMsg(Message message,String conetent) {

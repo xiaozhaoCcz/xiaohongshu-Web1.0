@@ -15,11 +15,6 @@ public interface ChatService {
 
 
      /**
-      * 点赞收藏评论通知
-      */
-     boolean noticeUser(LikeOrCollectionDTO likeOrCollectionDTO);
-
-     /**
       * 得到所有的聊天记录(只会保留30天的聊天记录)
       * @param sendUid
       * @param acceptUid
