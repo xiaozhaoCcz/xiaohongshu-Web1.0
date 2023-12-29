@@ -1,0 +1,12 @@
+
+spring:
+  application:
+    name: yanhuo-search
+  profiles:
+    active: test
+
+server:
+  port: 8804
+  servlet:
+    context-path: /search
+
