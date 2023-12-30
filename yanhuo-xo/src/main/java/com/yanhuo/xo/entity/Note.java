@@ -16,7 +16,7 @@ public class Note extends BaseEntity {
 
     private String cid;
 
-    private String cPid;
+    private String cpid;
 
     private String urls;
 

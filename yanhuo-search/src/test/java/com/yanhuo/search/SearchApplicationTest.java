@@ -10,8 +10,11 @@ import co.elastic.clients.elasticsearch.indices.CreateIndexResponse;
 import co.elastic.clients.elasticsearch.indices.DeleteIndexResponse;
 import co.elastic.clients.elasticsearch.indices.GetIndexResponse;
 import co.elastic.clients.json.JsonData;
+import co.elastic.clients.util.ObjectBuilder;
+import com.yanhuo.search.common.NoteConstant;
 import com.yanhuo.search.config.ESConfig;
 
+import com.yanhuo.xo.vo.NoteSearchVo;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,6 +22,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 
 @SpringBootTest(classes = SearchApplication.class)
@@ -281,6 +285,32 @@ public class SearchApplicationTest {
                 , UserTest.class);
         searchResponse.aggregations().get("ageGroup").lterms().buckets().array().forEach(f -> System.out.println(f.key() + ":" + f.docCount()));
         esConfig.close();
+    }
+
+
+
+    // -----------------------------------------------------------------------------
+
+    @Test
+    public void tt1() throws IOException {
+        SearchRequest.Builder builder = new SearchRequest.Builder().index(NoteConstant.NOTE_INDEX);
+
+//        SearchRequest build = builder.query(q -> q.bool(b -> b
+//                .should(h -> h.match(u -> u.field("content").query("头像")))
+//                .should(h -> h.match(u -> u.field("username").query("头像")))
+//        )).build();
+        builder.query(q -> q.bool(b -> b
+                .should(h -> h.fuzzy(f -> f.field("content").value("头像").fuzziness("6")))
+                .should(h -> h.fuzzy(f -> f.field("username").value("头像").fuzziness("4")))
+        ));
+        builder.sort(o -> o.field(f -> f.field("time").order(SortOrder.Desc)));
+        builder.from(1);
+        builder.size(2);
+        SearchRequest build = builder.build();
+
+        SearchResponse<NoteSearchVo> searchResponse = elasticsearchClient.search(build,NoteSearchVo.class);
+        searchResponse.hits().hits().forEach(h -> System.out.println(h.source().toString()));
+
     }
 
 
