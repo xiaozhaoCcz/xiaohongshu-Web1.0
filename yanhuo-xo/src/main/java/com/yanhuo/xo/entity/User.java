@@ -39,7 +39,7 @@ public class User extends BaseEntity {
     /**
      * 描述
      */
-    private String desc;
+    private String description;
     /**
      * 状态
      */

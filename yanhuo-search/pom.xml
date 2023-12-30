@@ -15,18 +15,21 @@
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
+        <elasticsearch-version>8.1.0</elasticsearch-version>
+        <jackson-version>2.13.1</jackson-version>
+        <jakarta-version>2.0.1</jakarta-version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>co.elastic.clients</groupId>
             <artifactId>elasticsearch-java</artifactId>
-            <version>8.1.0</version>
+            <version>${elasticsearch-version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.13.1</version>
+            <version>${jackson-version}</version>
         </dependency>
 
         <dependency>
@@ -38,20 +41,20 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
-            <version>2.13.1</version>
+            <version>${jackson-version}</version>
         </dependency>
 
 
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
-            <version>2.13.1</version>
+            <version>${jackson-version}</version>
         </dependency>
 
         <dependency>
             <groupId>jakarta.json</groupId>
             <artifactId>jakarta.json-api</artifactId>
-            <version>2.0.1</version>
+            <version>${jakarta-version}</version>
         </dependency>
     </dependencies>
 </project>
