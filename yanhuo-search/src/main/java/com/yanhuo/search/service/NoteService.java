@@ -8,4 +8,6 @@ import com.yanhuo.xo.vo.NoteSearchVo;
 
 public interface NoteService extends IService<Note> {
     Page<NoteSearchVo> getNotePageByDTO(long currentPage, long pageSize, NoteDTO noteDTO);
+
+    Page<NoteSearchVo> getRecommendNotePage(long currentPage, long pageSize);
 }

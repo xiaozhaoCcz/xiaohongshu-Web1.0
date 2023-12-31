@@ -1,20 +1,11 @@
 import request from "@/utils/request";
+import type { UserLogin } from "@/type/user";
 
 export const postData = (data: any) => {
   return request<any>({
     url: "/auth/auth/login", // mock接口
     method: "post",
     data,
-  });
-};
-
-export const getUserInfoByToken = (accessToken: string) => {
-  return request<any>({
-    url: "/auth/auth/getUserInfoByToken", // mock接口
-    method: "get",
-    params: {
-      accessToken: accessToken,
-    },
   });
 };
 
@@ -32,6 +23,16 @@ export function importFile(deptId: number, file: File) {
   });
 }
 
+export const getUserInfoByToken = (accessToken: string) => {
+  return request<any>({
+    url: "/auth/auth/getUserInfoByToken", // mock接口
+    method: "get",
+    params: {
+      accessToken: accessToken,
+    },
+  });
+};
+
 export const refreshToken = (refreshToken: string) => {
   return request<any>({
     url: `/auth/auth/refreshToken/`, // mock接口
@@ -39,5 +40,13 @@ export const refreshToken = (refreshToken: string) => {
     params: {
       refreshToken: refreshToken,
     },
+  });
+};
+
+export const loginByCode = (data: UserLogin) => {
+  return request<any>({
+    url: "/auth/auth/loginByCode", // mock接口
+    method: "post",
+    data,
   });
 };

@@ -76,12 +76,15 @@ public class AuthUserServiceImpl extends ServiceImpl<UserDao, User> implements A
     @Override
     public Map<String, Object> loginByCode(AuthUserDTO authUserDTO) {
         Map<String, Object> map = new HashMap<>(2);
-        User currentUser = this.getOne(new QueryWrapper<User>().eq("phone", authUserDTO.getPhone()).or().eq("email", authUserDTO.getEmail()));
-
+        User currentUser = null;
+        if(StringUtils.isNotBlank(authUserDTO.getPhone())){
+            currentUser = this.getOne(new QueryWrapper<User>().eq("phone", authUserDTO.getPhone()));
+        }else{
+            currentUser = this.getOne(new QueryWrapper<User>().eq("email", authUserDTO.getEmail()));
+        }
         if(checkCode(authUserDTO)||currentUser==null){
             return map;
         }
-
         setUserInfoAndToken(map, currentUser);
         return map;
     }

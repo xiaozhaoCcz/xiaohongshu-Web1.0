@@ -2,7 +2,7 @@ import axios, { InternalAxiosRequestConfig, AxiosResponse } from "axios";
 import { useUserStore } from "@/store/userStore";
 import { storage } from "./storage";
 
-const loginUrl = "/login";
+const loginUrl = "/dashboard";
 
 // 刷新 token 后, 将缓存的接口重新请求一次
 // 是否正在刷新 token

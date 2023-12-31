@@ -12,7 +12,7 @@ export const loadImageEnd = (list: any, callback: any, basePath: any) => {
   img.addEventListener("load", loadImgHandler);
   img.addEventListener("error", loadImgHandler);
   img.src = list[img.data.num];
-  console.log(img);
+  console.log("---img", img.height);
 };
 
 const loadImgHandler = (e) => {

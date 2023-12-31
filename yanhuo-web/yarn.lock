@@ -208,6 +208,13 @@
   resolved "https://registry.npmmirror.com/@jridgewell/sourcemap-codec/-/sourcemap-codec-1.4.15.tgz"
   integrity sha512-eF2rxCRulEKXHTRiDrDy6erMYWqNw4LPdQ8UQA4huuxaQsVeRPFl2oM8oDGxMFhJUWZf9McpLtJasDDZb/Bpeg==
 
+"@lhlyu/vue-virtual-waterfall@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.npmmirror.com/@lhlyu/vue-virtual-waterfall/-/vue-virtual-waterfall-1.0.2.tgz#26f3da3f113130981af8a574ae9cdc484fe65f61"
+  integrity sha512-hv0aZNBfkz7TxGLE+SdWGVqjd6/ez0ZPXn1LO/KVdshLr5ORLrZz4tYblTlP7ry7+NrRT5FegflhLD+RrBr9fw==
+  dependencies:
+    "@vueuse/core" "^10.7.0"
+
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
   resolved "https://registry.npmmirror.com/@nodelib/fs.scandir/-/fs.scandir-2.1.5.tgz"
@@ -274,6 +281,11 @@
   version "0.0.16"
   resolved "https://registry.npmmirror.com/@types/web-bluetooth/-/web-bluetooth-0.0.16.tgz"
   integrity sha512-oh8q2Zc32S6gd/j50GowEjKLoOVOwHP/bWVjKJInBwQqdOYMdPrf1oVlelTlyfFK3CKxL1uahMDAr+vy8T7yMQ==
+
+"@types/web-bluetooth@^0.0.20":
+  version "0.0.20"
+  resolved "https://registry.npmmirror.com/@types/web-bluetooth/-/web-bluetooth-0.0.20.tgz#f066abfcd1cbe66267cdbbf0de010d8a41b41597"
+  integrity sha512-g9gZnnXVq7gM7v3tJCWV/qw7w+KeOlSHAhgF9RytFyifW6AF61hdT2ucrYhPq9hLs5JIryeupHV3qGk95dH9ow==
 
 "@typescript-eslint/eslint-plugin@^6.8.0":
   version "6.8.0"
@@ -503,6 +515,16 @@
     "@volar/typescript" "~1.10.4"
     "@vue/language-core" "1.8.19"
 
+"@vueuse/core@^10.7.0":
+  version "10.7.1"
+  resolved "https://registry.npmmirror.com/@vueuse/core/-/core-10.7.1.tgz#b4bfe3355dbb0ec17d34d737385e1c8a0156ccf1"
+  integrity sha512-74mWHlaesJSWGp1ihg76vAnfVq9NTv1YT0SYhAQ6zwFNdBkkP+CKKJmVOEHcdSnLXCXYiL5e7MaewblfiYLP7g==
+  dependencies:
+    "@types/web-bluetooth" "^0.0.20"
+    "@vueuse/metadata" "10.7.1"
+    "@vueuse/shared" "10.7.1"
+    vue-demi ">=0.14.6"
+
 "@vueuse/core@^9.1.0":
   version "9.13.0"
   resolved "https://registry.npmmirror.com/@vueuse/core/-/core-9.13.0.tgz"
@@ -513,10 +535,22 @@
     "@vueuse/shared" "9.13.0"
     vue-demi "*"
 
+"@vueuse/metadata@10.7.1":
+  version "10.7.1"
+  resolved "https://registry.npmmirror.com/@vueuse/metadata/-/metadata-10.7.1.tgz#190a8d0e97216941cc95120c89dfa2c4228b2a53"
+  integrity sha512-jX8MbX5UX067DYVsbtrmKn6eG6KMcXxLRLlurGkZku5ZYT3vxgBjui2zajvUZ18QLIjrgBkFRsu7CqTAg18QFw==
+
 "@vueuse/metadata@9.13.0":
   version "9.13.0"
   resolved "https://registry.npmmirror.com/@vueuse/metadata/-/metadata-9.13.0.tgz"
   integrity sha512-gdU7TKNAUVlXXLbaF+ZCfte8BjRJQWPCa2J55+7/h+yDtzw3vOoGQDRXzI6pyKyo6bXFT5/QoPE4hAknExjRLQ==
+
+"@vueuse/shared@10.7.1":
+  version "10.7.1"
+  resolved "https://registry.npmmirror.com/@vueuse/shared/-/shared-10.7.1.tgz#b9892fc31784d685619015fba287cde53873485d"
+  integrity sha512-v0jbRR31LSgRY/C5i5X279A/WQjD6/JsMzGa+eqt658oJ75IvQXAeONmwvEMrvJQKnRElq/frzBR7fhmWY5uLw==
+  dependencies:
+    vue-demi ">=0.14.6"
 
 "@vueuse/shared@9.13.0":
   version "9.13.0"
@@ -1646,7 +1680,7 @@ vite@^4.4.5:
   optionalDependencies:
     fsevents "~2.3.2"
 
-vue-demi@*, vue-demi@>=0.14.5:
+vue-demi@*, vue-demi@>=0.14.5, vue-demi@>=0.14.6:
   version "0.14.6"
   resolved "https://registry.npmmirror.com/vue-demi/-/vue-demi-0.14.6.tgz"
   integrity sha512-8QA7wrYSHKaYgUxDA5ZC24w+eHm3sYCbp0EzcDwKqN3p6HqtTCGR/GVsPyZW92unff4UlcSh++lmqDWN3ZIq4w==
@@ -1730,7 +1764,7 @@ vue@*, vue@^3.2.13, vue@^3.3.4:
 
 water-fall3@^0.0.3:
   version "0.0.3"
-  resolved "https://registry.npmmirror.com/water-fall3/-/water-fall3-0.0.3.tgz"
+  resolved "https://registry.npmmirror.com/water-fall3/-/water-fall3-0.0.3.tgz#6711165a85a4f8eb245521ddf1c3a7a0a2f5bdb6"
   integrity sha512-b0RqBGJBUCa0udOfR3ZXews3h74jU5mfgZ23eYH/3QxtRerrwsZTG3lGPW/OViSCdRZmjJiX1Wvf35VFeUt9Lg==
   dependencies:
     "@types/vue" "^2.0.0"

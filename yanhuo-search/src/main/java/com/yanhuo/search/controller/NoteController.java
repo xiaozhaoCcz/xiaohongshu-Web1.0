@@ -28,4 +28,11 @@ public class NoteController {
         Page<NoteSearchVo> page = noteService.getNotePageByDTO(currentPage,pageSize,noteDTO);
         return Result.ok(page);
     }
+
+
+    @RequestMapping("getRecommendNotePage/{currentPage}/{pageSize}")
+    public Result<?> getRecommendNotePage(@PathVariable long currentPage, @PathVariable long pageSize){
+        Page<NoteSearchVo> page = noteService.getRecommendNotePage(currentPage,pageSize);
+        return Result.ok(page);
+    }
 }

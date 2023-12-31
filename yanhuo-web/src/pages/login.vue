@@ -36,7 +36,7 @@
           <form onsubmit="return false">
             <label class="phone"
               ><span class="country-code">+86</span
-              ><input placeholder="输入手机号" type="text" name="blur" autofocus="" /><svg
+              ><input placeholder="输入手机号" type="text" name="blur" v-model="userLogin.phone" autofocus="" /><svg
                 class="reds-icon clear"
                 width="24"
                 height="24"
@@ -47,12 +47,13 @@
             ></label>
             <div style="height: 16px"></div>
             <label class="auth-code"
-              ><input type="number" placeholder="输入验证码" autocomplete="false" /><span class="code-button"
+              ><input type="number" placeholder="输入验证码" autocomplete="false" v-model="userLogin.code" /><span
+                class="code-button"
                 >获取验证码</span
               ></label
             >
             <div class="err-msg"></div>
-            <button class="submit">登录</button>
+            <button class="submit" @click="login">登录</button>
           </form>
         </div>
         <div class="agreements">
@@ -117,10 +118,36 @@
 
 <script lang="ts" setup>
 import { Close } from "@element-plus/icons-vue";
+import type { UserLogin } from "@/type/user";
+import { loginByCode } from "@/api/user";
+import { ref } from "vue";
+import { storage } from "@/utils/storage";
+
+const userLogin: UserLogin = ref({
+  phone: "",
+  email: "",
+  code: "",
+});
+
 const emit = defineEmits(["clickChild"]);
 const close = () => {
   //传递给父组件
   emit("clickChild", false);
+};
+
+const login = () => {
+  console.log("---user", userLogin.value);
+  loginByCode(userLogin.value).then((res: any) => {
+    const { data } = res;
+    console.log(data);
+    if (data.accessToken == null) {
+      console.log(111);
+    } else {
+      storage.set("accessToken", data.accessToken);
+      storage.set("refreshToken", data.refreshToken);
+      emit("clickChild", false);
+    }
+  });
 };
 </script>
 

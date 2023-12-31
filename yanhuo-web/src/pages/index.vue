@@ -3,7 +3,7 @@
     <div class="top">
       <header class="mask-paper">
         <a style="display: flex">烟火</a>
-        <div class="tool-box"><button @click="toLogin">登录</button> <button @click="getUser">用户</button></div>
+        <div class="tool-box"><button @click="getUser">用户</button></div>
         <div class="input-box">
           <input type="text" class="search-input" placeholder="搜索小红书" />
           <div class="input-button">
@@ -145,10 +145,8 @@ import {
 import { useRouter } from "vue-router";
 import Login from "@/pages/login.vue";
 import { ref } from "vue";
-import { useUserStore } from "@/store/userStore";
 import { getUserInfoByToken } from "@/api/user";
 import { storage } from "@/utils/storage";
-const userStore = useUserStore();
 
 const router = useRouter();
 
@@ -176,22 +174,6 @@ const toPush = () => {
 const close = (val: boolean) => {
   console.log(val);
   c.value = val;
-};
-
-const toLogin = () => {
-  const loginData = {
-    username: "qwer",
-    password: "123456",
-  };
-
-  userStore
-    .login(loginData)
-    .then(() => {
-      router.push({ path: "/user" });
-    })
-    .catch(() => {
-      console.log("登录失败");
-    });
 };
 
 const getUser = () => {

@@ -1,5 +1,5 @@
 <template>
-  <div class="feeds-page">
+  <div class="feeds-page" @scroll="handleScroll">
     <div class="channel-container">
       <div class="scroll-container channel-scroll-container">
         <div class="content-container">
@@ -20,160 +20,253 @@
     </div>
     <div class="loading-container"></div>
     <div class="feeds-container">
-      <el-skeleton style="width: 400px" :loading="loading" animated :count="3" :throttle="500">
-        <template #template>
-          <el-skeleton-item variant="image" style="width: 400px; height: 267px" />
-          <div style="padding: 14px">
-            <el-skeleton-item variant="h3" style="width: 50%" />
-            <div
-              style="display: flex; align-items: center; justify-items: space-between; margin-top: 16px; height: 16px"
-            >
-              <el-skeleton-item variant="text" style="margin-right: 16px" />
-              <el-skeleton-item variant="text" style="width: 30%" />
+      <div class="feeds-loading-top" v-show="topLoading">
+        <RefreshRight style="width: 1.2em; height: 1.2em" color="rgba(51, 51, 51, 0.8)" />
+      </div>
+
+      <Waterfall :list="noteList" :width="240" :hasAroundGutter="false" style="max-width: 1260px">
+        <template #item="{ item, url, index }">
+          <div class="card">
+            <LazyImg :url="url" @click="toMain" class="fadeImg" />
+            <div class="footer">
+              <a class="title">
+                <span>{{ item.content }}</span>
+              </a>
+              <div class="author-wrapper">
+                <a class="author">
+                  <img class="author-avatar" :src="item.avatar" />
+                  <span class="name">{{ item.username }}</span>
+                </a>
+                <span class="like-wrapper like-active">
+                  <Search style="width: 1em; height: 1em" />
+                  <span class="count">{{ item.likeCount }}</span>
+                </span>
+              </div>
             </div>
           </div>
         </template>
-        <template #default>
-          <Waterfall :list="list" :width="240" :hasAroundGutter="false" style="max-width: 1260px">
-            <template #item="{ item, url, index }">
-              <div class="card">
-                <LazyImg :url="url" style="border-radius: 8px" @click="toMain" />
-                <div class="footer">
-                  <a class="title"
-                    ><span>这是具体内容{{ item.name }}</span></a
-                  >
-                  <div class="author-wrapper">
-                    <a class="author">
-                      <img class="author-avatar" :src="url" />
-                      <span class="name">这是名字</span>
-                    </a>
-                    <span class="like-wrapper like-active">
-                      <Search style="width: 1em; height: 1em" />
-                      <span class="count">12</span>
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </template>
-          </Waterfall>
-        </template>
-      </el-skeleton>
+      </Waterfall>
+      <div class="feeds-loading" v-show="endLoading">
+        <RefreshRight style="width: 1.2em; height: 1.2em" color="rgba(51, 51, 51, 0.8)" />
+      </div>
     </div>
-    <div class="feeds-loading"></div>
+    <div class="floating-btn-sets">
+      <el-backtop :bottom="80" :right="24">
+        <div class="back-top" v-show="topBtnShow">
+          <Top style="width: 1.2em; height: 1.2em" color="rgba(51, 51, 51, 0.8)" />
+        </div>
+      </el-backtop>
+
+      <div class="reload" @click="refresh">
+        <RefreshRight style="width: 1.2em; height: 1.2em" color="rgba(51, 51, 51, 0.8)" />
+      </div>
+    </div>
   </div>
 </template>
 <script lang="ts" setup>
-import { Search } from "@element-plus/icons-vue";
+import { RefreshRight, Search, Top } from "@element-plus/icons-vue";
 import { LazyImg, Waterfall } from "vue-waterfall-plugin-next";
 import "vue-waterfall-plugin-next/dist/style.css";
 import { useRouter } from "vue-router";
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { loadImageEnd } from "@/utils/util";
+import { getRecommendNotePage } from "@/api/search";
+import type { NoteSearch } from "@/type/note";
 const router = useRouter();
 
-const loading = ref(true);
-
-const list = ref([]);
+const topLoading = ref(false);
+const endLoading = ref(true);
+const noteList = ref([]);
+const currentPage = ref(1);
+const pageSize = ref(20);
+const noteTotal = ref(0);
+const topBtnShow = ref(false);
 
 const toMain = () => {
   router.push({ path: "/main" });
 };
 
-// const imgLoad = (id: number) => {
-//   console.log("图片加载完");
-//   imgLoadMap.set(id, 1);
-// };
+const handleScroll = () => {
+  const scrollHeight = Math.max(document.documentElement.scrollHeight, document.body.scrollHeight);
+  //滚动条滚动距离
+  const scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
+  //窗口可视范围高度
+  const clientHeight =
+    window.innerHeight || Math.min(document.documentElement.clientHeight, document.body.clientHeight);
+
+  topBtnShow.value = scrollTop > 30;
+  if (clientHeight + scrollTop >= scrollHeight && currentPage.value <= noteTotal.value) {
+    //快到底时----加载
+    console.log("到达底部");
+    loadMoreData();
+  }
+};
+
+const refresh = () => {
+  console.log("刷新数据");
+  let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
+  const clientHeight =
+    window.innerHeight || Math.min(document.documentElement.clientHeight, document.body.clientHeight);
+
+  console.log(scrollTop, "scrollTop");
+  if (scrollTop <= clientHeight * 2) {
+    const timeTop = setInterval(() => {
+      document.documentElement.scrollTop = document.body.scrollTop = scrollTop -= 100;
+      if (scrollTop <= 0) {
+        clearInterval(timeTop);
+        topLoading.value = true;
+        setTimeout(() => {
+          currentPage.value = 1;
+          noteList.value = [];
+          getNoteList();
+          topLoading.value = false;
+        }, 1000);
+      }
+    }, 10); //定时调用函数使其更顺滑
+  } else {
+    document.documentElement.scrollTop = 0;
+    topLoading.value = true;
+    setTimeout(() => {
+      currentPage.value = 1;
+      noteList.value = [];
+      getNoteList();
+      topLoading.value = false;
+    }, 1000);
+  }
+};
+
+const loadMoreData = () => {
+  currentPage.value += 1;
+  getNoteList();
+};
+
+const getNoteList = () => {
+  const p = new Promise((reslove) => {
+    getRecommendNotePage(currentPage.value, pageSize.value).then((res: any) => {
+      console.log("---res", res);
+      reslove(res.data);
+    });
+  });
+  p.then((data: any) => {
+    console.log("----data", data);
+    const { records, total } = data;
+    noteTotal.value = total;
+    new Promise((resolve) => {
+      const dataObj = {
+        imgList: [] as Array<string>,
+        dataList: [] as Array<any>,
+      };
+      records.forEach((item: any) => {
+        dataObj.imgList.push(item.noteCover);
+        dataObj.imgList.push(item.avatar);
+        const objData: NoteSearch = Object.assign(item, {});
+        objData.src = item.noteCover;
+        dataObj.dataList.push(objData);
+        resolve(dataObj);
+      });
+    }).then((data: any) => {
+      console.log("---obj", data);
+      loadImageEnd(
+        data.imgList,
+        () => {
+          noteList.value.push(...data.dataList);
+          endLoading.value = false;
+        },
+        false
+      );
+    });
+  });
+};
+
+onMounted(() => {
+  window.addEventListener("scroll", handleScroll);
+});
 
 const initData = () => {
-  const data = [
-    {
-      id: 1,
-      src: "https://tse1-mm.cn.bing.net/th/id/OIP-C.Zte3ljd4g6kqrWWyg-8fhAHaEo?w=264&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7",
-      name: "aaa",
-    },
-    {
-      id: 2,
-      src: "https://fuss10.elemecdn.com/2/11/6535bcfb26e4c79b48ddde44f4b6fjpeg.jpeg",
-      name: "aaa",
-    },
-    {
-      id: 3,
-      src: "https://fuss10.elemecdn.com/2/11/6535bcfb26e4c79b48ddde44f4b6fjpeg.jpeg",
-      name: "aaa",
-    },
-    {
-      id: 4,
-      src: "https://fuss10.elemecdn.com/0/6f/e35ff375812e6b0020b6b4e8f9583jpeg.jpeg",
-      name: "aaa",
-    },
-    {
-      id: 5,
-      src: "https://fuss10.elemecdn.com/1/34/19aa98b1fcb2781c4fba33d850549jpeg.jpeg",
-      name: "aaa",
-    },
-    {
-      id: 6,
-      src: "https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg",
-      name: "aaa",
-    },
-    {
-      id: 7,
-      src: "https://tse1-mm.cn.bing.net/th/id/OIP-C.Zte3ljd4g6kqrWWyg-8fhAHaEo?w=264&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7",
-      name: "aaa",
-    },
-    // { src: "https://tse1-mm.cn.bing.net/th/id/OIP-C.cGc4c8dVlqnfV3uwcS1IogHaE8?w=260&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7" },
-    // { src: "https://tse1-mm.cn.bing.net/th/id/OIP-C.Zte3ljd4g6kqrWWyg-8fhAHaEo?w=264&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7" },
-    // { src: "https://tse4-mm.cn.bing.net/th/id/OIP-C.N0USLldg_iKDGVKT12vB4AHaEK?w=292&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7" },
-    // { src: "https://tse1-mm.cn.bing.net/th/id/OIP-C.jzcWzXf_uts2sgE2WChuCQHaEo?w=263&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7" },
-    // { src: "https://tse1-mm.cn.bing.net/th/id/OIP-C.Zte3ljd4g6kqrWWyg-8fhAHaEo?w=264&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7" },
-    // { src: "https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg" },
-    // { src: "https://fuss10.elemecdn.com/1/34/19aa98b1fcb2781c4fba33d850549jpeg.jpeg" },
-    // { src: "https://fuss10.elemecdn.com/d/e6/c4d93a3805b3ce3f323f7974e6f78jpeg.jpeg" },
-    // { src: "https://fuss10.elemecdn.com/0/6f/e35ff375812e6b0020b6b4e8f9583jpeg.jpeg" },
-    // { src: "https://fuss10.elemecdn.com/9/bb/e27858e973f5d7d3904835f46abbdjpeg.jpeg" },
-    // { src: "https://fuss10.elemecdn.com/3/28/bbf893f792f03a54408b3b7a7ebf0jpeg.jpeg" },
-    // { src: "https://fuss10.elemecdn.com/2/11/6535bcfb26e4c79b48ddde44f4b6fjpeg.jpeg" },
-    // { src: "https://tse4-mm.cn.bing.net/th/id/OIP-C.N0USLldg_iKDGVKT12vB4AHaEK?w=292&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7" },
-    // { src: "https://tse1-mm.cn.bing.net/th/id/OIP-C.jzcWzXf_uts2sgE2WChuCQHaEo?w=263&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7" },
-    // { src: "https://tse3-mm.cn.bing.net/th/id/OIP-C.YzEeJqgWky6RQMatrMd6-gHaHa?w=170&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7" },
-    // { src: "https://tse3-mm.cn.bing.net/th/id/OIP-C.YzEeJqgWky6RQMatrMd6-gHaHa?w=170&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7" },
-    // { src: "https://tse1-mm.cn.bing.net/th/id/OIP-C.Zte3ljd4g6kqrWWyg-8fhAHaEo?w=264&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7" },
-    // { src: "https://tse4-mm.cn.bing.net/th/id/OIP-C.N0USLldg_iKDGVKT12vB4AHaEK?w=292&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7" },
-    // { src: "https://tse1-mm.cn.bing.net/th/id/OIP-C.jzcWzXf_uts2sgE2WChuCQHaEo?w=263&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7" },
-    // { src: "https://tse1-mm.cn.bing.net/th/id/OIP-C.Zte3ljd4g6kqrWWyg-8fhAHaEo?w=264&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7" },
-    // { src: "https://tse1-mm.cn.bing.net/th/id/OIP-C.cGc4c8dVlqnfV3uwcS1IogHaE8?w=260&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7" },
-  ];
-
-  new Promise((reslove, reject) => {
-    const dataObj = {
-      imgList: [],
-      list: [],
-    };
-    data.forEach((item) => {
-      dataObj.imgList.push(item.src);
-      dataObj.list.push(item);
-    });
-    reslove(dataObj);
-  }).then((data) => {
-    console.log("---", data);
-    loadImageEnd(
-      data.imgList,
-      () => {
-        list.value.push(...data.list);
-        loading.value = false;
-      },
-      false
-    );
-  });
+  getNoteList();
 };
 
 initData();
 </script>
 <style lang="less" scoped>
+.fadeImg {
+  border-radius: 8px;
+  -webkit-animation: fadeinout 2s linear forwards;
+  animation: fadeinout 2s linear forwards;
+}
+
+@-webkit-keyframes fadeinout {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes fadeinout {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@-webkit-keyframes fadeinout {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeinout {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@-webkit-keyframes fadeinout {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeinout {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
 .feeds-page {
   flex: 1;
   padding: 0 24px;
   padding-top: 72px;
+  overflow: scroll;
+  height: 100%;
 
   .channel-container {
     display: flex;
@@ -236,6 +329,27 @@ initData();
     transition: width 0.5s;
     margin: 0 auto;
 
+    .feeds-loading {
+      margin: 3vh;
+      text-align: center;
+    }
+
+    .feeds-loading-top {
+      text-align: center;
+      line-height: 6vh;
+      height: 6vh;
+    }
+
+    .feeds-loading-top {
+      -webkit-animation: move_1 0.5s;
+    }
+    @-webkit-keyframes move_1 {
+      0% {
+        -webkit-transform: translateY(-20px);
+        opacity: 0;
+      }
+    }
+
     .footer {
       padding: 12px;
       .title {
@@ -296,6 +410,48 @@ initData();
           }
         }
       }
+    }
+  }
+
+  .floating-btn-sets {
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    width: 40px;
+    grid-gap: 8px;
+    gap: 8px;
+    right: 24px;
+    bottom: 24px;
+
+    .back-top {
+      width: 40px;
+      height: 40px;
+      background: #fff;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      border-radius: 100px;
+      color: rgba(51, 51, 51, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+      cursor: pointer;
+    }
+
+    .reload {
+      width: 40px;
+      height: 40px;
+      background: #fff;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      box-shadow:
+        0 2px 8px 0 rgba(0, 0, 0, 0.1),
+        0 1px 2px 0 rgba(0, 0, 0, 0.02);
+      border-radius: 100px;
+      color: rgba(51, 51, 51, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+      cursor: pointer;
     }
   }
 }
