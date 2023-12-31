@@ -320,27 +320,51 @@
       </div>
     </div>
 
-    <div class="close-cricle">
+    <div class="close-cricle" @click="close">
       <div class="close close-mask-white">
         <Close style="width: 1.2em; height: 1.2em; color: rgba(51, 51, 51, 0.8)" />
       </div>
     </div>
+
+    <div class="back-desk"></div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { Close, Star, PictureRounded, ChatRound } from "@element-plus/icons-vue";
-import { ref } from "vue";
+import { Close, Star, ChatRound } from "@element-plus/icons-vue";
+import { ref, watchEffect } from "vue";
 import { getNoteById } from "@/api/note";
 import type { NoteInfo } from "@/type/note";
 import { formateTime } from "@/utils/util";
-const nid = ref("");
+
+// 这是路由传参
+// nid.value = history.state.nid;
+// watch(
+//   [props.nid],
+//   () => {
+//     console.log("发生改变");
+//   },
+//   {
+//     deep: true,
+//     immediate: true,
+//   }
+// );
+const emit = defineEmits(["clickMain"]);
+const close = () => {
+  emit("clickMain", false);
+};
+
+const props = defineProps({
+  nid: {
+    type: String,
+    default: "",
+  },
+});
 const noteInfo = ref({}) as NoteInfo;
 
-const initData = () => {
-  console.log("----");
-  nid.value = history.state.nid;
-  getNoteById(nid.value).then((res: any) => {
+watchEffect(() => {
+  console.log("发生改变", props.nid);
+  getNoteById(props.nid).then((res: any) => {
     const imgList = JSON.parse(res.data.urls);
     const time = formateTime(res.data.time);
     noteInfo.value = res.data;
@@ -348,9 +372,7 @@ const initData = () => {
     noteInfo.value.time = time;
     console.log("----note", res.data, imgList, noteInfo.value);
   });
-};
-console.log("history.state", history.state);
-initData();
+});
 </script>
 
 <style lang="less" scoped>
@@ -363,6 +385,15 @@ initData();
   height: 100vh;
   z-index: 20;
   overflow: auto;
+
+  .back-desk {
+    position: fixed;
+    background-color: #f4f4f4;
+    opacity: 0.5;
+    width: 100vw;
+    height: 100vh;
+    z-index: 30;
+  }
 
   .close-cricle {
     left: 1.3vw;
@@ -389,6 +420,7 @@ initData();
       border-radius: 40px;
       cursor: pointer;
       transition: all 0.3s;
+      background-color: #fff;
     }
   }
 
@@ -409,6 +441,7 @@ initData();
     border-radius: 20px;
     background: #895454;
     transform-origin: left top;
+    z-index: 100;
 
     .media-container {
       width: 68%;

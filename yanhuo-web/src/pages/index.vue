@@ -3,7 +3,7 @@
     <div class="top">
       <header class="mask-paper">
         <a style="display: flex">烟火</a>
-        <div class="tool-box"><button @click="getUser">用户</button></div>
+        <div class="tool-box"></div>
         <div class="input-box">
           <input type="text" class="search-input" placeholder="搜索小红书" />
           <div class="input-button">
@@ -39,10 +39,12 @@
               发布</span
             >
           </li>
-          <li>
-            <User style="width: 1em; height: 1em; margin-right: 8px" /><span class="channel" @click="toUser()">
-              个人</span
-            >
+          <li v-if="userInfo == null">
+            <el-button type="danger" round>登录</el-button>
+          </li>
+          <li v-else>
+            <el-avatar :src="userInfo.avatar" :size="22" />
+            <span class="channel" @click="toUser()">我</span>
           </li>
         </ul>
 
@@ -124,33 +126,24 @@
       </div>
     </div>
 
-    <Login v-show="c" @click-child="close"></Login>
+    <Login v-show="loginShow" @click-child="close"></Login>
+   
   </div>
 </template>
 
 <script lang="ts" setup>
-import {
-  Search,
-  Sunny,
-  Moon,
-  Close,
-  House,
-  Star,
-  Bell,
-  User,
-  ArrowRight,
-  More,
-  CirclePlus,
-} from "@element-plus/icons-vue";
+import { Search, Sunny, Moon, Close, House, Star, Bell, ArrowRight, More, CirclePlus } from "@element-plus/icons-vue";
 import { useRouter } from "vue-router";
 import Login from "@/pages/login.vue";
+
 import { ref } from "vue";
 import { useUserStore } from "@/store/userStore";
 
 const router = useRouter();
 const userStore = useUserStore();
+const loginShow = ref(true);
+const userInfo = ref({});
 
-const c = ref(true);
 
 const toDashboard = () => {
   router.push({ path: "/" });
@@ -173,12 +166,18 @@ const toPush = () => {
 
 const close = (val: boolean) => {
   console.log(val);
-  c.value = val;
+  loginShow.value = val;
+  userInfo.value = userStore.getUserInfo();
 };
 
-const getUser = () => {
-  console.log("用户信息", userStore.getUserInfo());
+const initData = () => {
+  userInfo.value = userStore.getUserInfo();
+  console.log(userInfo.value);
+  if (userInfo.value != null) {
+    loginShow.value = false;
+  }
 };
+initData();
 </script>
 
 <style lang="less" scoped>

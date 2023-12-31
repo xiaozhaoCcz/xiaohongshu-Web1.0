@@ -61,18 +61,21 @@
         <RefreshRight style="width: 1.2em; height: 1.2em" color="rgba(51, 51, 51, 0.8)" />
       </div>
     </div>
+    <Main v-show="mainShow" :nid="nid" class="mainShow" @click-main="close"></Main>
   </div>
 </template>
 <script lang="ts" setup>
 import { RefreshRight, Top } from "@element-plus/icons-vue";
 import { LazyImg, Waterfall } from "vue-waterfall-plugin-next";
 import "vue-waterfall-plugin-next/dist/style.css";
-import { useRouter } from "vue-router";
+// import { useRouter } from "vue-router";
 import { ref, onMounted } from "vue";
 import { loadImageEnd } from "@/utils/util";
 import { getRecommendNotePage } from "@/api/search";
 import type { NoteSearch } from "@/type/note";
-const router = useRouter();
+import Main from "@/pages/main.vue";
+
+// const router = useRouter();
 
 const topLoading = ref(false);
 const endLoading = ref(true);
@@ -81,10 +84,14 @@ const currentPage = ref(1);
 const pageSize = ref(20);
 const noteTotal = ref(0);
 const topBtnShow = ref(false);
+const mainShow = ref(false);
+const nid = ref("");
 
-const toMain = (nid: string) => {
-  console.log("11", nid);
-  router.push({ name: "main", state: { nid: nid } });
+const toMain = (noteId: string) => {
+  // console.log("11", nid);
+  // router.push({ name: "main", state: { nid: nid } });
+  nid.value = noteId;
+  mainShow.value = true;
 };
 
 const handleScroll = () => {
@@ -101,6 +108,10 @@ const handleScroll = () => {
     console.log("到达底部");
     loadMoreData();
   }
+};
+
+const close = () => {
+  mainShow.value = false;
 };
 
 const refresh = () => {
@@ -190,6 +201,16 @@ const initData = () => {
 initData();
 </script>
 <style lang="less" scoped>
+.mainShow {
+  -webkit-animation: zoom_1 0.5s;
+}
+@-webkit-keyframes zoom_1 {
+  0% {
+    -webkit-transform: scale(0);
+    opacity: 0;
+  }
+}
+
 .fadeImg {
   border-radius: 8px;
   -webkit-animation: fadeinout 2s linear forwards;
