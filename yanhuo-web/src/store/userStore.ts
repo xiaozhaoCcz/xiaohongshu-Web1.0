@@ -1,13 +1,8 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import { storage } from "@/utils/storage";
-import { postData, refreshToken } from "@/api/user";
+import { refreshToken } from "@/api/user";
 import { store } from "@/store";
-
-interface LoginData {
-  username: string;
-  password: string;
-}
 
 // 使用setup模式定义
 export const userStore = defineStore("userStore", () => {
@@ -17,25 +12,18 @@ export const userStore = defineStore("userStore", () => {
     return storage.get("accessToken");
   };
 
-  const login = (loginData: LoginData) => {
-    return new Promise<void>((resolve, reject) => {
-      postData(loginData)
-        .then((res) => {
-          storage.set("accessToken", res.data.accessToken);
-          storage.set("refreshToken", res.data.refreshToken);
-          resolve();
-        })
-        .catch((error) => {
-          reject(error);
-        });
-    });
+  const getUserInfo = () => {
+    return storage.get("userInfo");
+  };
+
+  const setUserInfo = (data: any) => {
+    storage.set("userInfo", data);
   };
 
   const getNewToken = (token: string) => {
     return new Promise<any>((resolve, reject) => {
       refreshToken(token)
         .then((res) => {
-          console.log(111, res.data);
           resolve(res);
         })
         .catch((error) => {
@@ -44,7 +32,7 @@ export const userStore = defineStore("userStore", () => {
     });
   };
 
-  return { token, getToken, login, getNewToken };
+  return { token, getToken, getNewToken, getUserInfo, setUserInfo };
 });
 
 export function useUserStore() {

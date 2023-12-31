@@ -122,8 +122,11 @@ import type { UserLogin } from "@/type/user";
 import { loginByCode } from "@/api/user";
 import { ref } from "vue";
 import { storage } from "@/utils/storage";
+import { useUserStore } from "@/store/userStore";
 
-const userLogin: UserLogin = ref({
+const userStore = useUserStore();
+
+const userLogin = ref<UserLogin>({
   phone: "",
   email: "",
   code: "",
@@ -139,14 +142,11 @@ const login = () => {
   console.log("---user", userLogin.value);
   loginByCode(userLogin.value).then((res: any) => {
     const { data } = res;
-    console.log(data);
-    if (data.accessToken == null) {
-      console.log(111);
-    } else {
-      storage.set("accessToken", data.accessToken);
-      storage.set("refreshToken", data.refreshToken);
-      emit("clickChild", false);
-    }
+    console.log("---res", data);
+    storage.set("accessToken", data.accessToken);
+    storage.set("refreshToken", data.refreshToken);
+    userStore.setUserInfo(data.userInfo);
+    emit("clickChild", false);
   });
 };
 </script>

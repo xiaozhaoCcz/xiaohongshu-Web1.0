@@ -2,6 +2,8 @@ package com.yanhuo.util.msm.controller;
 
 
 import com.yanhuo.common.utils.RedisUtils;
+import com.yanhuo.common.validator.ValidatorUtils;
+import com.yanhuo.common.validator.group.DefaultGroup;
 import com.yanhuo.util.constant.UserConstant;
 import com.yanhuo.util.dto.UserDTO;
 import com.yanhuo.util.msm.service.MsmService;
@@ -34,6 +36,7 @@ public class MsmController {
      */
     @PostMapping("sendMsm")
     public void sendMsm(@RequestBody UserDTO userDTO) throws Exception {
+
         String code = msmService.sendMsm(userDTO.getPhone());
         redisUtils.set(UserConstant.CODE+userDTO.getPhone(), code, 60 * 5L);
     }

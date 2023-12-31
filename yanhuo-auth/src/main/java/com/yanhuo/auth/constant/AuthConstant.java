@@ -22,4 +22,6 @@ public interface AuthConstant {
    String DEFAULT_COVER = "https://cc-video-oss.oss-accelerate.aliyuncs.com/2023/06/02/c6a167251a194484ac7b25c5e3ae366720200725103959_K8EJa.jpeg";
 
    String DEFAULT_PASSWORD = "qwer1234";
+
+   String LOGIN_FAIL = "登录失败";
 }

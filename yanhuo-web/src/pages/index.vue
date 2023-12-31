@@ -145,10 +145,10 @@ import {
 import { useRouter } from "vue-router";
 import Login from "@/pages/login.vue";
 import { ref } from "vue";
-import { getUserInfoByToken } from "@/api/user";
-import { storage } from "@/utils/storage";
+import { useUserStore } from "@/store/userStore";
 
 const router = useRouter();
+const userStore = useUserStore();
 
 const c = ref(true);
 
@@ -177,10 +177,7 @@ const close = (val: boolean) => {
 };
 
 const getUser = () => {
-  const accessToken = storage.get("accessToken");
-  getUserInfoByToken(accessToken).then((res) => {
-    console.log("用户信息", res.data);
-  });
+  console.log("用户信息", userStore.getUserInfo());
 };
 </script>
 

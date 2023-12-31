@@ -25,7 +25,7 @@
       </div>
 
       <Waterfall :list="noteList" :width="240" :hasAroundGutter="false" style="max-width: 1260px">
-        <template #item="{ item, url, index }">
+        <template #item="{ item, url }">
           <div class="card">
             <LazyImg :url="url" @click="toMain" class="fadeImg" />
             <div class="footer">
@@ -38,7 +38,7 @@
                   <span class="name">{{ item.username }}</span>
                 </a>
                 <span class="like-wrapper like-active">
-                  <Search style="width: 1em; height: 1em" />
+                  <i class="iconfont icon-follow" style="width: 1em; height: 1em"></i>
                   <span class="count">{{ item.likeCount }}</span>
                 </span>
               </div>
@@ -64,7 +64,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { RefreshRight, Search, Top } from "@element-plus/icons-vue";
+import { RefreshRight, Top } from "@element-plus/icons-vue";
 import { LazyImg, Waterfall } from "vue-waterfall-plugin-next";
 import "vue-waterfall-plugin-next/dist/style.css";
 import { useRouter } from "vue-router";
@@ -76,7 +76,7 @@ const router = useRouter();
 
 const topLoading = ref(false);
 const endLoading = ref(true);
-const noteList = ref([]);
+const noteList = ref<Array<any>>([]);
 const currentPage = ref(1);
 const pageSize = ref(20);
 const noteTotal = ref(0);

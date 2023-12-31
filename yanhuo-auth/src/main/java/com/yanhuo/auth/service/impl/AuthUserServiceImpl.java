@@ -10,6 +10,7 @@ import com.yanhuo.auth.constant.AuthConstant;
 import com.yanhuo.auth.dto.AuthUserDTO;
 import com.yanhuo.auth.service.AuthUserService;
 import com.yanhuo.common.constant.TokenConstant;
+import com.yanhuo.common.exception.YanHuoException;
 import com.yanhuo.common.utils.ConvertUtils;
 import com.yanhuo.common.utils.JwtUtils;
 import com.yanhuo.common.utils.RedisUtils;
@@ -37,12 +38,10 @@ public class AuthUserServiceImpl extends ServiceImpl<UserDao, User> implements A
     private void setUserInfoAndToken(Map<String, Object> map, User authUser) {
         String accessToken = JwtUtils.getJwtToken(authUser.getId(), AuthConstant.ACCESS_TOKEN_EXPIRATION_TIME);
         String refreshToken = JwtUtils.getJwtToken(authUser.getId(), AuthConstant.REFRESH_TOKEN_EXPIRATION_TIME);
-
         //缓存当前登录用户 refreshToken 创建的起始时间，这个会在刷新accessToken方法中 判断是否要重新生成(刷新)refreshToken时用到
         redisUtils.set(AuthConstant.REFRESH_TOKEN_START_TIME + authUser.getId(), String.valueOf(System.currentTimeMillis()), 3 * 60);
         //将用户信息保存在redis中
         redisUtils.set(AuthConstant.USER_KEY + authUser.getId(), JSONUtil.toJsonStr(authUser));
-
         map.put(TokenConstant.ACCESS_TOKEN, accessToken);
         map.put(TokenConstant.REFRESH_TOKEN, refreshToken);
         map.put(AuthConstant.USER_INFO, authUser);
@@ -57,7 +56,7 @@ public class AuthUserServiceImpl extends ServiceImpl<UserDao, User> implements A
 
         String s = SecureUtil.md5(authUserDTO.getPassword());
         if (ObjectUtil.isEmpty(authUser) || !s.equals(authUser.getPassword())) {
-            return map;
+            throw new YanHuoException(AuthConstant.LOGIN_FAIL);
         }
         setUserInfoAndToken(map, authUser);
         return map;
@@ -76,14 +75,14 @@ public class AuthUserServiceImpl extends ServiceImpl<UserDao, User> implements A
     @Override
     public Map<String, Object> loginByCode(AuthUserDTO authUserDTO) {
         Map<String, Object> map = new HashMap<>(2);
-        User currentUser = null;
+        User currentUser;
         if(StringUtils.isNotBlank(authUserDTO.getPhone())){
             currentUser = this.getOne(new QueryWrapper<User>().eq("phone", authUserDTO.getPhone()));
         }else{
             currentUser = this.getOne(new QueryWrapper<User>().eq("email", authUserDTO.getEmail()));
         }
         if(checkCode(authUserDTO)||currentUser==null){
-            return map;
+            throw new YanHuoException(AuthConstant.LOGIN_FAIL);
         }
         setUserInfoAndToken(map, currentUser);
         return map;
