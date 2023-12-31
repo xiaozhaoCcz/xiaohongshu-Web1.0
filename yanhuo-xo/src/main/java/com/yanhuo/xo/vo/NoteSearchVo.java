@@ -10,7 +10,7 @@ public class NoteSearchVo  implements Serializable {
 
     private String id;
 
-    private String content;
+    private String title;
 
     private String noteCover;
 

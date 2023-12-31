@@ -38,7 +38,7 @@ public class AlbumVo implements Serializable {
      */
     private Long collectionCount;
 
-    private String uid;
+    private String userId;
 
     private String username;
 

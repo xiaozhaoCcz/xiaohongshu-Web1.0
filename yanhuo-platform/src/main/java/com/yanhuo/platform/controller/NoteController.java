@@ -54,7 +54,7 @@ public class NoteController {
     @RequestMapping("updateNoteByDTO")
     public Result<?> updateNoteByDTO(@RequestBody NoteDTO noteDTO) {
         ValidatorUtils.validateEntity(noteDTO, UpdateGroup.class);
-        String id = noteService.updateImgDetail(noteDTO);
+        String id = noteService.updateNoteByDTO(noteDTO);
         return Result.ok(id);
     }
 

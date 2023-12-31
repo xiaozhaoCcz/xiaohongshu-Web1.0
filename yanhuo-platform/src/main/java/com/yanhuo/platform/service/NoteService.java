@@ -17,7 +17,7 @@ public interface NoteService extends IService<Note> {
 
     void deleteNoteByIds(List<String> noteIds);
 
-    String updateImgDetail(NoteDTO noteDTO);
+    String updateNoteByDTO(NoteDTO noteDTO);
 
     Page<NoteVo> getHotPage(long currentPage, long pageSize);
 }

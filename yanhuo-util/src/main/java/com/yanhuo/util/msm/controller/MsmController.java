@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
  *发送信息的功能
  */
 @RestController
-@RequestMapping("/msm")
+@RequestMapping("/util/msm")
 public class MsmController {
 
 

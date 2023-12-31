@@ -21,7 +21,7 @@ import java.util.Map;
  */
 @Api(tags = "权限模块")
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/auth/auth")
 @Slf4j
 public class AuthUserController {
 

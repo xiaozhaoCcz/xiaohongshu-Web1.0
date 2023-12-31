@@ -1,6 +1,6 @@
 export interface NoteSearch {
   id: string;
-  content: string;
+  title: string;
   src: string;
   uid: string;
   username: string;
@@ -12,4 +12,21 @@ export interface NoteSearch {
   type: number;
   likeCount: number;
   time: number | string;
+}
+
+export interface NoteInfo {
+  id: string;
+  title: string;
+  content: string;
+  noteCover: string;
+  uid: string;
+  username: string;
+  avatar: string;
+  imgList: Array<string>;
+  type: number;
+  likeCount: number;
+  collectionCount: number;
+  commentCount: number;
+  tagList: Array<any>;
+  time: string;
 }

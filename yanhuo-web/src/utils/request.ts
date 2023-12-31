@@ -23,8 +23,8 @@ const service = axios.create({
 service.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     const userStore = useUserStore();
-    if (userStore.token) {
-      config.headers.Authorization = userStore.token;
+    if (userStore.getToken()) {
+      config.headers.accessToken = userStore.getToken();
     }
     return config;
   },
@@ -63,7 +63,7 @@ service.interceptors.response.use(
 
             storage.set("accessToken", accessToken);
 
-            config.headers.Authorization = accessToken;
+            config.headers.accessToken = accessToken;
             // 重新请求一下第一个 501 的接口
             const firstReqRes = await service.request(config);
             // token 刷新后将数组的方法重新执行

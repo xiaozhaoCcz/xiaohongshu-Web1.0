@@ -7,12 +7,8 @@
     <div class="note-container">
       <div class="media-container">
         <el-carousel height="90vh">
-          <el-carousel-item v-for="item in 4" :key="item">
-            <el-image
-              style="width: 100%; height: 100%"
-              src="https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg"
-              fit="cover"
-            />
+          <el-carousel-item v-for="(item, index) in noteInfo.imgList" :key="index">
+            <el-image style="width: 100%; height: 100%" :src="item" fit="cover" />
           </el-carousel-item>
         </el-carousel>
       </div>
@@ -21,12 +17,8 @@
         <div class="author-container">
           <div class="author-me">
             <div class="info">
-              <img
-                class="avatar-item"
-                style="width: 40px; height: 40px"
-                src="https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg"
-              />
-              <span class="name">这是名字</span>
+              <img class="avatar-item" style="width: 40px; height: 40px" :src="noteInfo.avatar" />
+              <span class="name">{{ noteInfo.username }}</span>
             </div>
             <div class="follow-btn">
               <el-button type="danger" size="large" round>关注</el-button>
@@ -35,15 +27,13 @@
 
           <div class="note-scroller">
             <div class="note-content">
-              <div class="title">这是什么动漫</div>
+              <div class="title">{{ noteInfo.title }}</div>
               <div class="desc">
-                <span>这是什么描述信息 <br /></span>
-                <a class="tag tag-search">#海贼王</a>
-                <a class="tag tag-search">#海贼王</a>
-                <a class="tag tag-search">#海贼王</a>
+                <span>{{ noteInfo.content }} <br /></span>
+                <a class="tag tag-search" v-for="(item, index) in noteInfo.tagList" :key="index">#{{ item.title }}</a>
               </div>
               <div class="bottom-container">
-                <span class="date">2023-10-21</span>
+                <span class="date">{{ noteInfo.time }}</span>
               </div>
             </div>
             <div class="divider interaction-divider"></div>
@@ -302,15 +292,16 @@
               <div class="left">
                 <span class="like-wrapper"
                   ><span class="like-lottie"> <Star style="width: 0.8em; height: 0.8em; color: #333" /> </span
-                  ><span class="count">46</span></span
+                  ><span class="count">{{ noteInfo.collectionCount }}</span></span
                 >
                 <span class="collect-wrapper">
-                  <span class="like-lottie"> <PictureRounded style="width: 0.8em; height: 0.8em; color: #333" /> </span
-                  ><span class="count">21</span></span
+                  <span class="like-lottie">
+                    <i class="iconfont icon-follow" style="width: 0.8em; height: 0.8em; color: #333"></i> </span
+                  ><span class="count">{{ noteInfo.likeCount }}</span></span
                 >
                 <span class="chat-wrapper">
                   <span class="like-lottie"> <ChatRound style="width: 0.8em; height: 0.8em; color: #333" /> </span
-                  ><span class="count">22</span></span
+                  ><span class="count">{{ noteInfo.commentCount }}</span></span
                 >
               </div>
               <div class="share-wrapper"></div>
@@ -339,6 +330,27 @@
 
 <script lang="ts" setup>
 import { Close, Star, PictureRounded, ChatRound } from "@element-plus/icons-vue";
+import { ref } from "vue";
+import { getNoteById } from "@/api/note";
+import type { NoteInfo } from "@/type/note";
+import { formateTime } from "@/utils/util";
+const nid = ref("");
+const noteInfo = ref({}) as NoteInfo;
+
+const initData = () => {
+  console.log("----");
+  nid.value = history.state.nid;
+  getNoteById(nid.value).then((res: any) => {
+    const imgList = JSON.parse(res.data.urls);
+    const time = formateTime(res.data.time);
+    noteInfo.value = res.data;
+    noteInfo.value.imgList = imgList;
+    noteInfo.value.time = time;
+    console.log("----note", res.data, imgList, noteInfo.value);
+  });
+};
+console.log("history.state", history.state);
+initData();
 </script>
 
 <style lang="less" scoped>

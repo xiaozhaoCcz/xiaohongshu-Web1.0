@@ -7,6 +7,7 @@ import com.yanhuo.common.validator.group.AddGroup;
 import com.yanhuo.common.validator.group.UpdateGroup;
 import com.yanhuo.platform.service.AlbumService;
 import com.yanhuo.xo.dto.AlbumDTO;
+import com.yanhuo.xo.entity.Album;
 import com.yanhuo.xo.vo.AlbumVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,9 +21,17 @@ public class AlbumController {
 
     @Autowired
     AlbumService albumService;
+
+    /**
+     * 根据用户id获取专辑
+     * @param currentPage 当前页
+     * @param pageSize 分页数
+     * @param userId 用户id
+     * @return 专辑数
+     */
     @RequestMapping("getAlbumPageByUserId/{currentPage}/{pageSize}")
     public Result<?> getAlbumPageByUserId(@PathVariable long currentPage, @PathVariable long pageSize,String userId){
-        Page<AlbumVo> page =  albumService.getAlbumPageByUserId(currentPage,pageSize,userId);
+        Page<Album> page =  albumService.getAlbumPageByUserId(currentPage,pageSize,userId);
         return Result.ok(page);
     }
 
@@ -42,8 +51,8 @@ public class AlbumController {
 
 
     @RequestMapping("deleteAlbumById")
-    public Result<?> deleteAlbumById(String albumId, String userId) {
-        albumService.deleteAlbumById(albumId, userId);
+    public Result<?> deleteAlbumById(String albumId) {
+        albumService.deleteAlbumById(albumId);
         return Result.ok();
     }
 

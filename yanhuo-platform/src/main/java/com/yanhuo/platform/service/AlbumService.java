@@ -7,13 +7,13 @@ import com.yanhuo.xo.entity.Album;
 import com.yanhuo.xo.vo.AlbumVo;
 
 public interface AlbumService extends IService<Album> {
-    Page<AlbumVo> getAlbumPageByUserId(long currentPage, long pageSize,String userId);
+    Page<Album> getAlbumPageByUserId(long currentPage, long pageSize,String userId);
 
     void saveAlbumByDTO(AlbumDTO albumDTO);
 
     AlbumVo getAlbumById(String id);
 
-    void deleteAlbumById(String id, String userId);
+    void deleteAlbumById(String id);
 
     void updateAlbumByDTO(AlbumDTO albumDTO);
 }

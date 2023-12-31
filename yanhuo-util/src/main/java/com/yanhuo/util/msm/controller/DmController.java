@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
  *发送邮件的功能
  */
 @RestController
-@RequestMapping("/dm")
+@RequestMapping("/util/dm")
 public class DmController {
 
     @Autowired

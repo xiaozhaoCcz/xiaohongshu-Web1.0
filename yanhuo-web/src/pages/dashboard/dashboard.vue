@@ -27,10 +27,10 @@
       <Waterfall :list="noteList" :width="240" :hasAroundGutter="false" style="max-width: 1260px">
         <template #item="{ item, url }">
           <div class="card">
-            <LazyImg :url="url" @click="toMain" class="fadeImg" />
+            <LazyImg :url="url" @click="toMain(item.id)" class="fadeImg" />
             <div class="footer">
               <a class="title">
-                <span>{{ item.content }}</span>
+                <span>{{ item.title }}</span>
               </a>
               <div class="author-wrapper">
                 <a class="author">
@@ -82,8 +82,9 @@ const pageSize = ref(20);
 const noteTotal = ref(0);
 const topBtnShow = ref(false);
 
-const toMain = () => {
-  router.push({ path: "/main" });
+const toMain = (nid: string) => {
+  console.log("11", nid);
+  router.push({ name: "main", state: { nid: nid } });
 };
 
 const handleScroll = () => {

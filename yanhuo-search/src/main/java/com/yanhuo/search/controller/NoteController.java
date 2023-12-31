@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author xiaozhao
  */
 @RestController
-@RequestMapping("/note")
+@RequestMapping("/search/note")
 public class NoteController {
 
     @Autowired
