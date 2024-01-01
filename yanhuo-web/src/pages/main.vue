@@ -360,7 +360,7 @@ const props = defineProps({
     default: "",
   },
 });
-const noteInfo = ref({}) as NoteInfo;
+const noteInfo = ref<NoteInfo>({});
 
 watchEffect(() => {
   console.log("发生改变", props.nid);

@@ -2,7 +2,7 @@
   <div class="container">
     <div class="top">
       <header class="mask-paper">
-        <a style="display: flex">烟火</a>
+        <a style="display: flex">烟火{{ convList.length }}</a>
         <div class="tool-box"></div>
         <div class="input-box">
           <input type="text" class="search-input" placeholder="搜索小红书" />
@@ -127,7 +127,6 @@
     </div>
 
     <Login v-show="loginShow" @click-child="close"></Login>
-   
   </div>
 </template>
 
@@ -135,19 +134,28 @@
 import { Search, Sunny, Moon, Close, House, Star, Bell, ArrowRight, More, CirclePlus } from "@element-plus/icons-vue";
 import { useRouter } from "vue-router";
 import Login from "@/pages/login.vue";
-
-import { ref } from "vue";
+import useZimStore from "@/store/zimStore";
+import { ref, onMounted, computed } from "vue";
 import { useUserStore } from "@/store/userStore";
 
 const router = useRouter();
 const userStore = useUserStore();
 const loginShow = ref(true);
-const userInfo = ref({});
+const userInfo = ref<any>({});
 
+const zimStore = useZimStore();
+
+const zimUser = ref({
+  userID: "",
+  userName: "",
+});
 
 const toDashboard = () => {
   router.push({ path: "/" });
 };
+
+const convList = computed(() => zimStore.convs);
+const msgList = zimStore.msgList;
 
 const toTrend = () => {
   router.push({ path: "/followTrend" });
@@ -169,6 +177,16 @@ const close = (val: boolean) => {
   loginShow.value = val;
   userInfo.value = userStore.getUserInfo();
 };
+
+onMounted(() => {
+  if (userInfo.value != null) {
+    zimUser.value.userID = userInfo.value.id;
+    zimUser.value.userName = userInfo.value.username;
+    zimStore.login(zimUser.value).then(() => {
+      console.log("1234", zimStore.queryConversationList());
+    });
+  }
+});
 
 const initData = () => {
   userInfo.value = userStore.getUserInfo();

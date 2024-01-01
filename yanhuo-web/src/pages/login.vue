@@ -123,8 +123,10 @@ import { loginByCode } from "@/api/user";
 import { ref } from "vue";
 import { storage } from "@/utils/storage";
 import { useUserStore } from "@/store/userStore";
+import useZimStore from "@/store/zimStore";
 
 const userStore = useUserStore();
+const zimStore = useZimStore();
 
 const userLogin = ref<UserLogin>({
   phone: "",
@@ -143,9 +145,11 @@ const login = () => {
   loginByCode(userLogin.value).then((res: any) => {
     const { data } = res;
     console.log("---res", data);
+    const currentUser = data.userInfo;
     storage.set("accessToken", data.accessToken);
     storage.set("refreshToken", data.refreshToken);
-    userStore.setUserInfo(data.userInfo);
+    userStore.setUserInfo(currentUser);
+
     emit("clickChild", false);
   });
 };

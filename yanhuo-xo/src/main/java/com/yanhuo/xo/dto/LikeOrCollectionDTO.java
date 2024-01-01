@@ -9,6 +9,8 @@ public class LikeOrCollectionDTO implements Serializable {
 
     private String uid;
 
+    private String likeOrCollectionId;
+
     private String publishUid;
 
     private Integer type;

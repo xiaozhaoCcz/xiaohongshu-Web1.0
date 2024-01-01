@@ -8,6 +8,8 @@ import lombok.Data;
 @TableName("t_note")
 public class Note extends BaseEntity {
 
+    private String title;
+
     private String content;
 
     private String noteCover;

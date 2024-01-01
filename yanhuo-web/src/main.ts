@@ -9,7 +9,7 @@ import router from "./router/index";
 import ElementPlus from "element-plus";
 import "element-plus/dist/index.css";
 
-import "@/assets/font_4394635_lwuldvb474/iconfont.css"
+import "@/assets/font_4394635_lwuldvb474/iconfont.css";
 
 app.use(router);
 app.use(ElementPlus);
