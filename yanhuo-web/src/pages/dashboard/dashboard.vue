@@ -24,7 +24,17 @@
         <RefreshRight style="width: 1.2em; height: 1.2em" color="rgba(51, 51, 51, 0.8)" />
       </div>
 
-      <Waterfall :list="noteList" :width="240" :hasAroundGutter="false" style="max-width: 1260px">
+      <Waterfall
+        :list="noteList"
+        :width="options.width"
+        :hasAroundGutter="options.hasAroundGutter"
+        :animation-effect="options.animationEffect"
+        :animation-duration="options.animationDuration"
+        :animation-delay="options.animationDelay"
+        :load-props="options.loadProps"
+        :lazyload="options.lazyload"
+        style="max-width: 1260px"
+      >
         <template #item="{ item, url }">
           <div class="card">
             <LazyImg :url="url" @click="toMain(item.id)" class="fadeImg" />
@@ -46,7 +56,7 @@
           </div>
         </template>
       </Waterfall>
-      <div class="feeds-loading" v-show="endLoading">
+      <div class="feeds-loading">
         <RefreshRight style="width: 1.2em; height: 1.2em" color="rgba(51, 51, 51, 0.8)" />
       </div>
     </div>
@@ -69,16 +79,16 @@ import { RefreshRight, Top } from "@element-plus/icons-vue";
 import { LazyImg, Waterfall } from "vue-waterfall-plugin-next";
 import "vue-waterfall-plugin-next/dist/style.css";
 // import { useRouter } from "vue-router";
-import { ref, onMounted } from "vue";
-import { loadImageEnd } from "@/utils/util";
+import { ref, onMounted, reactive } from "vue";
 import { getRecommendNotePage } from "@/api/search";
 import type { NoteSearch } from "@/type/note";
 import Main from "@/pages/main.vue";
+import loading from "@/assets/loading.png";
+import error from "@/assets/error.png";
 
 // const router = useRouter();
 
 const topLoading = ref(false);
-const endLoading = ref(true);
 const noteList = ref<Array<any>>([]);
 const currentPage = ref(1);
 const pageSize = ref(20);
@@ -86,6 +96,48 @@ const noteTotal = ref(0);
 const topBtnShow = ref(false);
 const mainShow = ref(false);
 const nid = ref("");
+const options = reactive({
+  // 唯一key值
+  rowKey: "id",
+  // 卡片之间的间隙
+  gutter: 10,
+  // 是否有周围的gutter
+  hasAroundGutter: false,
+  // 卡片在PC上的宽度
+  width: 240,
+  // 自定义行显示个数，主要用于对移动端的适配
+  breakpoints: {
+    1200: {
+      // 当屏幕宽度小于等于1200
+      rowPerView: 4,
+    },
+    800: {
+      // 当屏幕宽度小于等于800
+      rowPerView: 3,
+    },
+    500: {
+      // 当屏幕宽度小于等于500
+      rowPerView: 2,
+    },
+  },
+  // 动画效果
+  animationEffect: "animate__fadeIn",
+  // 动画时间
+  animationDuration: 2000,
+  // 动画延迟
+  animationDelay: 1000,
+  // 背景色
+  backgroundColor: "#2C2E3A",
+  // imgSelector
+  imgSelector: "src.original",
+  // 加载配置
+  loadProps: {
+    loading,
+    error,
+  },
+  // 是否懒加载
+  lazyload: true,
+});
 
 const toMain = (noteId: string) => {
   // console.log("11", nid);
@@ -95,12 +147,17 @@ const toMain = (noteId: string) => {
 };
 
 const handleScroll = () => {
-  const scrollHeight = Math.max(document.documentElement.scrollHeight, document.body.scrollHeight);
+  const scrollHeight = Math.max(
+    document.documentElement.scrollHeight,
+    document.body.scrollHeight
+  );
   //滚动条滚动距离
-  const scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
+  const scrollTop =
+    window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
   //窗口可视范围高度
   const clientHeight =
-    window.innerHeight || Math.min(document.documentElement.clientHeight, document.body.clientHeight);
+    window.innerHeight ||
+    Math.min(document.documentElement.clientHeight, document.body.clientHeight);
 
   topBtnShow.value = scrollTop > 30;
   if (clientHeight + scrollTop >= scrollHeight && currentPage.value <= noteTotal.value) {
@@ -116,9 +173,11 @@ const close = () => {
 
 const refresh = () => {
   console.log("刷新数据");
-  let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
+  let scrollTop =
+    window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
   const clientHeight =
-    window.innerHeight || Math.min(document.documentElement.clientHeight, document.body.clientHeight);
+    window.innerHeight ||
+    Math.min(document.documentElement.clientHeight, document.body.clientHeight);
 
   console.log(scrollTop, "scrollTop");
   if (scrollTop <= clientHeight * 2) {
@@ -153,40 +212,17 @@ const loadMoreData = () => {
 };
 
 const getNoteList = () => {
-  const p = new Promise((reslove) => {
-    getRecommendNotePage(currentPage.value, pageSize.value).then((res: any) => {
-      console.log("---res", res);
-      reslove(res.data);
-    });
-  });
-  p.then((data: any) => {
-    console.log("----data", data);
-    const { records, total } = data;
+  getRecommendNotePage(currentPage.value, pageSize.value).then((res: any) => {
+    console.log("---res", res);
+    const { records, total } = res.data;
     noteTotal.value = total;
-    new Promise((resolve) => {
-      const dataObj = {
-        imgList: [] as Array<string>,
-        dataList: [] as Array<any>,
-      };
-      records.forEach((item: any) => {
-        dataObj.imgList.push(item.noteCover);
-        dataObj.imgList.push(item.avatar);
-        const objData: NoteSearch = Object.assign(item, {});
-        objData.src = item.noteCover;
-        dataObj.dataList.push(objData);
-        resolve(dataObj);
-      });
-    }).then((data: any) => {
-      console.log("---obj", data);
-      loadImageEnd(
-        data.imgList,
-        () => {
-          noteList.value.push(...data.dataList);
-          endLoading.value = false;
-        },
-        false
-      );
+    const dataList = [] as Array<any>;
+    records.forEach((item: any) => {
+      const objData: NoteSearch = Object.assign(item, {});
+      objData.src = item.noteCover;
+      dataList.push(objData);
     });
+    noteList.value.push(...dataList);
   });
 };
 
@@ -464,9 +500,7 @@ initData();
       height: 40px;
       background: #fff;
       border: 1px solid rgba(0, 0, 0, 0.08);
-      box-shadow:
-        0 2px 8px 0 rgba(0, 0, 0, 0.1),
-        0 1px 2px 0 rgba(0, 0, 0, 0.02);
+      box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.02);
       border-radius: 100px;
       color: rgba(51, 51, 51, 0.8);
       display: flex;
