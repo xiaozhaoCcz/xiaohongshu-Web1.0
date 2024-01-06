@@ -8,7 +8,7 @@
       <div class="media-container">
         <el-carousel height="90vh">
           <el-carousel-item v-for="(item, index) in noteInfo.imgList" :key="index">
-            <el-image style="width: 100%; height: 100%" :src="item" fit="cover" />
+            <el-image style="width: 100%; height: 100%" :src="item" fit="contain" />
           </el-carousel-item>
         </el-carousel>
       </div>
@@ -17,7 +17,11 @@
         <div class="author-container">
           <div class="author-me">
             <div class="info">
-              <img class="avatar-item" style="width: 40px; height: 40px" :src="noteInfo.avatar" />
+              <img
+                class="avatar-item"
+                style="width: 40px; height: 40px"
+                :src="noteInfo.avatar"
+              />
               <span class="name">{{ noteInfo.username }}</span>
             </div>
             <div class="follow-btn">
@@ -30,7 +34,12 @@
               <div class="title">{{ noteInfo.title }}</div>
               <div class="desc">
                 <span>{{ noteInfo.content }} <br /></span>
-                <a class="tag tag-search" v-for="(item, index) in noteInfo.tagList" :key="index">#{{ item.title }}</a>
+                <a
+                  class="tag tag-search"
+                  v-for="(item, index) in noteInfo.tagList"
+                  :key="index"
+                  >#{{ item.title }}</a
+                >
               </div>
               <div class="bottom-container">
                 <span class="date">{{ noteInfo.time }}</span>
@@ -291,16 +300,21 @@
             <div class="buttons">
               <div class="left">
                 <span class="like-wrapper"
-                  ><span class="like-lottie"> <Star style="width: 0.8em; height: 0.8em; color: #333" /> </span
+                  ><span class="like-lottie">
+                    <Star style="width: 0.8em; height: 0.8em; color: #333" /> </span
                   ><span class="count">{{ noteInfo.collectionCount }}</span></span
                 >
                 <span class="collect-wrapper">
                   <span class="like-lottie">
-                    <i class="iconfont icon-follow" style="width: 0.8em; height: 0.8em; color: #333"></i> </span
+                    <i
+                      class="iconfont icon-follow"
+                      style="width: 0.8em; height: 0.8em; color: #333"
+                    ></i> </span
                   ><span class="count">{{ noteInfo.likeCount }}</span></span
                 >
                 <span class="chat-wrapper">
-                  <span class="like-lottie"> <ChatRound style="width: 0.8em; height: 0.8em; color: #333" /> </span
+                  <span class="like-lottie">
+                    <ChatRound style="width: 0.8em; height: 0.8em; color: #333" /> </span
                   ><span class="count">{{ noteInfo.commentCount }}</span></span
                 >
               </div>
@@ -404,9 +418,7 @@ watchEffect(() => {
     cursor: pointer;
 
     .close-mask-white {
-      box-shadow:
-        0 2px 8px 0 rgba(0, 0, 0, 0.04),
-        0 1px 2px 0 rgba(0, 0, 0, 0.02);
+      box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.04), 0 1px 2px 0 rgba(0, 0, 0, 0.02);
       border: 1px solid rgba(0, 0, 0, 0.08);
     }
 
@@ -428,18 +440,14 @@ watchEffect(() => {
     width: 86%;
 
     height: 90%;
-    transition:
-      transform 0.4s ease 0s,
-      width 0.4s ease 0s;
+    transition: transform 0.4s ease 0s, width 0.4s ease 0s;
     transform: translate(104px, 32px) scale(1);
     overflow: visible;
 
     display: flex;
-    box-shadow:
-      0 8px 64px 0 rgba(0, 0, 0, 0.04),
-      0 1px 4px 0 rgba(0, 0, 0, 0.02);
+    box-shadow: 0 8px 64px 0 rgba(0, 0, 0, 0.04), 0 1px 4px 0 rgba(0, 0, 0, 0.02);
     border-radius: 20px;
-    background: #895454;
+    background: #f8f8f8;
     transform-origin: left top;
     z-index: 100;
 

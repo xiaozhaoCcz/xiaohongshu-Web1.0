@@ -3,18 +3,20 @@
     <div class="channel-container">
       <div class="scroll-container channel-scroll-container">
         <div class="content-container">
-          <div class="channel active">推荐</div>
-          <div class="channel">穿搭</div>
-          <div class="channel">美食</div>
-          <div class="channel">彩妆</div>
-          <div class="channel">影视</div>
-          <div class="channel">职场</div>
-          <div class="channel">情感</div>
-          <div class="channel">家居</div>
-          <div class="channel">游戏</div>
-          <div class="channel">旅行</div>
-          <div class="channel">动漫</div>
-          <div class="channel">健身</div>
+          <div
+            :class="categoryClass == '0' ? 'channel active' : 'channel'"
+            @click="getNoteList"
+          >
+            推荐
+          </div>
+          <div
+            :class="categoryClass == item.id ? 'channel active' : 'channel'"
+            v-for="item in categoryList"
+            :key="item.id"
+            @click="getNoteListByCategory(item.id)"
+          >
+            {{ item.title }}
+          </div>
         </div>
       </div>
     </div>
@@ -80,8 +82,10 @@ import { LazyImg, Waterfall } from "vue-waterfall-plugin-next";
 import "vue-waterfall-plugin-next/dist/style.css";
 // import { useRouter } from "vue-router";
 import { ref, onMounted, reactive } from "vue";
-import { getRecommendNotePage } from "@/api/search";
-import type { NoteSearch } from "@/type/note";
+import { getRecommendNotePage, getNotePageByDTO } from "@/api/search";
+import { getCategoryTreeData } from "@/api/category";
+import type { NoteSearch, NoteDTO } from "@/type/note";
+import type { Category } from "@/type/category";
 import Main from "@/pages/main.vue";
 import loading from "@/assets/loading.png";
 import error from "@/assets/error.png";
@@ -90,10 +94,12 @@ import error from "@/assets/error.png";
 
 const topLoading = ref(false);
 const noteList = ref<Array<any>>([]);
+const categoryList = ref<Array<Category>>([]);
 const currentPage = ref(1);
 const pageSize = ref(20);
 const noteTotal = ref(0);
 const topBtnShow = ref(false);
+const categoryClass = ref("0");
 const mainShow = ref(false);
 const nid = ref("");
 const options = reactive({
@@ -137,6 +143,12 @@ const options = reactive({
   },
   // 是否懒加载
   lazyload: true,
+});
+const queryParams = ref<NoteDTO>({
+  keyword: "",
+  type: 1,
+  cid: "",
+  cpid: "",
 });
 
 const toMain = (noteId: string) => {
@@ -208,21 +220,54 @@ const refresh = () => {
 
 const loadMoreData = () => {
   currentPage.value += 1;
-  getNoteList();
+  if (queryParams.value.keyword == "" || queryParams.value.cid == "") {
+    getRecommendNotePage(currentPage.value, pageSize.value).then((res: any) => {
+      console.log("---res", res);
+      setData(res);
+    });
+  } else {
+    getNotePageByDTO(currentPage.value, pageSize.value, queryParams.value).then((res) => {
+      setData(res);
+    });
+  }
+};
+
+const setData = (res: any) => {
+  const { records, total } = res.data;
+  noteTotal.value = total;
+  const dataList = [] as Array<any>;
+  records.forEach((item: any) => {
+    const objData: NoteSearch = Object.assign(item, {});
+    objData.src = item.noteCover;
+    dataList.push(objData);
+  });
+  noteList.value.push(...dataList);
 };
 
 const getNoteList = () => {
+  categoryClass.value = "0";
+  noteList.value = [] as Array<any>;
+  currentPage.value = 1;
   getRecommendNotePage(currentPage.value, pageSize.value).then((res: any) => {
     console.log("---res", res);
-    const { records, total } = res.data;
-    noteTotal.value = total;
-    const dataList = [] as Array<any>;
-    records.forEach((item: any) => {
-      const objData: NoteSearch = Object.assign(item, {});
-      objData.src = item.noteCover;
-      dataList.push(objData);
-    });
-    noteList.value.push(...dataList);
+    setData(res);
+  });
+};
+
+const getNoteListByCategory = (id: string) => {
+  categoryClass.value = id;
+  queryParams.value.cpid = id;
+  noteList.value = [] as Array<any>;
+  currentPage.value = 1;
+  getNotePageByDTO(currentPage.value, pageSize.value, queryParams.value).then((res) => {
+    setData(res);
+  });
+};
+
+const getCategoryData = () => {
+  getCategoryTreeData().then((res: any) => {
+    console.log("--category", res.data);
+    categoryList.value = res.data;
   });
 };
 
@@ -231,6 +276,7 @@ onMounted(() => {
 });
 
 const initData = () => {
+  getCategoryData();
   getNoteList();
 };
 
@@ -448,6 +494,7 @@ initData();
             border-radius: 20px;
             border: 1px solid rgba(0, 0, 0, 0.08);
             flex-shrink: 0;
+            object-fit: cover;
           }
 
           .name {

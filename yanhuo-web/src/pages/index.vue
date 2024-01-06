@@ -2,14 +2,33 @@
   <div class="container">
     <div class="top">
       <header class="mask-paper">
-        <a style="display: flex">烟火{{ convList.length }}</a>
+        <a style="display: flex">烟火</a>
         <div class="tool-box"></div>
         <div class="input-box">
-          <input type="text" class="search-input" placeholder="搜索小红书" />
+          <input
+            type="text"
+            v-model="keyword"
+            class="search-input"
+            placeholder="搜索小红书"
+            @input="changeInput"
+            @focus="focusInput"
+            @blur="blurInput"
+            ref="SearchInput"
+          />
           <div class="input-button">
-            <div class="close-icon"><Close style="width: 1em; height: 1em; margin-right: 8px" /></div>
-            <div class="search-icon"><Search style="width: 1em; height: 1em; margin-right: 8px" /></div>
+            <div class="close-icon" v-show="showClose" @click="clearInput">
+              <Close
+                style="width: 1.2em; height: 1.2em; margin-right: 20px; margin-top: 5px"
+              />
+            </div>
+            <div class="search-icon">
+              <Search
+                style="width: 1.2em; height: 1.2em; margin-right: 20px; margin-top: 5px"
+              />
+            </div>
           </div>
+          <SearchContainer v-show="showSearch"></SearchContainer>
+          <SujContainer v-show="showHistory"></SujContainer>
         </div>
         <div class="right"></div>
       </header>
@@ -19,23 +38,34 @@
         <ul class="channel-list">
           <li class="active-channel">
             <a class="link-wrapper"
-              ><House style="width: 1em; height: 1em; margin-right: 8px" /><span class="channel" @click="toDashboard()"
+              ><House style="width: 1em; height: 1em; margin-right: 8px" /><span
+                class="channel"
+                @click="toDashboard()"
                 >发现</span
               ></a
             >
           </li>
           <li>
-            <Star style="width: 1em; height: 1em; margin-right: 8px" /><span class="channel" @click="toTrend()">
+            <Star style="width: 1em; height: 1em; margin-right: 8px" /><span
+              class="channel"
+              @click="toTrend()"
+            >
               动态</span
             >
           </li>
           <li>
-            <Bell style="width: 1em; height: 1em; margin-right: 8px" /><span class="channel" @click="toMessage()">
+            <Bell style="width: 1em; height: 1em; margin-right: 8px" /><span
+              class="channel"
+              @click="toMessage()"
+            >
               消息</span
             >
           </li>
           <li>
-            <CirclePlus style="width: 1em; height: 1em; margin-right: 8px" /><span class="channel" @click="toPush()">
+            <CirclePlus style="width: 1em; height: 1em; margin-right: 8px" /><span
+              class="channel"
+              @click="toPush()"
+            >
               发布</span
             >
           </li>
@@ -100,10 +130,14 @@
                       <span>深色模式</span>
                       <div class="multistage-toggle component">
                         <button class="toggle-item active">
-                          <div class="icon-wrapper"><Sunny style="width: 1em; height: 1em" /></div>
+                          <div class="icon-wrapper">
+                            <Sunny style="width: 1em; height: 1em" />
+                          </div>
                         </button>
                         <button class="toggle-item">
-                          <div class="icon-wrapper"><Moon style="width: 1em; height: 1em" /></div>
+                          <div class="icon-wrapper">
+                            <Moon style="width: 1em; height: 1em" />
+                          </div>
                         </button>
                       </div>
                     </div>
@@ -117,7 +151,8 @@
           </div>
 
           <div class="information-wrapper">
-            <More style="width: 1em; height: 1em; margin-right: 8px" /> <span class="channel"> 更多</span>
+            <More style="width: 1em; height: 1em; margin-right: 8px" />
+            <span class="channel"> 更多</span>
           </div>
         </div>
       </div>
@@ -131,31 +166,65 @@
 </template>
 
 <script lang="ts" setup>
-import { Search, Sunny, Moon, Close, House, Star, Bell, ArrowRight, More, CirclePlus } from "@element-plus/icons-vue";
+import {
+  Search,
+  Sunny,
+  Moon,
+  Close,
+  House,
+  Star,
+  Bell,
+  ArrowRight,
+  More,
+  CirclePlus,
+} from "@element-plus/icons-vue";
 import { useRouter } from "vue-router";
 import Login from "@/pages/login.vue";
-import useZimStore from "@/store/zimStore";
-import { ref, onMounted, computed } from "vue";
+import { ref } from "vue";
 import { useUserStore } from "@/store/userStore";
+import SujContainer from "@/components/SujContainer.vue";
+import SearchContainer from "@/components/SearchContainer";
 
 const router = useRouter();
 const userStore = useUserStore();
 const loginShow = ref(true);
 const userInfo = ref<any>({});
+const showHistory = ref(false);
+const showSearch = ref(false);
+const keyword = ref("");
+const showClose = ref(false);
+const SearchInput = ref();
 
-const zimStore = useZimStore();
+const changeInput = (e: any) => {
+  const { value } = e.target;
+  keyword.value = value;
+  console.log("检测到变化" + value);
+  showClose.value = keyword.value == "" ? false : true;
+  showSearch.value = keyword.value.length == 0 ? false : true;
+  showHistory.value = keyword.value.length > 0 ? false : true;
+};
 
-const zimUser = ref({
-  userID: "",
-  userName: "",
-});
+const focusInput = () => {
+  showSearch.value = keyword.value.length == 0 ? false : true;
+  showHistory.value = keyword.value.length > 0 ? false : true;
+};
+
+const blurInput = () => {
+  showHistory.value = false;
+  showSearch.value = false;
+};
+
+const clearInput = () => {
+  keyword.value = "";
+  showClose.value = false;
+  showHistory.value = true;
+  showSearch.value = false;
+  SearchInput.value.focus();
+};
 
 const toDashboard = () => {
   router.push({ path: "/" });
 };
-
-const convList = computed(() => zimStore.convs);
-const msgList = zimStore.msgList;
 
 const toTrend = () => {
   router.push({ path: "/followTrend" });
@@ -177,16 +246,6 @@ const close = (val: boolean) => {
   loginShow.value = val;
   userInfo.value = userStore.getUserInfo();
 };
-
-onMounted(() => {
-  if (userInfo.value != null) {
-    zimUser.value.userID = userInfo.value.id;
-    zimUser.value.userName = userInfo.value.username;
-    zimStore.login(zimUser.value).then(() => {
-      console.log("1234", zimStore.queryConversationList());
-    });
-  }
-});
 
 const initData = () => {
   userInfo.value = userStore.getUserInfo();
@@ -391,9 +450,7 @@ initData();
           .container {
             width: 100%;
             background: #fff;
-            box-shadow:
-              0 4px 32px 0 rgba(0, 0, 0, 0.08),
-              0 1px 4px 0 rgba(0, 0, 0, 0.04);
+            box-shadow: 0 4px 32px 0 rgba(0, 0, 0, 0.08), 0 1px 4px 0 rgba(0, 0, 0, 0.04);
             border-radius: 12px;
 
             .divider {
@@ -446,8 +503,7 @@ initData();
 
                   .active {
                     background: #fff;
-                    box-shadow:
-                      0 2px 8px 0 rgba(0, 0, 0, 0.04),
+                    box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.04),
                       0 1px 2px 0 rgba(0, 0, 0, 0.02);
                     color: #333;
                   }

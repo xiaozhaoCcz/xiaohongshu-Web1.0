@@ -7,6 +7,7 @@ spring:
     username: root
     password: root
 
+
 mybatis-plus:
   mapper-locations: classpath*:/mapper/*.xml
   #实体扫描，多个package用逗号或者分号分隔
@@ -28,5 +29,6 @@ mybatis-plus:
     prefix:
     blobType: BLOB
     boolValue: TRUE
+
 
 

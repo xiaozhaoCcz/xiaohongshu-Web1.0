@@ -12,4 +12,6 @@ public class NoteDTO implements Serializable {
     private Integer type;
 
     private String cid;
+
+    private String cpid;
 }

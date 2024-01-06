@@ -10,6 +10,7 @@ import com.yanhuo.xo.entity.User;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,7 +35,7 @@ public class AuthUserController {
      * @param authUserDTO
      * @return
      */
-    @RequestMapping("login")
+    @PostMapping("login")
     public Result<?> login(@RequestBody AuthUserDTO authUserDTO) {
         Map<String, Object> map = authUserService.login(authUserDTO);
         return Result.ok(map);

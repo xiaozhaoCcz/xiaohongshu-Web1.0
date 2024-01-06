@@ -30,3 +30,11 @@ export interface NoteInfo {
   tagList: Array<any>;
   time: string;
 }
+
+
+export interface NoteDTO{
+  keyword:string;
+  type:number;
+  cid:string;
+  cpid:string;
+}

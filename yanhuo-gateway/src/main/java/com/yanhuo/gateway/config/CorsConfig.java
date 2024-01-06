@@ -26,7 +26,7 @@ import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 主要来解决跨域问题
  */
 @Configuration
-public class CorsConfig {
+public class CorsConfig  {
     @Bean
     public CorsWebFilter corsWebFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

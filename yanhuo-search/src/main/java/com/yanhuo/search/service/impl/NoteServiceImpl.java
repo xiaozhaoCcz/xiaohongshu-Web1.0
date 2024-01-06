@@ -42,13 +42,19 @@ public class NoteServiceImpl extends ServiceImpl<NoteDao, Note> implements NoteS
             SearchRequest.Builder builder = new SearchRequest.Builder().index(NoteConstant.NOTE_INDEX);
             if (StringUtils.isNotBlank(noteDTO.getKeyword())) {
                 builder.query(q -> q.bool(b -> b
-                        .should(h -> h.fuzzy(f -> f.field("content").value(noteDTO.getKeyword()).fuzziness("6")))
+                        .should(h -> h.fuzzy(f -> f.field("title").value(noteDTO.getKeyword()).fuzziness("6")))
                         .should(h -> h.fuzzy(f -> f.field("username").value(noteDTO.getKeyword()).fuzziness("4")))
                 ));
             }
-            if (StringUtils.isNotBlank(noteDTO.getCid())) {
-                builder.query(q -> q.match(m -> m.field("cid").query(noteDTO.getCid())));
+            if (StringUtils.isNotBlank(noteDTO.getCpid())&&StringUtils.isNotBlank(noteDTO.getCid())) {
+                builder.query(q -> q.bool(b -> b
+                        .must(h->h.match(m -> m.field("cid").query(noteDTO.getCid())))
+                        .must(h->h.match(m -> m.field("cpid").query(noteDTO.getCpid())))
+                ));
+            }else if(StringUtils.isNotBlank(noteDTO.getCpid())){
+                builder.query(h->h.match(m -> m.field("cpid").query(noteDTO.getCpid())));
             }
+
             if (noteDTO.getType() == 1) {
                 builder.sort(o -> o.field(f -> f.field("likeCount").order(SortOrder.Desc)));
             } else {

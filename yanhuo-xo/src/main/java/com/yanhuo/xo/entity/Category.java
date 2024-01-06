@@ -12,7 +12,7 @@ public class Category extends BaseEntity {
 
     private String pid;
 
-    private String desc;
+    private String description;
 
     private long likeCount;
 

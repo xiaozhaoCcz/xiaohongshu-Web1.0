@@ -9,7 +9,6 @@ import com.yanhuo.xo.vo.NoteVo;
 import java.util.List;
 
 public interface CategoryService extends IService<Category> {
-    List<CategoryVo> getTreeData();
+    List<CategoryVo> getCategoryTreeData();
 
-    Page<NoteVo> getNotePageByCategoryId(long currentPage, long pageSize, String categoryId, Integer type);
 }
