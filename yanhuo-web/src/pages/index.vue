@@ -27,7 +27,7 @@
               />
             </div>
           </div>
-          <SearchContainer v-show="showSearch"></SearchContainer>
+          <SearchContainer v-show="showSearch" :recordList="recordList"></SearchContainer>
           <SujContainer v-show="showHistory"></SujContainer>
         </div>
         <div class="right"></div>
@@ -184,6 +184,7 @@ import { ref } from "vue";
 import { useUserStore } from "@/store/userStore";
 import SujContainer from "@/components/SujContainer.vue";
 import SearchContainer from "@/components/SearchContainer";
+import { getRecordByKeyWord } from "@/api/search";
 
 const router = useRouter();
 const userStore = useUserStore();
@@ -194,6 +195,7 @@ const showSearch = ref(false);
 const keyword = ref("");
 const showClose = ref(false);
 const SearchInput = ref();
+const recordList = ref<Array<string>>([]);
 
 const changeInput = (e: any) => {
   const { value } = e.target;
@@ -202,6 +204,13 @@ const changeInput = (e: any) => {
   showClose.value = keyword.value == "" ? false : true;
   showSearch.value = keyword.value.length == 0 ? false : true;
   showHistory.value = keyword.value.length > 0 ? false : true;
+
+  if (keyword.value.length > 0) {
+    getRecordByKeyWord(keyword.value).then((res) => {
+      console.log("---res", res.data);
+      recordList.value = res.data;
+    });
+  }
 };
 
 const focusInput = () => {
@@ -246,6 +255,16 @@ const close = (val: boolean) => {
   loginShow.value = val;
   userInfo.value = userStore.getUserInfo();
 };
+
+// const searchRecord = () => {
+//   console.log(keyword.value);
+//   if (keyword.value.length > 0) {
+//     getRecordByKeyWord(keyword.value).then((res) => {
+//       console.log("---res", res.data);
+//       recordList.value = res.data;
+//     });
+//   }
+// };
 
 const initData = () => {
   userInfo.value = userStore.getUserInfo();

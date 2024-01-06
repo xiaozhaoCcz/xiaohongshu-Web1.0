@@ -28,8 +28,6 @@ import java.util.List;
 @Service
 public class NoteServiceImpl extends ServiceImpl<NoteDao, Note> implements NoteService {
 
-    @Autowired
-    ESConfig esConfig;
 
     @Autowired
     ElasticsearchClient elasticsearchClient;

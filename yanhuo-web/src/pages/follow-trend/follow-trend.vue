@@ -1,103 +1,35 @@
 <template>
-  <div class="container">
+  <div class="container" @scroll="handleScroll">
     <ul class="trend-container">
-      <li class="trend-item">
+      <li class="trend-item" v-for="item in trendData" :key="item.nid">
         <a class="user-avatar">
-          <!-- https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png -->
-          <img class="avatar-item" src="https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg" />
+          <img class="avatar-item" :src="item.avatar" />
         </a>
         <div class="main">
           <div class="info">
             <div class="user-info">
-              <a class>这是名词</a>
+              <a class>{{ item.username }}</a>
             </div>
-            <div class="interaction-hint"><span>1天前</span></div>
-            <div class="interaction-content">这是具体内容</div>
+            <div class="interaction-hint">
+              <span>{{ item.time }}</span>
+            </div>
+            <div class="interaction-content">{{ item.content }}</div>
             <div class="interaction-imgs">
-              <div class="details-box">
-                <img src="https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg" />
-              </div>
-              <div class="details-box">
-                <img src="https://fuss10.elemecdn.com/1/34/19aa98b1fcb2781c4fba33d850549jpeg.jpeg" />
-              </div>
-              <div class="details-box">
-                <img src="https://fuss10.elemecdn.com/0/6f/e35ff375812e6b0020b6b4e8f9583jpeg.jpeg" />
-              </div>
-              <div class="details-box">
-                <img src="https://fuss10.elemecdn.com/3/28/bbf893f792f03a54408b3b7a7ebf0jpeg.jpeg" />
+              <div class="details-box" v-for="(url, index) in item.imgUrls" :key="index">
+                <img :src="url" />
               </div>
             </div>
             <div class="interaction-footer">
-              <div class="icon-item"><Star style="width: 1em; height: 1em" /><span class="count">123</span></div>
-              <div class="icon-item"><ChatRound style="width: 1em; height: 1em" /><span class="count">123</span></div>
-              <div class="icon-item"><More style="width: 1em; height: 1em" /></div>
-            </div>
-          </div>
-        </div>
-      </li>
-      <li class="trend-item">
-        <a class="user-avatar">
-          <!-- https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png -->
-          <img class="avatar-item" src="https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg" />
-        </a>
-        <div class="main">
-          <div class="info">
-            <div class="user-info">
-              <a class>这是名词</a>
-            </div>
-            <div class="interaction-hint"><span>1天前</span></div>
-            <div class="interaction-content">这是具体内容</div>
-            <div class="interaction-imgs">
-              <div class="details-box">
-                <img src="https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg" />
+              <div class="icon-item">
+                <Star style="width: 1em; height: 1em" /><span class="count">{{
+                  item.likeCount
+                }}</span>
               </div>
-              <div class="details-box">
-                <img src="https://fuss10.elemecdn.com/1/34/19aa98b1fcb2781c4fba33d850549jpeg.jpeg" />
+              <div class="icon-item">
+                <ChatRound style="width: 1em; height: 1em" /><span class="count">{{
+                  item.commentCount
+                }}</span>
               </div>
-              <div class="details-box">
-                <img src="https://fuss10.elemecdn.com/0/6f/e35ff375812e6b0020b6b4e8f9583jpeg.jpeg" />
-              </div>
-              <div class="details-box">
-                <img src="https://fuss10.elemecdn.com/3/28/bbf893f792f03a54408b3b7a7ebf0jpeg.jpeg" />
-              </div>
-            </div>
-            <div class="interaction-footer">
-              <div class="icon-item"><Star style="width: 1em; height: 1em" /><span class="count">123</span></div>
-              <div class="icon-item"><ChatRound style="width: 1em; height: 1em" /><span class="count">123</span></div>
-              <div class="icon-item"><More style="width: 1em; height: 1em" /></div>
-            </div>
-          </div>
-        </div>
-      </li>
-      <li class="trend-item">
-        <a class="user-avatar">
-          <!-- https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png -->
-          <img class="avatar-item" src="https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg" />
-        </a>
-        <div class="main">
-          <div class="info">
-            <div class="user-info">
-              <a class>这是名词</a>
-            </div>
-            <div class="interaction-hint"><span>1天前</span></div>
-            <div class="interaction-content">这是具体内容</div>
-            <div class="interaction-imgs">
-              <div class="details-box">
-                <img src="https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg" />
-              </div>
-              <div class="details-box">
-                <img src="https://fuss10.elemecdn.com/1/34/19aa98b1fcb2781c4fba33d850549jpeg.jpeg" />
-              </div>
-              <div class="details-box">
-                <img src="https://fuss10.elemecdn.com/0/6f/e35ff375812e6b0020b6b4e8f9583jpeg.jpeg" />
-              </div>
-              <div class="details-box">
-                <img src="https://fuss10.elemecdn.com/3/28/bbf893f792f03a54408b3b7a7ebf0jpeg.jpeg" />
-              </div>
-            </div>
-            <div class="interaction-footer">
-              <div class="icon-item"><Star style="width: 1em; height: 1em" /><span class="count">123</span></div>
-              <div class="icon-item"><ChatRound style="width: 1em; height: 1em" /><span class="count">123</span></div>
               <div class="icon-item"><More style="width: 1em; height: 1em" /></div>
             </div>
           </div>
@@ -108,6 +40,54 @@
 </template>
 <script lang="ts" setup>
 import { Star, ChatRound, More } from "@element-plus/icons-vue";
+import { ref } from "vue";
+import { getFollowTrendPage } from "@/api/follower";
+import { formateTime } from "@/utils/util";
+
+const currentPage = ref(1);
+const pageSize = ref(5);
+const trendData = ref<Array<any>>([]);
+const trendTotal = ref(0);
+
+const getFollowTrends = () => {
+  getFollowTrendPage(currentPage.value, pageSize.value).then((res) => {
+    console.log("--trends", res.data);
+    const { records, total } = res.data;
+    records.forEach((item: any) => {
+      const date = formateTime(item.time);
+      item.time = date;
+      trendData.value.push(item);
+    });
+    trendTotal.value = total;
+  });
+};
+
+const handleScroll = () => {
+  const scrollHeight = Math.max(
+    document.documentElement.scrollHeight,
+    document.body.scrollHeight
+  );
+  //滚动条滚动距离
+  const scrollTop =
+    window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
+  //窗口可视范围高度
+  const clientHeight =
+    window.innerHeight ||
+    Math.min(document.documentElement.clientHeight, document.body.clientHeight);
+
+  topBtnShow.value = scrollTop > 30;
+  if (clientHeight + scrollTop >= scrollHeight && currentPage.value <= noteTotal.value) {
+    //快到底时----加载
+    console.log("到达底部");
+    loadMoreData();
+  }
+};
+
+const initData = () => {
+  getFollowTrends();
+};
+
+initData();
 </script>
 
 <style lang="less" scoped>

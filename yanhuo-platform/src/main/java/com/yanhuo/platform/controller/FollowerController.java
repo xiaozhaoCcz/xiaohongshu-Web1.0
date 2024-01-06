@@ -6,6 +6,7 @@ import com.yanhuo.platform.service.FollowerService;
 import com.yanhuo.platform.vo.TrendVo;
 import com.yanhuo.xo.vo.FollowerVo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,7 +21,7 @@ public class FollowerController {
     FollowerService followerService;
 
 
-    @RequestMapping("getFollowTrendPage/{currentPage}/{pageSize}")
+    @GetMapping("getFollowTrendPage/{currentPage}/{pageSize}")
     public Result<?> getFollowTrendPage(@PathVariable long currentPage, @PathVariable long pageSize) {
         Page<TrendVo> pageInfo = followerService.getFollowTrendPage(currentPage, pageSize);
         return Result.ok(pageInfo);

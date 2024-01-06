@@ -15,3 +15,13 @@ export const getNotePageByDTO = (currentPage: number, pageSize: number,data:Note
     data: data
   });
 };
+
+export const getRecordByKeyWord = (keyword: string) => {
+  return request<any>({
+    url: `/search/record/getRecordByKeyWord/`, // mock接口
+    method: "get",
+    params:{
+      keyword:keyword
+    }
+  });
+};

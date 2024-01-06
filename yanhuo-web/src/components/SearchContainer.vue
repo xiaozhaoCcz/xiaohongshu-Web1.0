@@ -5,24 +5,35 @@
       <div class="sug-box">
         <!---->
         <div class="sug-wrapper">
-          <div class="sug-item">
+          <div class="sug-item" v-for="(item, index) in dataList" :key="index">
             <!---->
-            1232323
-          </div>
-          <div class="sug-item">
-            <!---->
-            1232323
-          </div>
-          <div class="sug-item">
-            <!---->
-            1232323
+            <span v-html="item.content"></span>
           </div>
         </div>
       </div>
     </div>
   </div>
 </template>
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+import { ref, watchEffect } from "vue";
+const props = defineProps({
+ recordList: {
+    type: Array<any>,
+    default: [],
+  },
+});
+
+const dataList = ref<Array<any>>([])
+
+watchEffect(() => {
+  console.log("发生改变", props.recordList);
+  dataList.value = [];
+  if(props.recordList.length>0){
+    dataList.value = props.recordList
+    console.log("----dataList.value",dataList.value)
+  }
+});
+</script>
 <style lang="less" scoped>
 .sug-container-wrapper::-webkit-scrollbar {
   display: none;
