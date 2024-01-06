@@ -1,5 +1,8 @@
 <template>
   <div class="container" @scroll="handleScroll">
+    <div class="feeds-loading-top" v-show="topLoading">
+      <RefreshRight style="width: 1.2em; height: 1.2em" color="rgba(51, 51, 51, 0.8)" />
+    </div>
     <ul class="trend-container">
       <li class="trend-item" v-for="item in trendData" :key="item.nid">
         <a class="user-avatar">
@@ -16,17 +19,16 @@
             <div class="interaction-content">{{ item.content }}</div>
             <div class="interaction-imgs">
               <div class="details-box" v-for="(url, index) in item.imgUrls" :key="index">
-                <img :src="url" />
+                <img :src="url" class="animate__animated animate__fadeIn" />
               </div>
             </div>
             <div class="interaction-footer">
               <div class="icon-item">
-                <Star style="width: 1em; height: 1em" /><span class="count">{{
-                  item.likeCount
-                }}</span>
+                <i class="iconfont icon-follow" style="width: 1em; height: 1em"></i
+                ><span class="count">{{ item.likeCount }}</span>
               </div>
               <div class="icon-item">
-                <ChatRound style="width: 1em; height: 1em" /><span class="count">{{
+                <ChatRound style="width: 0.9em; height: 0.9em" /><span class="count">{{
                   item.commentCount
                 }}</span>
               </div>
@@ -36,18 +38,24 @@
         </div>
       </li>
     </ul>
+    <div class="feeds-loading">
+      <RefreshRight style="width: 1.2em; height: 1.2em" color="rgba(51, 51, 51, 0.8)" />
+    </div>
+    <FloatingBtn @click-refresh="refresh"></FloatingBtn>
   </div>
 </template>
 <script lang="ts" setup>
-import { Star, ChatRound, More } from "@element-plus/icons-vue";
-import { ref } from "vue";
+import { ChatRound, More, RefreshRight } from "@element-plus/icons-vue";
+import { ref, onMounted } from "vue";
 import { getFollowTrendPage } from "@/api/follower";
 import { formateTime } from "@/utils/util";
+import FloatingBtn from "@/components/FloatingBtn.vue";
 
 const currentPage = ref(1);
 const pageSize = ref(5);
 const trendData = ref<Array<any>>([]);
 const trendTotal = ref(0);
+const topLoading = ref(false);
 
 const getFollowTrends = () => {
   getFollowTrendPage(currentPage.value, pageSize.value).then((res) => {
@@ -75,13 +83,57 @@ const handleScroll = () => {
     window.innerHeight ||
     Math.min(document.documentElement.clientHeight, document.body.clientHeight);
 
-  topBtnShow.value = scrollTop > 30;
-  if (clientHeight + scrollTop >= scrollHeight && currentPage.value <= noteTotal.value) {
+  // topBtnShow.value = scrollTop > 30;
+  if (clientHeight + scrollTop >= scrollHeight && currentPage.value <= trendTotal.value) {
     //快到底时----加载
     console.log("到达底部");
     loadMoreData();
   }
 };
+
+const loadMoreData = () => {
+  currentPage.value += 1;
+  getFollowTrends();
+};
+
+const refresh = () => {
+  console.log("刷新数据");
+  let scrollTop =
+    window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
+  const clientHeight =
+    window.innerHeight ||
+    Math.min(document.documentElement.clientHeight, document.body.clientHeight);
+
+  console.log(scrollTop, "scrollTop");
+  if (scrollTop <= clientHeight * 2) {
+    const timeTop = setInterval(() => {
+      document.documentElement.scrollTop = document.body.scrollTop = scrollTop -= 100;
+      if (scrollTop <= 0) {
+        clearInterval(timeTop);
+        topLoading.value = true;
+        setTimeout(() => {
+          currentPage.value = 1;
+          trendData.value = [];
+          getFollowTrends();
+          topLoading.value = false;
+        }, 1000);
+      }
+    }, 10); //定时调用函数使其更顺滑
+  } else {
+    document.documentElement.scrollTop = 0;
+    topLoading.value = true;
+    setTimeout(() => {
+      currentPage.value = 1;
+      trendData.value = [];
+      getFollowTrends();
+      topLoading.value = false;
+    }, 1000);
+  }
+};
+
+onMounted(() => {
+  window.addEventListener("scroll", handleScroll);
+});
 
 const initData = () => {
   getFollowTrends();
@@ -97,6 +149,27 @@ initData();
   padding-top: 72px;
   width: 67%;
   margin: 0 auto;
+
+  .feeds-loading {
+    margin: 3vh;
+    text-align: center;
+  }
+
+  .feeds-loading-top {
+    text-align: center;
+    line-height: 6vh;
+    height: 6vh;
+  }
+
+  .feeds-loading-top {
+    -webkit-animation: move_1 0.5s;
+  }
+  @-webkit-keyframes move_1 {
+    0% {
+      -webkit-transform: translateY(-20px);
+      opacity: 0;
+    }
+  }
 
   .trend-container {
     .trend-item {

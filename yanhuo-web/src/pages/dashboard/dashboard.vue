@@ -62,17 +62,7 @@
         <RefreshRight style="width: 1.2em; height: 1.2em" color="rgba(51, 51, 51, 0.8)" />
       </div>
     </div>
-    <div class="floating-btn-sets">
-      <el-backtop :bottom="80" :right="24">
-        <div class="back-top" v-show="topBtnShow">
-          <Top style="width: 1.2em; height: 1.2em" color="rgba(51, 51, 51, 0.8)" />
-        </div>
-      </el-backtop>
-
-      <div class="reload" @click="refresh">
-        <RefreshRight style="width: 1.2em; height: 1.2em" color="rgba(51, 51, 51, 0.8)" />
-      </div>
-    </div>
+    <FloatingBtn @click-refresh="refresh"></FloatingBtn>
     <Main v-show="mainShow" :nid="nid" class="mainShow" @click-main="close"></Main>
   </div>
 </template>
@@ -89,6 +79,7 @@ import type { Category } from "@/type/category";
 import Main from "@/pages/main.vue";
 import loading from "@/assets/loading.png";
 import error from "@/assets/error.png";
+import FloatingBtn from "@/components/FloatingBtn";
 
 // const router = useRouter();
 
@@ -98,7 +89,7 @@ const categoryList = ref<Array<Category>>([]);
 const currentPage = ref(1);
 const pageSize = ref(20);
 const noteTotal = ref(0);
-const topBtnShow = ref(false);
+// const topBtnShow = ref(false);
 const categoryClass = ref("0");
 const mainShow = ref(false);
 const nid = ref("");
@@ -171,7 +162,7 @@ const handleScroll = () => {
     window.innerHeight ||
     Math.min(document.documentElement.clientHeight, document.body.clientHeight);
 
-  topBtnShow.value = scrollTop > 30;
+  // topBtnShow.value = scrollTop > 30;
   if (clientHeight + scrollTop >= scrollHeight && currentPage.value <= noteTotal.value) {
     //快到底时----加载
     console.log("到达底部");
@@ -538,7 +529,7 @@ initData();
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: background 0.2s;
+      // transition: background 0.2s;
       cursor: pointer;
     }
 
@@ -553,7 +544,7 @@ initData();
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: background 0.2s;
+      //transition: background 0.2s;
       cursor: pointer;
     }
   }

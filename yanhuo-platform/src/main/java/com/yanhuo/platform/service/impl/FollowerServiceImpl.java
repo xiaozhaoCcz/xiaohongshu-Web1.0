@@ -42,34 +42,35 @@ public class FollowerServiceImpl extends ServiceImpl<FollowerDao, Follower> impl
         fids.add(currentUid);
         Page<Note> notePage =  noteService.page(new Page<>((int)currentPage,(int)pageSize),new QueryWrapper<Note>().in("uid", fids).orderByDesc("update_date"));
         List<Note> notes = notePage.getRecords();
-        //得到所有用户的图片
-        List<String> ids = notes.stream().map(Note::getUid).collect(Collectors.toList());
-        List<User> users = userService.listByIds(ids);
-        HashMap<String,User> userMap = new HashMap<>();
-        users.forEach(item-> userMap.put(item.getId(),item));
-
         List<TrendVo> trendVos = new ArrayList<>();
-        for (Note note : notes) {
-            TrendVo trendVo = new TrendVo();
-            User user = userMap.get(note.getUid());
-            trendVo.setUid(user.getId())
-                    .setUsername(user.getUsername())
-                    .setAvatar(user.getAvatar())
-                    .setNid(note.getId())
-                    .setTime(note.getUpdateDate().getTime())
-                    .setContent(note.getContent())
-                    .setCommentCount(note.getCommentCount())
-                    .setLikeCount(note.getLikeCount());
+        if (!notes.isEmpty()){
+            //得到所有用户的图片
+            List<String> ids = notes.stream().map(Note::getUid).collect(Collectors.toList());
+            List<User> users = userService.listByIds(ids);
+            HashMap<String,User> userMap = new HashMap<>();
+            users.forEach(item-> userMap.put(item.getId(),item));
+            for (Note note : notes) {
+                TrendVo trendVo = new TrendVo();
+                User user = userMap.get(note.getUid());
+                trendVo.setUid(user.getId())
+                        .setUsername(user.getUsername())
+                        .setAvatar(user.getAvatar())
+                        .setNid(note.getId())
+                        .setTime(note.getUpdateDate().getTime())
+                        .setContent(note.getContent())
+                        .setCommentCount(note.getCommentCount())
+                        .setLikeCount(note.getLikeCount());
 
-            String urls = note.getUrls();
-            List<String> imgList = JSONUtil.toList(urls, String.class);
-            if(imgList.size()>4){
-               List<String> subList = imgList.subList(0, 4);
-               trendVo.setImgUrls(subList);
-            }else {
-                trendVo.setImgUrls(imgList);
+                String urls = note.getUrls();
+                List<String> imgList = JSONUtil.toList(urls, String.class);
+                if(imgList.size()>4){
+                    List<String> subList = imgList.subList(0, 4);
+                    trendVo.setImgUrls(subList);
+                }else {
+                    trendVo.setImgUrls(imgList);
+                }
+                trendVos.add(trendVo);
             }
-            trendVos.add(trendVo);
         }
         long total = notePage.getTotal();
         page.setTotal(total);

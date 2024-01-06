@@ -36,35 +36,35 @@
     <div class="main">
       <div class="side-bar">
         <ul class="channel-list">
-          <li class="active-channel">
-            <a class="link-wrapper"
-              ><House style="width: 1em; height: 1em; margin-right: 8px" /><span
+          <li :class="activeLink == 1 ? 'active-channel' : ''">
+            <a class="link-wrapper">
+              <House style="width: 1em; height: 1em; margin-right: 8px" /><span
                 class="channel"
-                @click="toDashboard()"
+                @click="toLink(1)"
                 >发现</span
               ></a
             >
           </li>
-          <li>
+          <li :class="activeLink == 2 ? 'active-channel' : ''">
             <Star style="width: 1em; height: 1em; margin-right: 8px" /><span
               class="channel"
-              @click="toTrend()"
+              @click="toLink(2)"
             >
               动态</span
             >
           </li>
-          <li>
+          <li :class="activeLink == 3 ? 'active-channel' : ''">
             <Bell style="width: 1em; height: 1em; margin-right: 8px" /><span
               class="channel"
-              @click="toMessage()"
+              @click="toLink(3)"
             >
               消息</span
             >
           </li>
-          <li>
+          <li :class="activeLink == 4 ? 'active-channel' : ''">
             <CirclePlus style="width: 1em; height: 1em; margin-right: 8px" /><span
               class="channel"
-              @click="toPush()"
+              @click="toLink(4)"
             >
               发布</span
             >
@@ -72,9 +72,9 @@
           <li v-if="userInfo == null">
             <el-button type="danger" round>登录</el-button>
           </li>
-          <li v-else>
+          <li v-else :class="activeLink == 5 ? 'active-channel' : ''">
             <el-avatar :src="userInfo.avatar" :size="22" />
-            <span class="channel" @click="toUser()">我</span>
+            <span class="channel" @click="toLink(5)">我</span>
           </li>
         </ul>
 
@@ -185,6 +185,7 @@ import { useUserStore } from "@/store/userStore";
 import SujContainer from "@/components/SujContainer.vue";
 import SearchContainer from "@/components/SearchContainer";
 import { getRecordByKeyWord } from "@/api/search";
+import { pa } from "element-plus/es/locale/index.mjs";
 
 const router = useRouter();
 const userStore = useUserStore();
@@ -196,6 +197,9 @@ const keyword = ref("");
 const showClose = ref(false);
 const SearchInput = ref();
 const recordList = ref<Array<string>>([]);
+const activeLink = ref(1);
+
+const routerList = ["/", "/followTrend", "/message", "/push", "/user"];
 
 const changeInput = (e: any) => {
   const { value } = e.target;
@@ -231,23 +235,10 @@ const clearInput = () => {
   SearchInput.value.focus();
 };
 
-const toDashboard = () => {
-  router.push({ path: "/" });
-};
-
-const toTrend = () => {
-  router.push({ path: "/followTrend" });
-};
-
-const toMessage = () => {
-  router.push({ path: "/message" });
-};
-
-const toUser = () => {
-  router.push({ path: "/user" });
-};
-const toPush = () => {
-  router.push({ path: "/push" });
+const toLink = (num: number) => {
+  activeLink.value = num;
+  const url = routerList[num - 1];
+  router.push({ path: url });
 };
 
 const close = (val: boolean) => {
@@ -255,16 +246,6 @@ const close = (val: boolean) => {
   loginShow.value = val;
   userInfo.value = userStore.getUserInfo();
 };
-
-// const searchRecord = () => {
-//   console.log(keyword.value);
-//   if (keyword.value.length > 0) {
-//     getRecordByKeyWord(keyword.value).then((res) => {
-//       console.log("---res", res.data);
-//       recordList.value = res.data;
-//     });
-//   }
-// };
 
 const initData = () => {
   userInfo.value = userStore.getUserInfo();
