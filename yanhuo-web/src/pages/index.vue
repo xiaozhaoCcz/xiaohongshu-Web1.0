@@ -185,7 +185,6 @@ import { useUserStore } from "@/store/userStore";
 import SujContainer from "@/components/SujContainer.vue";
 import SearchContainer from "@/components/SearchContainer";
 import { getRecordByKeyWord } from "@/api/search";
-import { pa } from "element-plus/es/locale/index.mjs";
 
 const router = useRouter();
 const userStore = useUserStore();
@@ -208,7 +207,6 @@ const changeInput = (e: any) => {
   showClose.value = keyword.value == "" ? false : true;
   showSearch.value = keyword.value.length == 0 ? false : true;
   showHistory.value = keyword.value.length > 0 ? false : true;
-
   if (keyword.value.length > 0) {
     getRecordByKeyWord(keyword.value).then((res) => {
       console.log("---res", res.data);
@@ -249,7 +247,14 @@ const close = (val: boolean) => {
 
 const initData = () => {
   userInfo.value = userStore.getUserInfo();
-  console.log(userInfo.value);
+  const url = window.location.href;
+  const path = url.substring(url.lastIndexOf("/"), url.length);
+  for (let i = 1; i <= routerList.length; i++) {
+    if (routerList[i - 1] === path) {
+      activeLink.value = i;
+      break;
+    }
+  }
   if (userInfo.value != null) {
     loginShow.value = false;
   }

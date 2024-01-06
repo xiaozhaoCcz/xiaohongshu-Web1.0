@@ -4,7 +4,7 @@
       <RefreshRight style="width: 1.2em; height: 1.2em" color="rgba(51, 51, 51, 0.8)" />
     </div>
     <ul class="trend-container">
-      <li class="trend-item" v-for="item in trendData" :key="item.nid">
+      <li class="trend-item" v-for="(item, index) in trendData" :key="index">
         <a class="user-avatar">
           <img class="avatar-item" :src="item.avatar" />
         </a>
@@ -16,15 +16,28 @@
             <div class="interaction-hint">
               <span>{{ item.time }}</span>
             </div>
-            <div class="interaction-content">{{ item.content }}</div>
-            <div class="interaction-imgs">
+            <div class="interaction-content" @click="toMain(item.nid)">
+              {{ item.content }}
+            </div>
+            <div class="interaction-imgs" @click="toMain(item.nid)">
               <div class="details-box" v-for="(url, index) in item.imgUrls" :key="index">
                 <img :src="url" class="animate__animated animate__fadeIn" />
               </div>
             </div>
             <div class="interaction-footer">
               <div class="icon-item">
-                <i class="iconfont icon-follow" style="width: 1em; height: 1em"></i
+                <i
+                  class="iconfont icon-follow-fill"
+                  style="width: 1em; height: 1em"
+                  @click="like(item.nid, item.uid, index, -1)"
+                  v-if="item.isLike"
+                ></i>
+                <i
+                  class="iconfont icon-follow"
+                  style="width: 1em; height: 1em"
+                  @click="like(item.nid, item.uid, index, 1)"
+                  v-else
+                ></i
                 ><span class="count">{{ item.likeCount }}</span>
               </div>
               <div class="icon-item">
@@ -42,6 +55,7 @@
       <RefreshRight style="width: 1.2em; height: 1.2em" color="rgba(51, 51, 51, 0.8)" />
     </div>
     <FloatingBtn @click-refresh="refresh"></FloatingBtn>
+    <Main v-show="mainShow" :nid="nid" class="mainShow" @click-main="close"></Main>
   </div>
 </template>
 <script lang="ts" setup>
@@ -50,12 +64,18 @@ import { ref, onMounted } from "vue";
 import { getFollowTrendPage } from "@/api/follower";
 import { formateTime } from "@/utils/util";
 import FloatingBtn from "@/components/FloatingBtn.vue";
+import Main from "@/pages/main.vue";
+import type { LikeOrCollectionDTO } from "@/type/likeOrCollection";
+import { likeByDTO } from "@/api/likeOrCollection";
 
 const currentPage = ref(1);
 const pageSize = ref(5);
 const trendData = ref<Array<any>>([]);
 const trendTotal = ref(0);
 const topLoading = ref(false);
+const mainShow = ref(false);
+const nid = ref("");
+const likeOrCollectionDTO = ref<LikeOrCollectionDTO>({});
 
 const getFollowTrends = () => {
   getFollowTrendPage(currentPage.value, pageSize.value).then((res) => {
@@ -96,6 +116,15 @@ const loadMoreData = () => {
   getFollowTrends();
 };
 
+const toMain = (noteId: string) => {
+  nid.value = noteId;
+  mainShow.value = true;
+};
+
+const close = () => {
+  mainShow.value = false;
+};
+
 const refresh = () => {
   console.log("刷新数据");
   let scrollTop =
@@ -131,6 +160,16 @@ const refresh = () => {
   }
 };
 
+const like = (nid: string, uid: string, index: number, val: number) => {
+  likeOrCollectionDTO.value.likeOrCollectionId = nid;
+  likeOrCollectionDTO.value.publishUid = uid;
+  likeOrCollectionDTO.value.type = 1;
+  likeByDTO(likeOrCollectionDTO.value).then(() => {
+    trendData.value[index].isLike = val == 1;
+    trendData.value[index].likeCount += val;
+  });
+};
+
 onMounted(() => {
   window.addEventListener("scroll", handleScroll);
 });
@@ -143,6 +182,15 @@ initData();
 </script>
 
 <style lang="less" scoped>
+.mainShow {
+  -webkit-animation: zoom_1 0.5s;
+}
+@-webkit-keyframes zoom_1 {
+  0% {
+    -webkit-transform: scale(0);
+    opacity: 0;
+  }
+}
 .container {
   flex: 1;
   padding: 0 24px;

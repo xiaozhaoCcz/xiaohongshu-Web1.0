@@ -6,17 +6,19 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yanhuo.common.auth.AuthContextHolder;
 import com.yanhuo.platform.service.FollowerService;
+import com.yanhuo.platform.service.LikeOrCollectionService;
 import com.yanhuo.platform.service.NoteService;
 import com.yanhuo.platform.service.UserService;
 import com.yanhuo.platform.vo.TrendVo;
 import com.yanhuo.xo.dao.FollowerDao;
 import com.yanhuo.xo.entity.Follower;
+import com.yanhuo.xo.entity.LikeOrCollection;
 import com.yanhuo.xo.entity.Note;
 import com.yanhuo.xo.entity.User;
 import com.yanhuo.xo.vo.FollowerVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import sun.security.krb5.internal.AuthContext;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,6 +33,9 @@ public class FollowerServiceImpl extends ServiceImpl<FollowerDao, Follower> impl
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    LikeOrCollectionService likeOrCollectionService;
 
     @Override
     public Page<TrendVo> getFollowTrendPage(long currentPage, long pageSize) {
@@ -49,6 +54,10 @@ public class FollowerServiceImpl extends ServiceImpl<FollowerDao, Follower> impl
             List<User> users = userService.listByIds(ids);
             HashMap<String,User> userMap = new HashMap<>();
             users.forEach(item-> userMap.put(item.getId(),item));
+            // 是否点赞
+            List<LikeOrCollection> likeOrCollections = likeOrCollectionService.list(new QueryWrapper<LikeOrCollection>().eq("uid", currentUid).eq("type",1));
+            List<String> likeOrCollectionIds = likeOrCollections.stream().map(LikeOrCollection::getLikeOrCollectionId).collect(Collectors.toList());
+
             for (Note note : notes) {
                 TrendVo trendVo = new TrendVo();
                 User user = userMap.get(note.getUid());
@@ -59,8 +68,8 @@ public class FollowerServiceImpl extends ServiceImpl<FollowerDao, Follower> impl
                         .setTime(note.getUpdateDate().getTime())
                         .setContent(note.getContent())
                         .setCommentCount(note.getCommentCount())
-                        .setLikeCount(note.getLikeCount());
-
+                        .setLikeCount(note.getLikeCount())
+                        .setIsLike(likeOrCollectionIds.contains(note.getId()));
                 String urls = note.getUrls();
                 List<String> imgList = JSONUtil.toList(urls, String.class);
                 if(imgList.size()>4){
@@ -83,18 +92,35 @@ public class FollowerServiceImpl extends ServiceImpl<FollowerDao, Follower> impl
         return null;
     }
 
+    // TODO 需要优化
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void followById(String followerId) {
-
+        Follower follower = new Follower();
+        String userId = AuthContextHolder.getUserId();
+        follower.setUid(userId);
+        follower.setFid(followerId);
+        // 得到当前用户
+        User currentUser = userService.getById(userId);
+        User followerUser = userService.getById(followerId);
+        if(isFollow(followerId)){
+            currentUser.setFollowerCount(currentUser.getFollowerCount()-1);
+            followerUser.setFanCount(followerUser.getFanCount()-1);
+            this.remove(new QueryWrapper<Follower>().eq("uid", userId).eq("fid", followerId));
+        }else{
+            currentUser.setFollowerCount(currentUser.getFollowerCount()+1);
+            followerUser.setFanCount(followerUser.getFanCount()+1);
+            this.save(follower);
+        }
+        userService.updateById(currentUser);
+        userService.updateById(followerUser);
     }
 
     @Override
     public boolean isFollow(String followerId) {
-        return false;
+        String userId = AuthContextHolder.getUserId();
+        long count = this.count(new QueryWrapper<Follower>().eq("uid", userId).eq("fid", followerId));
+        return count>0;
     }
 
-    @Override
-    public void deleteFollowerById(String followerId) {
-
-    }
 }

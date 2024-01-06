@@ -6,3 +6,23 @@ export const getFollowTrendPage = (currentPage: number, pageSize: number) => {
     method: "get",
   });
 };
+
+export const followById = (followerId: string) => {
+  return request<any>({
+    url: `/platform/follower/followById`, // mock接口
+    method: "get",
+    params: {
+      followerId,
+    },
+  });
+};
+
+export const isFollow = (followerId: string) => {
+  return request<any>({
+    url: `/platform/follower/isFollow`, // mock接口
+    method: "get",
+    params: {
+      followerId,
+    },
+  });
+};

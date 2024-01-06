@@ -14,6 +14,4 @@ public interface FollowerService  extends IService<Follower> {
     void followById(String followerId);
 
     boolean isFollow(String followerId);
-
-    void deleteFollowerById(String followerId);
 }

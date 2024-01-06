@@ -38,7 +38,7 @@ public class FollowerController {
     @RequestMapping("followById")
     public Result<?> followById(String followerId) {
         followerService.followById(followerId);
-        return Result.ok(null);
+        return Result.ok();
     }
 
 
@@ -46,12 +46,5 @@ public class FollowerController {
     public Result<?> isFollow(String followerId) {
         boolean flag = followerService.isFollow(followerId);
         return Result.ok(flag);
-    }
-
-
-    @RequestMapping("deleteFollowerById")
-    public Result<?> deleteFollowerById(String followerId) {
-        followerService.deleteFollowerById(followerId);
-        return Result.ok(null);
     }
 }

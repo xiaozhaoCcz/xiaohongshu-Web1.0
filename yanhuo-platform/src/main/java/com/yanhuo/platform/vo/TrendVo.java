@@ -27,4 +27,6 @@ public class TrendVo implements Serializable {
     private Long likeCount;
 
     private Long commentCount;
+
+    private Boolean isLike;
 }

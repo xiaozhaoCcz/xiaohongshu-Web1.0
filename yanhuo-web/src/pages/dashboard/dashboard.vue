@@ -67,7 +67,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { RefreshRight, Top } from "@element-plus/icons-vue";
+import { RefreshRight } from "@element-plus/icons-vue";
 import { LazyImg, Waterfall } from "vue-waterfall-plugin-next";
 import "vue-waterfall-plugin-next/dist/style.css";
 // import { useRouter } from "vue-router";
@@ -211,12 +211,15 @@ const refresh = () => {
 
 const loadMoreData = () => {
   currentPage.value += 1;
-  if (queryParams.value.keyword == "" || queryParams.value.cid == "") {
+  console.log("aaa", queryParams.value.keyword, queryParams.value.cpid);
+  if (queryParams.value.cpid === "") {
+    console.log("-----getRecommendNotePage");
     getRecommendNotePage(currentPage.value, pageSize.value).then((res: any) => {
       console.log("---res", res);
       setData(res);
     });
   } else {
+    console.log("-----getNotePageByDTO");
     getNotePageByDTO(currentPage.value, pageSize.value, queryParams.value).then((res) => {
       setData(res);
     });

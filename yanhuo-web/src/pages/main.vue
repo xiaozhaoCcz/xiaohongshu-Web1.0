@@ -25,7 +25,22 @@
               <span class="name">{{ noteInfo.username }}</span>
             </div>
             <div class="follow-btn">
-              <el-button type="danger" size="large" round>关注</el-button>
+              <el-button
+                type="info"
+                size="large"
+                round
+                v-if="followerState"
+                @click="follow(noteInfo.uid, 1)"
+                >已关注</el-button
+              >
+              <el-button
+                type="danger"
+                size="large"
+                round
+                v-else
+                @click="follow(noteInfo.uid, 0)"
+                >关注</el-button
+              >
             </div>
           </div>
 
@@ -350,6 +365,7 @@ import { ref, watchEffect } from "vue";
 import { getNoteById } from "@/api/note";
 import type { NoteInfo } from "@/type/note";
 import { formateTime } from "@/utils/util";
+import { isFollow, followById } from "@/api/follower";
 
 // 这是路由传参
 // nid.value = history.state.nid;
@@ -374,17 +390,34 @@ const props = defineProps({
     default: "",
   },
 });
+
 const noteInfo = ref<NoteInfo>({});
+const followerState = ref(false);
+
+const follow = (fid: string, type: number) => {
+  followById(fid).then((res) => {
+    console.log("---关注", res.data);
+    followerState.value = type == 0;
+  });
+};
 
 watchEffect(() => {
-  console.log("发生改变", props.nid);
-  getNoteById(props.nid).then((res: any) => {
-    const imgList = JSON.parse(res.data.urls);
-    const time = formateTime(res.data.time);
-    noteInfo.value = res.data;
-    noteInfo.value.imgList = imgList;
-    noteInfo.value.time = time;
-    console.log("----note", res.data, imgList, noteInfo.value);
+  const p = new Promise((resolve) => {
+    getNoteById(props.nid).then((res: any) => {
+      const imgList = JSON.parse(res.data.urls);
+      const time = formateTime(res.data.time);
+      noteInfo.value = res.data;
+      noteInfo.value.imgList = imgList;
+      noteInfo.value.time = time;
+      resolve(res.data.uid);
+    });
+  });
+
+  p.then((data) => {
+    console.log("data", data);
+    isFollow(data).then((res) => {
+      followerState.value = res.data;
+    });
   });
 });
 </script>

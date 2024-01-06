@@ -10,4 +10,6 @@ import com.yanhuo.xo.entity.LikeOrCollection;
  */
 public interface LikeOrCollectionService extends IService<LikeOrCollection> {
     void likeByDTO(LikeOrCollectionDTO likeOrCollectionDTO);
+
+    boolean isLikeOrCollection(LikeOrCollectionDTO likeOrCollectionDTO);
 }
