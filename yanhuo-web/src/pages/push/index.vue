@@ -1,14 +1,22 @@
 <template>
   <div class="container">
     <div class="push-container">
-      <div class="header"><span class="header-icon"></span><span class="header-title">发布图文</span></div>
+      <div class="header">
+        <span class="header-icon"></span><span class="header-title">发布图文</span>
+      </div>
       <div class="img-list">
         <el-upload
           v-model:file-list="fileList"
-          action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
+          action="http://localhost:88/api/util/oss/saveBatch/0"
           list-type="picture-card"
-          :on-preview="handlePictureCardPreview"
+          multiple
+          :on-preview="handlePreview"
           :on-remove="handleRemove"
+          :before-remove="beforeRemove"
+          :limit="9"
+          :on-exceed="handleExceed"
+          :headers="uploadHeader"
+          :auto-upload="false"
         >
           <el-icon><Plus /></el-icon>
         </el-upload>
@@ -63,58 +71,76 @@
 import { ref } from "vue";
 import { Plus } from "@element-plus/icons-vue";
 
-import type { UploadProps, UploadUserFile } from "element-plus";
+import type { UploadProps, UploadUserFile, UploadInstance } from "element-plus";
+import { ElMessage, ElMessageBox } from "element-plus";
+import { useUserStore } from "@/store/userStore";
+import axios from "axios";
+
+const userStore = useUserStore();
 
 const fileList = ref<UploadUserFile[]>([
-  {
-    name: "food.jpeg",
-    url: "https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100",
-  },
-  {
-    name: "plant-1.png",
-    url: "/images/plant-1.png",
-  },
-  {
-    name: "food.jpeg",
-    url: "https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100",
-  },
-  {
-    name: "plant-2.png",
-    url: "/images/plant-2.png",
-  },
-  {
-    name: "food.jpeg",
-    url: "https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100",
-  },
-  {
-    name: "figure-1.png",
-    url: "/images/figure-1.png",
-  },
-  {
-    name: "food.jpeg",
-    url: "https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100",
-  },
-  {
-    name: "figure-2.png",
-    url: "/images/figure-2.png",
-  },
+  // {
+  //   name: "food.jpeg",
+  //   url:
+  //     "https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100",
+  // },
 ]);
 
 const dialogImageUrl = ref("");
 const dialogVisible = ref(false);
 const title = ref("");
+const uploadHeader = ref({
+  accessToken: userStore.getToken(),
+});
 
 const handleRemove: UploadProps["onRemove"] = (uploadFile, uploadFiles) => {
   console.log(uploadFile, uploadFiles);
 };
 
-const handlePictureCardPreview: UploadProps["onPreview"] = (uploadFile) => {
-  dialogImageUrl.value = uploadFile.url!;
-  dialogVisible.value = true;
+const handlePreview: UploadProps["onPreview"] = (uploadFile) => {
+  console.log(uploadFile);
 };
 
+const handleExceed: UploadProps["onExceed"] = (files, uploadFiles) => {
+  ElMessage.warning(
+    `The limit is 3, you selected ${files.length} files this time, add up to ${
+      files.length + uploadFiles.length
+    } totally`
+  );
+};
+
+const beforeRemove: UploadProps["beforeRemove"] = (uploadFile, uploadFiles) => {
+  return ElMessageBox.confirm(`Cancel the transfer of ${uploadFile.name} ?`).then(
+    () => true,
+    () => false
+  );
+};
+
+// 上传图片功能
 const pubslish = () => {
-  console.log(123);
+  let params = new FormData();
+  // 注意此处对文件数组进行了参数循环添加
+  if (fileList.value.length > 0) {
+    fileList.value.forEach((file: any) => {
+      params.append("uploadFiles", file.raw);
+    });
+  } else {
+    //that.$message.warning("当前没有合适图片可以上传");
+  }
+  axios({
+    url: "http://localhost:88/api/util/oss/saveBatch/0",
+    method: "post",
+    data: params,
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  })
+    .then((res: any) => {
+      console.log("上传成功", res.data);
+    })
+    .catch((err: any) => {
+      console.log("上传成功", err.data);
+    });
 };
 </script>
 <style lang="less" scoped>
@@ -190,11 +216,7 @@ const pubslish = () => {
       .css-fm44j {
         -webkit-font-smoothing: antialiased;
         appearance: none;
-        font-family:
-          RedNum,
-          RedZh,
-          RedEn,
-          -apple-system;
+        font-family: RedNum, RedZh, RedEn, -apple-system;
         vertical-align: middle;
         text-decoration: none;
         border: 1px solid rgb(217, 217, 217);

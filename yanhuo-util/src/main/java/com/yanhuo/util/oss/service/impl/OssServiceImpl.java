@@ -5,6 +5,9 @@ import com.yanhuo.util.oss.service.OssService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class OssServiceImpl implements OssService {
 
@@ -25,5 +28,14 @@ public class OssServiceImpl implements OssService {
            return factory.save(file);
         }
         return null;
+    }
+
+    @Override
+    public List<String> saveBatch(MultipartFile[] files, Integer type) {
+        List<String> result = new ArrayList<>();
+        for (MultipartFile file : files){
+            result.add(save(file,type));
+        }
+        return result;
     }
 }
