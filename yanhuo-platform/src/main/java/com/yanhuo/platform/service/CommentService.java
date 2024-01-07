@@ -18,15 +18,24 @@ public interface CommentService extends IService<Comment> {
 
     CommentVo saveCommentByDTO(CommentDTO commentDTO);
 
-    IPage<CommentVo> getTwoCommentPageByOneCommentId(long currentPage, long pageSize, String oneCommentId);
+    Page<CommentVo> getTwoCommentPageByOneCommentId(long currentPage, long pageSize, String oneCommentId);
 
     List<CommentVo> getTwoCommentListByOneCommentId(String oneCommentId);
 
     Page<CommentVo> getReplyCommentPageByUserId(long currentPage, long pageSize);
 
+    /**
+     * 得到展示的一级评论和二级评论
+     * @param currentPage
+     * @param pageSize
+     * @param noteId
+     * @return
+     */
     Page<CommentVo> getCommentPageWithCommentByNoteId(long currentPage, long pageSize, String noteId);
 
     Map<String, Object> scrollComment(String commentId, String noteId);
 
     void deleteCommentById(String commentId);
+
+    void syncCommentByIds(List<String> commentIds);
 }

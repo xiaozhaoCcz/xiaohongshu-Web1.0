@@ -5,11 +5,13 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yanhuo.common.auth.AuthContextHolder;
 import com.yanhuo.common.utils.ConvertUtils;
 import com.yanhuo.platform.service.CommentService;
+import com.yanhuo.platform.service.CommentSyncService;
 import com.yanhuo.platform.service.LikeOrCollectionService;
 import com.yanhuo.platform.service.NoteService;
 import com.yanhuo.xo.dao.LikeOrCollectionDao;
 import com.yanhuo.xo.dto.LikeOrCollectionDTO;
 import com.yanhuo.xo.entity.Comment;
+import com.yanhuo.xo.entity.CommentSync;
 import com.yanhuo.xo.entity.LikeOrCollection;
 import com.yanhuo.xo.entity.Note;
 import com.yanhuo.xo.vo.NoteVo;
@@ -27,6 +29,9 @@ public class LikeOrCollectionServiceImpl extends ServiceImpl<LikeOrCollectionDao
 
     @Autowired
     CommentService commentService;
+
+    @Autowired
+    CommentSyncService commentSyncService;
 
     @Override
     public void likeByDTO(LikeOrCollectionDTO likeOrCollectionDTO) {
@@ -54,8 +59,15 @@ public class LikeOrCollectionServiceImpl extends ServiceImpl<LikeOrCollectionDao
             noteService.updateById(note);
         }else{
             Comment comment = commentService.getById(likeOrCollectionDTO.getLikeOrCollectionId());
-            comment.setLikeCount(comment.getLikeCount()+val);
-            commentService.updateById(comment);
+            if(comment==null){
+                CommentSync commentSync = commentSyncService.getById(likeOrCollectionDTO.getLikeOrCollectionId());
+                commentSync.setLikeCount(commentSync.getLikeCount()+val);
+                commentSyncService.updateById(commentSync);
+            }else{
+                comment.setLikeCount(comment.getLikeCount()+val);
+                commentService.updateById(comment);
+            }
+
         }
     }
 

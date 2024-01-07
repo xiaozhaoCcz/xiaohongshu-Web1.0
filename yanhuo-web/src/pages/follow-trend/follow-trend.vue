@@ -64,7 +64,7 @@ import { ref, onMounted } from "vue";
 import { getFollowTrendPage } from "@/api/follower";
 import { formateTime } from "@/utils/util";
 import FloatingBtn from "@/components/FloatingBtn.vue";
-import Main from "@/pages/main.vue";
+import Main from "@/pages/main/main.vue";
 import type { LikeOrCollectionDTO } from "@/type/likeOrCollection";
 import { likeByDTO } from "@/api/likeOrCollection";
 

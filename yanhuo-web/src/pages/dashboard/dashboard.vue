@@ -1,5 +1,5 @@
 <template>
-  <div class="feeds-page" @scroll="handleScroll">
+  <div class="feeds-page" id="feedsPage" @scroll="handleScroll">
     <div class="channel-container">
       <div class="scroll-container channel-scroll-container">
         <div class="content-container">
@@ -76,7 +76,7 @@ import { getRecommendNotePage, getNotePageByDTO } from "@/api/search";
 import { getCategoryTreeData } from "@/api/category";
 import type { NoteSearch, NoteDTO } from "@/type/note";
 import type { Category } from "@/type/category";
-import Main from "@/pages/main.vue";
+import Main from "@/pages/main/main.vue";
 import loading from "@/assets/loading.png";
 import error from "@/assets/error.png";
 import FloatingBtn from "@/components/FloatingBtn";
@@ -211,7 +211,6 @@ const refresh = () => {
 
 const loadMoreData = () => {
   currentPage.value += 1;
-  console.log("aaa", queryParams.value.keyword, queryParams.value.cpid);
   if (queryParams.value.cpid === "") {
     console.log("-----getRecommendNotePage");
     getRecommendNotePage(currentPage.value, pageSize.value).then((res: any) => {

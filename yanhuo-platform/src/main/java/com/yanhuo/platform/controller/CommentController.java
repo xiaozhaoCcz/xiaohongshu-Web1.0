@@ -39,9 +39,15 @@ public class CommentController {
 
     @RequestMapping("saveCommentByDTO")
     public Result<?> saveCommentByDTO(@RequestBody CommentDTO commentDTO) {
-        ValidatorUtils.validateEntity(commentDTO, AddGroup.class);
+//        ValidatorUtils.validateEntity(commentDTO, AddGroup.class);
         CommentVo commentVo = commentService.saveCommentByDTO(commentDTO);
         return Result.ok(commentVo);
+    }
+
+    @RequestMapping("syncCommentByIds")
+    public Result<?> syncCommentByIds(@RequestBody List<String> commentIds) {
+        commentService.syncCommentByIds(commentIds);
+        return Result.ok();
     }
 
     @RequestMapping("getTwoCommentPageByOneCommentId/{currentPage}/{pageSize}")

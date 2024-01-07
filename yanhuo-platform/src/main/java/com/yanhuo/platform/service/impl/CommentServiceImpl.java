@@ -1,20 +1,37 @@
 package com.yanhuo.platform.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.yanhuo.platform.service.CommentService;
+import com.yanhuo.common.auth.AuthContextHolder;
+import com.yanhuo.common.utils.ConvertUtils;
+import com.yanhuo.platform.service.*;
 import com.yanhuo.xo.dao.CommentDao;
 import com.yanhuo.xo.dto.CommentDTO;
-import com.yanhuo.xo.entity.Comment;
+import com.yanhuo.xo.entity.*;
 import com.yanhuo.xo.vo.CommentVo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> implements CommentService {
+
+    @Autowired
+    NoteService noteService;
+
+    @Autowired
+    UserService userService;
+
+    @Autowired
+    LikeOrCollectionService likeOrCollectionService;
+
+    @Autowired
+    CommentSyncService commentSyncService;
     @Override
     public Page<CommentVo> getOneCommentPageByNoteId(long currentPage, long pageSize, String noteId) {
         return null;
@@ -25,14 +42,81 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
         return null;
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public CommentVo saveCommentByDTO(CommentDTO commentDTO) {
-        return null;
+        String currentUid = AuthContextHolder.getUserId();
+        CommentSync commentsync = ConvertUtils.sourceToTarget(commentDTO, CommentSync.class);
+        commentsync.setUid(currentUid);
+        commentSyncService.save(commentsync);
+
+        Note note = noteService.getById(commentDTO.getNid());
+        note.setCommentCount(note.getCommentCount()+1);
+        noteService.updateById(note);
+
+        CommentVo commentVo = ConvertUtils.sourceToTarget(commentsync, CommentVo.class);
+        User user = userService.getById(currentUid);
+
+        commentVo.setUsername(user.getUsername())
+                .setAvatar(user.getAvatar())
+                .setTime(commentsync.getCreateDate().getTime());
+
+        // 一级评论数量加1
+        if(!"0".equals(commentDTO.getPid())){
+            Comment parentComment = this.getById(commentDTO.getPid());
+            if(parentComment==null){
+             CommentSync commentSync = commentSyncService.getById(commentDTO.getPid());
+                commentSync.setTwoCommentCount(commentSync.getTwoCommentCount()+1);
+                commentSyncService.updateById(commentSync);
+            }else{
+                parentComment.setTwoCommentCount(parentComment.getTwoCommentCount()+1);
+                this.updateById(parentComment);
+            }
+
+        }
+        return commentVo;
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void syncCommentByIds(List<String> commentIds) {
+        if(!commentIds.isEmpty()){
+            List<CommentSync> commentSyncs = commentSyncService.list(new QueryWrapper<CommentSync>().in("id", commentIds));
+            List<Comment> comments = ConvertUtils.sourceToTarget(commentSyncs, Comment.class);
+            this.saveBatch(comments);
+        }
     }
 
     @Override
-    public IPage<CommentVo> getTwoCommentPageByOneCommentId(long currentPage, long pageSize, String oneCommentId) {
-        return null;
+    public Page<CommentVo> getTwoCommentPageByOneCommentId(long currentPage, long pageSize, String oneCommentId) {
+        Page<CommentVo> result = new Page<>();
+        String currentUid = AuthContextHolder.getUserId();
+        Page<Comment> twoCommentPage = this.page(new Page<>((int) currentPage, (int) pageSize), new QueryWrapper<Comment>().eq("pid", oneCommentId).orderByDesc("like_count").orderByDesc("create_date"));
+        List<Comment> twoCommentList = twoCommentPage.getRecords();
+        long total = twoCommentPage.getTotal();
+
+        if(!twoCommentList.isEmpty()){
+            Set<String> uids = twoCommentList.stream().map(Comment::getUid).collect(Collectors.toSet());
+            List<User> users = userService.listByIds(uids);
+            Map<String, User> userMap = users.stream().collect(Collectors.toMap(User::getId, user -> user));
+            List<CommentVo> commentVos = new ArrayList<>();
+
+            List<LikeOrCollection> likeOrCollections = likeOrCollectionService.list(new QueryWrapper<LikeOrCollection>().eq("uid", currentUid).eq("type", 2));
+            List<String> likeComments = likeOrCollections.stream().map(LikeOrCollection::getLikeOrCollectionId).collect(Collectors.toList());
+
+            for (Comment comment:twoCommentList) {
+                CommentVo commentVo = ConvertUtils.sourceToTarget(comment, CommentVo.class);
+                User user = userMap.get(comment.getUid());
+                commentVo.setUsername(user.getUsername())
+                        .setAvatar(user.getAvatar())
+                        .setTime(comment.getCreateDate().getTime())
+                        .setIsLike(likeComments.contains(comment.getId()));
+                commentVos.add(commentVo);
+            }
+            result.setRecords(commentVos);
+        }
+        result.setTotal(total);
+        return result;
     }
 
     @Override
@@ -47,7 +131,62 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
 
     @Override
     public Page<CommentVo> getCommentPageWithCommentByNoteId(long currentPage, long pageSize, String noteId) {
-        return null;
+        //先得到所有的一级评论
+        Page<CommentVo> result = new Page<>();
+        Page<Comment> oneCommentPage = this.page(new Page<>((int) currentPage, (int) pageSize), new QueryWrapper<Comment>().eq("nid", noteId).eq("pid","0").orderByDesc("like_count"));
+        List<Comment> oneCommentList = oneCommentPage.getRecords();
+        if(!oneCommentList.isEmpty()){
+            Set<String> oneUids = oneCommentList.stream().map(Comment::getUid).collect(Collectors.toSet());
+            long onetotal = oneCommentPage.getTotal();
+            String currentUid = AuthContextHolder.getUserId();
+            //得到对应的二级评论
+            List<String> oneIds = oneCommentList.stream().map(Comment::getId).collect(Collectors.toList());
+            List<Comment> twoCommentList = this.list(new QueryWrapper<Comment>().in("pid",oneIds).orderByDesc("like_count").orderByDesc("create_date"));
+            Set<String> twoUids = twoCommentList.stream().map(Comment::getUid).collect(Collectors.toSet());
+            oneUids.addAll(twoUids);
+
+            List<User> users = userService.listByIds(oneUids);
+            Map<String, User> userMap = users.stream().collect(Collectors.toMap(User::getId, user -> user));
+
+            //得到当前用户点赞的评论
+            List<LikeOrCollection> likeOrCollections = likeOrCollectionService.list(new QueryWrapper<LikeOrCollection>().eq("uid", currentUid).eq("type", 2));
+            List<String> likeComments = likeOrCollections.stream().map(LikeOrCollection::getLikeOrCollectionId).collect(Collectors.toList());
+
+            List<CommentVo> twoCommentVos = new ArrayList<>();
+            for (Comment twoComment:twoCommentList) {
+                CommentVo commentVo = ConvertUtils.sourceToTarget(twoComment, CommentVo.class);
+                User user = userMap.get(twoComment.getUid());
+                commentVo.setUsername(user.getUsername())
+                        .setAvatar(user.getAvatar())
+                        .setTime(twoComment.getCreateDate().getTime())
+                        .setIsLike(likeComments.contains(twoComment.getId()));
+                twoCommentVos.add(commentVo);
+            }
+
+            Map<String, List<CommentVo>> twoCommentVoMap = twoCommentVos.stream().collect(Collectors.groupingBy(CommentVo::getPid));
+
+            List<CommentVo> commentVoList = new ArrayList<>();
+
+            for (Comment oneComment : oneCommentList) {
+                CommentVo commentVo = ConvertUtils.sourceToTarget(oneComment, CommentVo.class);
+                User user = userMap.get(oneComment.getUid());
+                commentVo.setUsername(user.getUsername())
+                        .setAvatar(user.getAvatar())
+                        .setTime(oneComment.getCreateDate().getTime())
+                        .setIsLike(likeComments.contains(oneComment.getId()));
+                List<CommentVo> children = twoCommentVoMap.get(oneComment.getId());
+
+                if (children!=null&&children.size() > 3) {
+                    children = children.subList(0, 3);
+                }
+                commentVo.setChildren(children);
+                commentVoList.add(commentVo);
+            }
+
+            result.setRecords(commentVoList);
+            result.setTotal(onetotal);
+        }
+        return result;
     }
 
     @Override
@@ -59,4 +198,6 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
     public void deleteCommentById(String commentId) {
 
     }
+
+
 }
