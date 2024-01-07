@@ -9,6 +9,8 @@ import com.yanhuo.xo.vo.NoteVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+
 /**
  * @author xiaozhao
  */
@@ -31,5 +33,10 @@ public class NoteController {
     public Result<?> getRecommendNotePage(@PathVariable long currentPage, @PathVariable long pageSize){
         Page<NoteSearchVo> page = noteService.getRecommendNotePage(currentPage,pageSize);
         return Result.ok(page);
+    }
+
+    @RequestMapping("addNote")
+    public void addNote(@RequestBody NoteSearchVo noteSearchVo){
+        noteService.addNote(noteSearchVo);
     }
 }

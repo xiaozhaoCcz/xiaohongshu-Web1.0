@@ -2,6 +2,7 @@ package com.yanhuo.search.service.impl;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch._types.SortOrder;
+import co.elastic.clients.elasticsearch.core.CreateResponse;
 import co.elastic.clients.elasticsearch.core.SearchRequest;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
 import co.elastic.clients.elasticsearch.core.search.Hit;
@@ -17,6 +18,7 @@ import com.yanhuo.search.service.NoteService;
 import com.yanhuo.xo.dao.NoteDao;
 import com.yanhuo.xo.entity.Note;
 import com.yanhuo.xo.vo.NoteSearchVo;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Service
+@Slf4j
 public class NoteServiceImpl extends ServiceImpl<NoteDao, Note> implements NoteService {
 
 
@@ -102,5 +105,15 @@ public class NoteServiceImpl extends ServiceImpl<NoteDao, Note> implements NoteS
             throw new YanHuoException("es查找数据异常");
         }
         return page;
+    }
+
+    @Override
+    public void addNote(NoteSearchVo noteSearchVo) {
+        try {
+            CreateResponse createResponse = elasticsearchClient.create(e -> e.index(NoteConstant.NOTE_INDEX).id(noteSearchVo.getId()).document(noteSearchVo));
+            log.info("createResponse.result{}", createResponse.result());
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

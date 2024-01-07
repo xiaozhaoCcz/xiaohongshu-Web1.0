@@ -1,4 +1,27 @@
 package com.yanhuo.xo.dto;
 
-public class NoteDTO {
+import lombok.Data;
+
+import java.io.Serializable;
+import java.util.List;
+
+@Data
+public class NoteDTO implements Serializable {
+
+    private String title;
+
+    private String content;
+
+    private String noteCover;
+
+    private String cid;
+
+    private String cpid;
+
+    private List<String> urls;
+
+    private Integer count;
+
+    private Integer type;
+
 }

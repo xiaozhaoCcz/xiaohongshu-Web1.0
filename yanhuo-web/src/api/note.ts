@@ -9,3 +9,12 @@ export const getNoteById = (noteId: string) => {
     },
   });
 };
+
+export const saveNoteByDTO = (data:any) => {
+  return request<any>({
+    url: "/platform/note/saveNoteByDTO", // mock接口
+    method: "post",
+    data:data
+  });
+};
+

@@ -10,4 +10,6 @@ public interface NoteService extends IService<Note> {
     Page<NoteSearchVo> getNotePageByDTO(long currentPage, long pageSize, NoteDTO noteDTO);
 
     Page<NoteSearchVo> getRecommendNotePage(long currentPage, long pageSize);
+
+    void addNote(NoteSearchVo noteSearchVo);
 }

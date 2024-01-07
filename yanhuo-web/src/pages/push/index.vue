@@ -40,8 +40,18 @@
           maxlength="200"
           show-word-limit
           type="textarea"
+          v-model="content"
           placeholder="Please input"
           class="input-content"
+        />
+      </div>
+      <div class="categorys">
+        <el-cascader
+          v-model="categoryList"
+          :options="options"
+          @change="handleChange"
+          :props="props"
+          placeholder="请选择分类"
         />
       </div>
       <div class="btns">
@@ -56,6 +66,7 @@
           >
         </button>
       </div>
+
       <div class="submit">
         <button class="publishBtn" @click="pubslish()">
           <span class="btn-content">发布</span>
@@ -71,27 +82,31 @@
 import { ref } from "vue";
 import { Plus } from "@element-plus/icons-vue";
 
-import type { UploadProps, UploadUserFile, UploadInstance } from "element-plus";
+import type { UploadProps, UploadUserFile, CascaderProps } from "element-plus";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { useUserStore } from "@/store/userStore";
 import axios from "axios";
+import { getCategoryTreeData } from "@/api/category";
+import { saveNoteByDTO } from "@/api/note";
+const props: CascaderProps = {
+  label: "title",
+  value: "id",
+};
 
 const userStore = useUserStore();
 
-const fileList = ref<UploadUserFile[]>([
-  // {
-  //   name: "food.jpeg",
-  //   url:
-  //     "https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100",
-  // },
-]);
+const fileList = ref<UploadUserFile[]>([]);
 
 const dialogImageUrl = ref("");
 const dialogVisible = ref(false);
 const title = ref("");
+const content = ref("");
 const uploadHeader = ref({
   accessToken: userStore.getToken(),
 });
+const categoryList = ref<Array<any>>([]);
+const options = ref([]);
+const note = ref<any>({});
 
 const handleRemove: UploadProps["onRemove"] = (uploadFile, uploadFiles) => {
   console.log(uploadFile, uploadFiles);
@@ -116,32 +131,72 @@ const beforeRemove: UploadProps["beforeRemove"] = (uploadFile, uploadFiles) => {
   );
 };
 
+const handleChange = (ids: Array<any>) => {
+  console.log(ids);
+  categoryList.value = ids;
+};
+
 // 上传图片功能
 const pubslish = () => {
-  let params = new FormData();
-  // 注意此处对文件数组进行了参数循环添加
-  if (fileList.value.length > 0) {
-    fileList.value.forEach((file: any) => {
-      params.append("uploadFiles", file.raw);
-    });
-  } else {
-    //that.$message.warning("当前没有合适图片可以上传");
-  }
-  axios({
-    url: "http://localhost:88/api/util/oss/saveBatch/0",
-    method: "post",
-    data: params,
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  })
-    .then((res: any) => {
-      console.log("上传成功", res.data);
+  const p = new Promise((resolve, reject) => {
+    let params = new FormData();
+    // 注意此处对文件数组进行了参数循环添加
+    if (fileList.value.length > 0) {
+      fileList.value.forEach((file: any) => {
+        params.append("uploadFiles", file.raw);
+      });
+    } else {
+      //that.$message.warning("当前没有合适图片可以上传");
+    }
+    axios({
+      url: "http://localhost:88/api/util/oss/saveBatch/0",
+      method: "post",
+      data: params,
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
     })
-    .catch((err: any) => {
-      console.log("上传成功", err.data);
+      .then((res: any) => {
+        console.log("上传成功", res.data);
+        resolve(res.data.data);
+      })
+      .catch((err: any) => {
+        reject(err);
+      });
+  });
+
+  p.then((data: any) => {
+    note.value.urls = data;
+    note.value.noteCover = data[0];
+    note.value.count = data.length;
+    note.value.type = 1;
+    note.value.title = title.value;
+    note.value.content = content.value;
+    note.value.cpid = categoryList.value[0];
+    note.value.cid = categoryList.value[1];
+    saveNoteByDTO(note.value).then((res) => {
+      note.value = {};
+      title.value = "";
+      content.value = "";
+      categoryList.value = [];
+      fileList.value = [];
+      console.log("保存成功", res.data);
+      ElMessage({
+        message: "发布成功",
+        type: "success",
+      });
     });
+  });
 };
+
+const initData = () => {
+  getCategoryTreeData().then((res) => {
+    console.log(res.data);
+    options.value = res.data;
+  });
+};
+
+initData();
 </script>
 <style lang="less" scoped>
 /deep/ .el-upload-list--picture-card .el-upload-list__item {
@@ -235,6 +290,10 @@ const pubslish = () => {
         height: 24px;
         font-size: 12px;
       }
+    }
+
+    .categorys {
+      padding: 0 12px 10px 12px;
     }
     .submit {
       padding: 0 12px 10px 12px;
