@@ -6,6 +6,7 @@ import com.yanhuo.platform.service.UserService;
 import com.yanhuo.platform.vo.TrendVo;
 import com.yanhuo.xo.entity.User;
 import com.yanhuo.xo.vo.FollowerVo;
+import com.yanhuo.xo.vo.NoteSearchVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,8 +23,8 @@ public class UserController {
     UserService userService;
 
     @RequestMapping("getTrendPageByUser/{currentPage}/{pageSize}")
-    public Result<?> getTrendPageByUser(@PathVariable long currentPage, @PathVariable long pageSize, Integer type) {
-        Page<TrendVo> pageInfo = userService.getTrendPageByUser(currentPage, pageSize, type);
+    public Result<?> getTrendPageByUser(@PathVariable long currentPage, @PathVariable long pageSize, String userId) {
+        Page<NoteSearchVo> pageInfo = userService.getTrendPageByUser(currentPage, pageSize,userId);
         return Result.ok(pageInfo);
     }
 

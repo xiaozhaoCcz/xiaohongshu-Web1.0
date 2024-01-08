@@ -1,59 +1,149 @@
 <template>
   <div class="feeds-container">
-    <Waterfall :list="list" :width="220" :hasAroundGutter="false" style="max-width: 1260px">
-      <template #item="{ item, url, index }">
+    <Waterfall
+      :list="noteList"
+      :width="options.width"
+      :hasAroundGutter="options.hasAroundGutter"
+      :animation-effect="options.animationEffect"
+      :animation-duration="options.animationDuration"
+      :animation-delay="options.animationDelay"
+      :load-props="options.loadProps"
+      :lazyload="options.lazyload"
+      style="max-width: 1260px"
+    >
+      <template #item="{ item, url }">
         <div class="card">
-          <LazyImg :url="url" style="border-radius: 8px" />
+          <LazyImg :url="url" @click="toMain(item.id)" class="fadeImg" />
           <div class="footer">
-            <a class="title"><span>这是具体内容</span></a>
+            <a class="title">
+              <span>{{ item.title }}</span>
+            </a>
             <div class="author-wrapper">
               <a class="author">
-                <img class="author-avatar" :src="url" />
-                <span class="name">这是名字</span>
+                <img class="author-avatar" :src="item.avatar" />
+                <span class="name">{{ item.username }}</span>
               </a>
               <span class="like-wrapper like-active">
-                <Search style="width: 1em; height: 1em" />
-                <span class="count">12</span>
+                <i class="iconfont icon-follow" style="width: 1em; height: 1em"></i>
+                <span class="count">{{ item.likeCount }}</span>
               </span>
             </div>
           </div>
         </div>
       </template>
     </Waterfall>
+    <Main v-show="mainShow" :nid="nid" class="mainShow" @click-main="close"></Main>
   </div>
 </template>
 <script lang="ts" setup>
-// import { Star } from "@element-plus/icons-vue";
-import { Search } from "@element-plus/icons-vue";
 import { LazyImg, Waterfall } from "vue-waterfall-plugin-next";
 import "vue-waterfall-plugin-next/dist/style.css";
-import { ref } from "vue";
-const list = ref([
-  { src: "https://tse1-mm.cn.bing.net/th/id/OIP-C.Zte3ljd4g6kqrWWyg-8fhAHaEo?w=264&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7" },
-  { src: "https://tse1-mm.cn.bing.net/th/id/OIP-C.cGc4c8dVlqnfV3uwcS1IogHaE8?w=260&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7" },
-  { src: "https://tse1-mm.cn.bing.net/th/id/OIP-C.Zte3ljd4g6kqrWWyg-8fhAHaEo?w=264&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7" },
-  { src: "https://tse4-mm.cn.bing.net/th/id/OIP-C.N0USLldg_iKDGVKT12vB4AHaEK?w=292&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7" },
-  { src: "https://tse1-mm.cn.bing.net/th/id/OIP-C.jzcWzXf_uts2sgE2WChuCQHaEo?w=263&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7" },
-  { src: "https://tse1-mm.cn.bing.net/th/id/OIP-C.Zte3ljd4g6kqrWWyg-8fhAHaEo?w=264&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7" },
-  { src: "https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg" },
-  { src: "https://fuss10.elemecdn.com/1/34/19aa98b1fcb2781c4fba33d850549jpeg.jpeg" },
-  { src: "https://fuss10.elemecdn.com/d/e6/c4d93a3805b3ce3f323f7974e6f78jpeg.jpeg" },
-  { src: "https://fuss10.elemecdn.com/0/6f/e35ff375812e6b0020b6b4e8f9583jpeg.jpeg" },
-  { src: "https://fuss10.elemecdn.com/9/bb/e27858e973f5d7d3904835f46abbdjpeg.jpeg" },
-  { src: "https://fuss10.elemecdn.com/3/28/bbf893f792f03a54408b3b7a7ebf0jpeg.jpeg" },
-  { src: "https://fuss10.elemecdn.com/2/11/6535bcfb26e4c79b48ddde44f4b6fjpeg.jpeg" },
-  { src: "https://tse4-mm.cn.bing.net/th/id/OIP-C.N0USLldg_iKDGVKT12vB4AHaEK?w=292&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7" },
-  { src: "https://tse1-mm.cn.bing.net/th/id/OIP-C.jzcWzXf_uts2sgE2WChuCQHaEo?w=263&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7" },
-  { src: "https://tse3-mm.cn.bing.net/th/id/OIP-C.YzEeJqgWky6RQMatrMd6-gHaHa?w=170&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7" },
-  { src: "https://tse3-mm.cn.bing.net/th/id/OIP-C.YzEeJqgWky6RQMatrMd6-gHaHa?w=170&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7" },
-  { src: "https://tse1-mm.cn.bing.net/th/id/OIP-C.Zte3ljd4g6kqrWWyg-8fhAHaEo?w=264&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7" },
-  { src: "https://tse4-mm.cn.bing.net/th/id/OIP-C.N0USLldg_iKDGVKT12vB4AHaEK?w=292&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7" },
-  { src: "https://tse1-mm.cn.bing.net/th/id/OIP-C.jzcWzXf_uts2sgE2WChuCQHaEo?w=263&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7" },
-  { src: "https://tse1-mm.cn.bing.net/th/id/OIP-C.Zte3ljd4g6kqrWWyg-8fhAHaEo?w=264&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7" },
-  { src: "https://tse1-mm.cn.bing.net/th/id/OIP-C.cGc4c8dVlqnfV3uwcS1IogHaE8?w=260&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7" },
-]);
+import { ref, reactive, watch } from "vue";
+import loading from "@/assets/loading.png";
+import error from "@/assets/error.png";
+import { getTrendPageByUser } from "@/api/user";
+import type { NoteSearch } from "@/type/note";
+import Main from "@/pages/main/main.vue";
+
+const options = reactive({
+  // 唯一key值
+  rowKey: "id",
+  // 卡片之间的间隙
+  gutter: 10,
+  // 是否有周围的gutter
+  hasAroundGutter: false,
+  // 卡片在PC上的宽度
+  width: 240,
+  // 自定义行显示个数，主要用于对移动端的适配
+  breakpoints: {
+    1200: {
+      // 当屏幕宽度小于等于1200
+      rowPerView: 4,
+    },
+    800: {
+      // 当屏幕宽度小于等于800
+      rowPerView: 3,
+    },
+    500: {
+      // 当屏幕宽度小于等于500
+      rowPerView: 2,
+    },
+  },
+  // 动画效果
+  animationEffect: "animate__fadeIn",
+  // 动画时间
+  animationDuration: 2000,
+  // 动画延迟
+  animationDelay: 1000,
+  // 背景色
+  backgroundColor: "#2C2E3A",
+  // imgSelector
+  imgSelector: "src.original",
+  // 加载配置
+  loadProps: {
+    loading,
+    error,
+  },
+  // 是否懒加载
+  lazyload: true,
+});
+const noteList = ref<Array<any>>([]);
+const noteTotal = ref(0);
+const uid = history.state.uid;
+const currentPage = ref(1);
+const pageSize = 10;
+const nid = ref("");
+const mainShow = ref(false);
+
+const close = () => {
+  mainShow.value = false;
+};
+
+const toMain = (noteId: string) => {
+  // console.log("11", nid);
+  // router.push({ name: "main", state: { nid: nid } });
+  nid.value = noteId;
+  mainShow.value = true;
+};
+
+const setData = (res: any) => {
+  const { records, total } = res.data;
+  noteTotal.value = total;
+  const dataList = [] as Array<any>;
+  records.forEach((item: any) => {
+    const objData: NoteSearch = Object.assign(item, {});
+    objData.src = item.noteCover;
+    dataList.push(objData);
+  });
+  noteList.value.push(...dataList);
+};
+
+const getNoteList = () => {
+  noteList.value = [] as Array<any>;
+  getTrendPageByUser(currentPage.value, pageSize, uid).then((res) => {
+    console.log("-----", res.data);
+    setData(res);
+  });
+};
+
+const initData = () => {
+  console.log("----note", uid);
+  console.log("----监听当前路由", window.location.href);
+  getNoteList();
+};
+
+initData();
 </script>
 <style lang="less" scoped>
+.mainShow {
+  -webkit-animation: zoom_1 0.5s;
+}
+@-webkit-keyframes zoom_1 {
+  0% {
+    -webkit-transform: scale(0);
+    opacity: 0;
+  }
+}
 .feeds-container {
   position: relative;
   transition: width 0.5s;

@@ -28,7 +28,7 @@ export const getUserInfoByToken = (accessToken: string) => {
     url: "/auth/auth/getUserInfoByToken", // mock接口
     method: "get",
     params: {
-      accessToken: accessToken,
+      accessToken,
     },
   });
 };
@@ -38,7 +38,7 @@ export const refreshToken = (refreshToken: string) => {
     url: `/auth/auth/refreshToken/`, // mock接口
     method: "get",
     params: {
-      refreshToken: refreshToken,
+      refreshToken,
     },
   });
 };
@@ -50,3 +50,25 @@ export const loginByCode = (data: UserLogin) => {
     data,
   });
 };
+
+export const getTrendPageByUser = (currentPage:number,pageSize:number,userId:string) => {
+  return request<any>({
+    url: `/platform/user/getTrendPageByUser/${currentPage}/${pageSize}`, // mock接口
+    method: "get",
+    params: {
+      userId
+    },
+  });
+};
+
+export const getUserById = (userId:string) => {
+  return request<any>({
+    url: `/platform/user/getUserById`, // mock接口
+    method: "get",
+    params: {
+      userId
+    },
+  });
+};
+
+

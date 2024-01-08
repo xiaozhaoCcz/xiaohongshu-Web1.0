@@ -33,6 +33,8 @@ public class NoteSearchVo  implements Serializable {
 
     private Long likeCount;
 
+    private Long viewCount;
+
     private Long time;
 
 }
