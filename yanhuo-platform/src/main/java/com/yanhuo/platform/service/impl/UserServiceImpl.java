@@ -29,7 +29,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
     NoteService noteService;
 
     @Override
-    public Page<NoteSearchVo> getTrendPageByUser(long currentPage, long pageSize, String userId) {
+    public Page<NoteSearchVo> getTrendPageByUser(long currentPage, long pageSize, String userId,Integer type) {
         Page<NoteSearchVo> noteSearchVoPage = new Page<>();
         // 得到当前用户发布的所有专辑
         String currentUserId = AuthContextHolder.getUserId();
@@ -64,6 +64,12 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
         return noteSearchVoPage;
     }
 
+
+    private Page<NoteSearchVo> getLikePageByUser(long currentPage, long pageSize, String userId){
+        Page<NoteSearchVo> noteSearchVoPage = new Page<>();
+        // 得到当前用户发布的所有专辑
+        return null;
+    }
     @Override
     public User updateUser(User user) {
         return null;

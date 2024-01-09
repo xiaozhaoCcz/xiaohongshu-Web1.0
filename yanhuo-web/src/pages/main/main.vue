@@ -16,7 +16,7 @@
       <div class="interaction-container">
         <div class="author-container">
           <div class="author-me">
-            <div class="info">
+            <div class="info" @click="toUser(noteInfo.uid)">
               <img
                 class="avatar-item"
                 style="width: 40px; height: 40px"
@@ -145,6 +145,8 @@ import { isFollow, followById } from "@/api/follower";
 import Comment from "@/components/Comment.vue";
 import type { CommentDTO } from "@/type/comment";
 import { saveCommentByDTO, syncCommentByIds } from "@/api/comment";
+import { useRouter } from "vue-router";
+const router = useRouter();
 
 // 这是路由传参
 // nid.value = history.state.nid;
@@ -177,6 +179,10 @@ const showSaveBtn = ref(false);
 const currentPage = ref(1);
 const seed = ref("");
 const commentIds = ref<Array<string>>([]);
+
+const toUser = (uid: string) => {
+  router.push({ name: "user", state: { uid: uid } });
+};
 
 const close = () => {
   console.log("----同步的数据", commentIds.value);

@@ -198,7 +198,7 @@ const SearchInput = ref();
 const recordList = ref<Array<string>>([]);
 const activeLink = ref(1);
 
-const routerList = ["/", "/followTrend", "/message", "/push", "/note"];
+const routerList = ["/", "/followTrend", "/notice", "/push", "/user"];
 
 const changeInput = (e: any) => {
   const { value } = e.target;
@@ -236,7 +236,7 @@ const clearInput = () => {
 const toLink = (num: number) => {
   activeLink.value = num;
   const url = routerList[num - 1];
-  if (url === "/note") {
+  if (url === "/user") {
     router.push({ name: "user", state: { uid: userInfo.value.id } });
   } else {
     router.push({ path: url });

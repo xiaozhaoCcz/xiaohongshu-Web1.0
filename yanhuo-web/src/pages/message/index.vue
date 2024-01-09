@@ -3,23 +3,39 @@
     <div class style="height: 72px">
       <div class="reds-sticky">
         <div class="reds-tabs-list">
-          <div class="reds-tab-item active tab-item">
-            <div class="badge-container">
+          <div
+            :class="
+              type === 1 ? 'reds-tab-item active tab-item' : 'reds-tab-item tab-item'
+            "
+          >
+            <div class="badge-container" @click="toPage(1)">
               <span>我的消息</span>
             </div>
           </div>
-          <div class="reds-tab-item tab-item">
-            <div class="badge-container" @click="toComment()">
+          <div
+            :class="
+              type === 2 ? 'reds-tab-item active tab-item' : 'reds-tab-item tab-item'
+            "
+          >
+            <div class="badge-container" @click="toPage(2)">
               <span>评论和@</span>
             </div>
           </div>
-          <div class="reds-tab-item tab-item">
-            <div class="badge-container" @click="toAgree()">
+          <div
+            :class="
+              type === 3 ? 'reds-tab-item active tab-item' : 'reds-tab-item tab-item'
+            "
+          >
+            <div class="badge-container" @click="toPage(3)">
               <span>赞和收藏</span>
             </div>
           </div>
-          <div class="reds-tab-item tab-item">
-            <div class="badge-container" @click="toFollower()">
+          <div
+            :class="
+              type === 4 ? 'reds-tab-item active tab-item' : 'reds-tab-item tab-item'
+            "
+          >
+            <div class="badge-container" @click="toPage(4)">
               <span>新增关注</span>
             </div>
           </div>
@@ -27,22 +43,23 @@
         <div class="divider" style="margin: 16px 32px 0px"></div>
       </div>
     </div>
-    <router-view />
+    <Message v-if="type == 1"></Message>
+    <Comment v-if="type == 2"></Comment>
+    <LikeCollection v-if="type == 3"></LikeCollection>
+    <Follower v-else></Follower>
+    <!-- <router-view /> -->
   </div>
 </template>
 <script lang="ts" setup>
-import { useRouter } from "vue-router";
-const router = useRouter();
+import { ref } from "vue";
+import Message from "@/pages/message/children/message.vue";
+import LikeCollection from "@/pages/message/children/like-collection.vue";
+import Follower from "@/pages/message/children/follower.vue";
+import Comment from "@/pages/message/children/comment.vue";
+const type = ref(1);
 
-const toComment = () => {
-  router.push({ path: "/comment" });
-};
-
-const toAgree = () => {
-  router.push({ path: "/agreeCollection" });
-};
-const toFollower = () => {
-  router.push({ path: "/follower" });
+const toPage = (val: number) => {
+  type.value = val;
 };
 </script>
 <style lang="less" scoped>

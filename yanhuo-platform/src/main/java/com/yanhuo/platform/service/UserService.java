@@ -11,7 +11,7 @@ import com.yanhuo.xo.vo.NoteSearchVo;
  * @author xiaozhao
  */
 public interface UserService extends IService<User> {
-    Page<NoteSearchVo> getTrendPageByUser(long currentPage, long pageSize, String userId);
+    Page<NoteSearchVo> getTrendPageByUser(long currentPage, long pageSize, String userId,Integer type);
 
     User updateUser(User user);
 

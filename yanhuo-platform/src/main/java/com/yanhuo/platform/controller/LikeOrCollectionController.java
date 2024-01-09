@@ -39,4 +39,5 @@ public class LikeOrCollectionController {
         return Result.ok(flag);
     }
 
+
 }

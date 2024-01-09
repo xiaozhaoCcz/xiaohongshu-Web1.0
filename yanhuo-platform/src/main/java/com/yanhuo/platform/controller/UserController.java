@@ -23,10 +23,11 @@ public class UserController {
     UserService userService;
 
     @RequestMapping("getTrendPageByUser/{currentPage}/{pageSize}")
-    public Result<?> getTrendPageByUser(@PathVariable long currentPage, @PathVariable long pageSize, String userId) {
-        Page<NoteSearchVo> pageInfo = userService.getTrendPageByUser(currentPage, pageSize,userId);
+    public Result<?> getTrendPageByUser(@PathVariable long currentPage, @PathVariable long pageSize, String userId,Integer type) {
+        Page<NoteSearchVo> pageInfo = userService.getTrendPageByUser(currentPage, pageSize,userId,type);
         return Result.ok(pageInfo);
     }
+
 
     /**
      * 获取用户信息

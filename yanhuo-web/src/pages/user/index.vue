@@ -67,22 +67,22 @@
       <div class="reds-sticky" style="">
         <div class="tertiary center reds-tabs-list" style="padding: 0px 12px">
           <div
-            class="reds-tab-item active"
+            :class="type == 1 ? 'reds-tab-item active' : 'reds-tab-item'"
             style="padding: 0px 16px; margin-right: 0px; font-size: 16px"
           >
-            <!----><!----><span>笔记</span>
+            <!----><!----><span @click="toPage(1)">笔记</span>
           </div>
           <div
-            class="reds-tab-item"
+            :class="type == 2 ? 'reds-tab-item active' : 'reds-tab-item'"
             style="padding: 0px 16px; margin-right: 0px; font-size: 16px"
           >
-            <!----><!----><span>收藏</span>
+            <!----><!----><span @click="toPage(2)">收藏</span>
           </div>
           <div
-            class="reds-tab-item"
+            :class="type == 3 ? 'reds-tab-item active' : 'reds-tab-item'"
             style="padding: 0px 16px; margin-right: 0px; font-size: 16px"
           >
-            <!----><!----><span @click="toAgree">点赞</span>
+            <!----><!----><span @click="toPage(3)">点赞</span>
           </div>
           <!---->
           <div class="active-tag" style="width: 64px; left: 627px"></div>
@@ -93,23 +93,21 @@
       class="feeds-tab-container"
       style="--1ee3a37c: all 0.4s cubic-bezier(0.2, 0, 0.25, 1) 0s"
     >
-      <router-view />
+      <!-- <router-view /> -->
+      <Note :type="type"></Note>
     </div>
   </div>
 </template>
 <script lang="ts" setup>
-// import { Star } from "@element-plus/icons-vue";
-import { useRouter } from "vue-router";
-import { ref, watch } from "vue";
-import { useUserStore } from "@/store/userStore";
+import { ref } from "vue";
 import { getUserById } from "@/api/user";
-const userStore = useUserStore();
-const router = useRouter();
-const userInfo = ref({});
+import Note from "@/components/Note.vue";
+const userInfo = ref<any>({});
 const uid = history.state.uid;
+const type = ref(1);
 
-const toAgree = () => {
-  router.push({ path: "/agree" });
+const toPage = (val: number) => {
+  type.value = val;
 };
 
 const initData = () => {
@@ -117,8 +115,6 @@ const initData = () => {
   getUserById(uid).then((res) => {
     userInfo.value = res.data;
   });
-  // console.log(userStore.getUserInfo());
-  // userInfo.value = userStore.getUserInfo() as object;
 };
 
 initData();

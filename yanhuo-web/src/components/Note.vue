@@ -38,55 +38,26 @@
 <script lang="ts" setup>
 import { LazyImg, Waterfall } from "vue-waterfall-plugin-next";
 import "vue-waterfall-plugin-next/dist/style.css";
-import { ref, reactive, watch } from "vue";
-import loading from "@/assets/loading.png";
-import error from "@/assets/error.png";
+import { ref, watch } from "vue";
 import { getTrendPageByUser } from "@/api/user";
 import type { NoteSearch } from "@/type/note";
 import Main from "@/pages/main/main.vue";
+import { options } from "@/constant/constant";
 
-const options = reactive({
-  // 唯一key值
-  rowKey: "id",
-  // 卡片之间的间隙
-  gutter: 10,
-  // 是否有周围的gutter
-  hasAroundGutter: false,
-  // 卡片在PC上的宽度
-  width: 240,
-  // 自定义行显示个数，主要用于对移动端的适配
-  breakpoints: {
-    1200: {
-      // 当屏幕宽度小于等于1200
-      rowPerView: 4,
-    },
-    800: {
-      // 当屏幕宽度小于等于800
-      rowPerView: 3,
-    },
-    500: {
-      // 当屏幕宽度小于等于500
-      rowPerView: 2,
-    },
+const props = defineProps({
+  type: {
+    type: Number,
+    default: 1,
   },
-  // 动画效果
-  animationEffect: "animate__fadeIn",
-  // 动画时间
-  animationDuration: 2000,
-  // 动画延迟
-  animationDelay: 1000,
-  // 背景色
-  backgroundColor: "#2C2E3A",
-  // imgSelector
-  imgSelector: "src.original",
-  // 加载配置
-  loadProps: {
-    loading,
-    error,
-  },
-  // 是否懒加载
-  lazyload: true,
 });
+
+watch(
+  () => [props.type],
+  ([newType], [oldType]) => {
+    console.log("---newVal,oldVal", newType, oldType);
+  }
+);
+
 const noteList = ref<Array<any>>([]);
 const noteTotal = ref(0);
 const uid = history.state.uid;
