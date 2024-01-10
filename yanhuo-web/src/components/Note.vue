@@ -1,5 +1,5 @@
 <template>
-  <div class="feeds-container">
+  <div class="feeds-container" v-infinite-scroll="loadMoreData">
     <Waterfall
       :list="noteList"
       :width="options.width"
@@ -32,8 +32,9 @@
         </div>
       </template>
     </Waterfall>
-    <Main v-show="mainShow" :nid="nid" class="mainShow" @click-main="close"></Main>
   </div>
+
+  <Main v-show="mainShow" :nid="nid" class="mainShow" @click-main="close"></Main>
 </template>
 <script lang="ts" setup>
 import { LazyImg, Waterfall } from "vue-waterfall-plugin-next";
@@ -55,6 +56,9 @@ watch(
   () => [props.type],
   ([newType], [oldType]) => {
     console.log("---newVal,oldVal", newType, oldType);
+    currentPage.value = 1;
+    noteList.value = [] as Array<any>;
+    getNoteList(newType);
   }
 );
 
@@ -87,20 +91,25 @@ const setData = (res: any) => {
     dataList.push(objData);
   });
   noteList.value.push(...dataList);
+  if (currentPage.value * pageSize >= total) return;
 };
 
-const getNoteList = () => {
-  noteList.value = [] as Array<any>;
-  getTrendPageByUser(currentPage.value, pageSize, uid).then((res) => {
+const getNoteList = (type: number) => {
+  getTrendPageByUser(currentPage.value, pageSize, uid, type).then((res) => {
     console.log("-----", res.data);
     setData(res);
   });
 };
 
+const loadMoreData = () => {
+  currentPage.value += 1;
+  getNoteList(props.type);
+};
+
 const initData = () => {
   console.log("----note", uid);
   console.log("----监听当前路由", window.location.href);
-  getNoteList();
+  getNoteList(1);
 };
 
 initData();

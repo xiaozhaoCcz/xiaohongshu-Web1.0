@@ -5,10 +5,12 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yanhuo.common.auth.AuthContextHolder;
 import com.yanhuo.common.utils.ConvertUtils;
+import com.yanhuo.platform.service.LikeOrCollectionService;
 import com.yanhuo.platform.service.NoteService;
 import com.yanhuo.platform.service.UserService;
 import com.yanhuo.platform.vo.TrendVo;
 import com.yanhuo.xo.dao.UserDao;
+import com.yanhuo.xo.entity.LikeOrCollection;
 import com.yanhuo.xo.entity.Note;
 import com.yanhuo.xo.entity.User;
 import com.yanhuo.xo.vo.FollowerVo;
@@ -28,8 +30,22 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
     @Autowired
     NoteService noteService;
 
+    @Autowired
+    LikeOrCollectionService likeOrCollectionService;
+
+
     @Override
     public Page<NoteSearchVo> getTrendPageByUser(long currentPage, long pageSize, String userId,Integer type) {
+        Page<NoteSearchVo> resultPage;
+        if(type==1){
+            resultPage = this.getLikeOrCollectionPageByUser(currentPage, pageSize, userId);
+        }else{
+            resultPage = this.getLikeOrCollectionPageByUser(currentPage, pageSize, userId,type);
+        }
+        return resultPage;
+    }
+
+    private Page<NoteSearchVo> getLikeOrCollectionPageByUser(long currentPage, long pageSize, String userId){
         Page<NoteSearchVo> noteSearchVoPage = new Page<>();
         // 得到当前用户发布的所有专辑
         String currentUserId = AuthContextHolder.getUserId();
@@ -65,11 +81,42 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
     }
 
 
-    private Page<NoteSearchVo> getLikePageByUser(long currentPage, long pageSize, String userId){
+    private Page<NoteSearchVo> getLikeOrCollectionPageByUser(long currentPage, long pageSize, String userId,Integer type){
         Page<NoteSearchVo> noteSearchVoPage = new Page<>();
-        // 得到当前用户发布的所有专辑
-        return null;
+        Page<LikeOrCollection> likeOrCollectionPage;
+        // 得到当前用户发布的所有图片
+        if(type==2){
+            likeOrCollectionPage = likeOrCollectionService.page(new Page<>(currentPage, pageSize), new QueryWrapper<LikeOrCollection>().eq("uid", userId).eq("type",1).orderByDesc("create_date"));
+        }else{
+            likeOrCollectionPage = likeOrCollectionService.page(new Page<>(currentPage, pageSize), new QueryWrapper<LikeOrCollection>().eq("uid", userId).eq("type",2).orderByDesc("create_date"));
+        }
+
+        List<LikeOrCollection> likeOrCollectionList = likeOrCollectionPage.getRecords();
+        long total = likeOrCollectionPage.getTotal();
+
+        Set<String> uids = likeOrCollectionList.stream().map(LikeOrCollection::getPublishUid).collect(Collectors.toSet());
+        Map<String, User> userMap = this.listByIds(uids).stream().collect(Collectors.toMap(User::getId, user -> user));
+
+        Set<String> nids = likeOrCollectionList.stream().map(LikeOrCollection::getLikeOrCollectionId).collect(Collectors.toSet());
+        Map<String, Note> noteMap = noteService.listByIds(nids).stream().collect(Collectors.toMap(Note::getId, note -> note));
+
+        List<NoteSearchVo> noteSearchVoList = new ArrayList<>();
+
+        for (LikeOrCollection model: likeOrCollectionList) {
+            Note note = noteMap.get(model.getLikeOrCollectionId());
+            NoteSearchVo noteSearchVo = ConvertUtils.sourceToTarget(note, NoteSearchVo.class);
+            User user = userMap.get(model.getPublishUid());
+            noteSearchVo.setUsername(user.getUsername())
+                    .setAvatar(user.getAvatar());
+            noteSearchVoList.add(noteSearchVo);
+        }
+
+        noteSearchVoPage.setRecords(noteSearchVoList);
+        noteSearchVoPage.setTotal(total);
+        return noteSearchVoPage;
     }
+
+
     @Override
     public User updateUser(User user) {
         return null;

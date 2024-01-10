@@ -76,13 +76,13 @@
             :class="type == 2 ? 'reds-tab-item active' : 'reds-tab-item'"
             style="padding: 0px 16px; margin-right: 0px; font-size: 16px"
           >
-            <!----><!----><span @click="toPage(2)">收藏</span>
+            <!----><!----><span @click="toPage(2)">点赞</span>
           </div>
           <div
             :class="type == 3 ? 'reds-tab-item active' : 'reds-tab-item'"
             style="padding: 0px 16px; margin-right: 0px; font-size: 16px"
           >
-            <!----><!----><span @click="toPage(3)">点赞</span>
+            <!----><!----><span @click="toPage(3)">收藏</span>
           </div>
           <!---->
           <div class="active-tag" style="width: 64px; left: 627px"></div>
@@ -94,6 +94,7 @@
       style="--1ee3a37c: all 0.4s cubic-bezier(0.2, 0, 0.25, 1) 0s"
     >
       <!-- <router-view /> -->
+
       <Note :type="type"></Note>
     </div>
   </div>
@@ -122,8 +123,7 @@ initData();
 <style lang="less" scoped>
 .user-page {
   background: #fff;
-  overflow-y: scroll;
-  overflow-x: hidden;
+  height: 100vh;
 
   .user {
     padding-top: 72px;

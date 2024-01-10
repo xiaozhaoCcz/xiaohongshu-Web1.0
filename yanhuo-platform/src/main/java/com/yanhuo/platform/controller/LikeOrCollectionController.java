@@ -33,11 +33,9 @@ public class LikeOrCollectionController {
         return Result.ok();
     }
 
-    @RequestMapping
+    @RequestMapping("isLikeOrCollection")
     public Result<?> isLikeOrCollection(@RequestBody LikeOrCollectionDTO likeOrCollectionDTO){
         boolean flag = likeOrCollectionService.isLikeOrCollection(likeOrCollectionDTO);
         return Result.ok(flag);
     }
-
-
 }

@@ -8,3 +8,11 @@ export const likeByDTO = (data: LikeOrCollectionDTO) => {
     data: data,
   });
 };
+
+export const isLikeOrCollection = (data: LikeOrCollectionDTO) => {
+  return request<any>({
+    url: `/platform/likeOrCollection/isLikeOrCollection`, // mock接口
+    method: "post",
+    data: data,
+  });
+};

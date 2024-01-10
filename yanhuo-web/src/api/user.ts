@@ -51,12 +51,13 @@ export const loginByCode = (data: UserLogin) => {
   });
 };
 
-export const getTrendPageByUser = (currentPage:number,pageSize:number,userId:string) => {
+export const getTrendPageByUser = (currentPage:number,pageSize:number,userId:string,type:number) => {
   return request<any>({
     url: `/platform/user/getTrendPageByUser/${currentPage}/${pageSize}`, // mock接口
     method: "get",
     params: {
-      userId
+      userId,
+      type
     },
   });
 };

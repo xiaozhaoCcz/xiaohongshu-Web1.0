@@ -1,5 +1,5 @@
 <template>
-  <div class="feeds-page" id="feedsPage" @scroll="handleScroll">
+  <div class="feeds-page">
     <div class="channel-container">
       <div class="scroll-container channel-scroll-container">
         <div class="content-container">
@@ -21,7 +21,7 @@
       </div>
     </div>
     <div class="loading-container"></div>
-    <div class="feeds-container">
+    <div class="feeds-container" v-infinite-scroll="loadMoreData">
       <div class="feeds-loading-top" v-show="topLoading">
         <RefreshRight style="width: 1.2em; height: 1.2em" color="rgba(51, 51, 51, 0.8)" />
       </div>
@@ -71,7 +71,7 @@ import { RefreshRight } from "@element-plus/icons-vue";
 import { LazyImg, Waterfall } from "vue-waterfall-plugin-next";
 import "vue-waterfall-plugin-next/dist/style.css";
 // import { useRouter } from "vue-router";
-import { ref, onMounted } from "vue";
+import { ref } from "vue";
 import { getRecommendNotePage, getNotePageByDTO } from "@/api/search";
 import { getCategoryTreeData } from "@/api/category";
 import type { NoteSearch, NoteDTO } from "@/type/note";
@@ -86,7 +86,7 @@ const topLoading = ref(false);
 const noteList = ref<Array<any>>([]);
 const categoryList = ref<Array<Category>>([]);
 const currentPage = ref(1);
-const pageSize = ref(20);
+const pageSize = 20;
 const noteTotal = ref(0);
 // const topBtnShow = ref(false);
 const categoryClass = ref("0");
@@ -104,27 +104,6 @@ const toMain = (noteId: string) => {
   // router.push({ name: "main", state: { nid: nid } });
   nid.value = noteId;
   mainShow.value = true;
-};
-
-const handleScroll = () => {
-  const scrollHeight = Math.max(
-    document.documentElement.scrollHeight,
-    document.body.scrollHeight
-  );
-  //滚动条滚动距离
-  const scrollTop =
-    window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
-  //窗口可视范围高度
-  const clientHeight =
-    window.innerHeight ||
-    Math.min(document.documentElement.clientHeight, document.body.clientHeight);
-
-  // topBtnShow.value = scrollTop > 30;
-  if (clientHeight + scrollTop >= scrollHeight && currentPage.value <= noteTotal.value) {
-    //快到底时----加载
-    console.log("到达底部");
-    loadMoreData();
-  }
 };
 
 const close = () => {
@@ -170,13 +149,13 @@ const loadMoreData = () => {
   currentPage.value += 1;
   if (queryParams.value.cpid === "") {
     console.log("-----getRecommendNotePage");
-    getRecommendNotePage(currentPage.value, pageSize.value).then((res: any) => {
+    getRecommendNotePage(currentPage.value, pageSize).then((res: any) => {
       console.log("---res", res);
       setData(res);
     });
   } else {
     console.log("-----getNotePageByDTO");
-    getNotePageByDTO(currentPage.value, pageSize.value, queryParams.value).then((res) => {
+    getNotePageByDTO(currentPage.value, pageSize, queryParams.value).then((res) => {
       setData(res);
     });
   }
@@ -198,7 +177,7 @@ const getNoteList = () => {
   categoryClass.value = "0";
   noteList.value = [] as Array<any>;
   currentPage.value = 1;
-  getRecommendNotePage(currentPage.value, pageSize.value).then((res: any) => {
+  getRecommendNotePage(currentPage.value, pageSize).then((res: any) => {
     console.log("---res", res);
     setData(res);
   });
@@ -209,7 +188,7 @@ const getNoteListByCategory = (id: string) => {
   queryParams.value.cpid = id;
   noteList.value = [] as Array<any>;
   currentPage.value = 1;
-  getNotePageByDTO(currentPage.value, pageSize.value, queryParams.value).then((res) => {
+  getNotePageByDTO(currentPage.value, pageSize, queryParams.value).then((res) => {
     setData(res);
   });
 };
@@ -221,9 +200,6 @@ const getCategoryData = () => {
   });
 };
 
-onMounted(() => {
-  window.addEventListener("scroll", handleScroll);
-});
 
 const initData = () => {
   getCategoryData();
@@ -319,8 +295,7 @@ initData();
   flex: 1;
   padding: 0 24px;
   padding-top: 72px;
-  overflow: scroll;
-  height: 100%;
+  height: 100vh;
 
   .channel-container {
     display: flex;

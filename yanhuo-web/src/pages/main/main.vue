@@ -44,7 +44,7 @@
             </div>
           </div>
 
-          <div class="note-scroller" id="noteScroller" @scroll="handleMainScroll">
+          <div class="note-scroller">
             <div class="note-content">
               <div class="title">{{ noteInfo.title }}</div>
               <div class="desc">
@@ -63,7 +63,7 @@
             <div class="divider interaction-divider"></div>
 
             <!-- 评论 -->
-            <div class="comments-el">
+            <div class="comments-el" v-infinite-scroll="loadMoreData">
               <Comment
                 :nid="props.nid"
                 :currentPage="currentPage"
@@ -84,12 +84,19 @@
                   ><span class="count">{{ noteInfo.collectionCount }}</span></span
                 >
                 <span class="collect-wrapper">
-                  <span class="like-lottie">
+                  <span class="like-lottie" v-if="likeState" @click="like(-1)">
+                    <i
+                      class="iconfont icon-follow-fill"
+                      style="width: 0.8em; height: 0.8em; color: #333"
+                    ></i>
+                  </span>
+                  <span class="like-lottie" v-else @click="like(1)">
                     <i
                       class="iconfont icon-follow"
                       style="width: 0.8em; height: 0.8em; color: #333"
-                    ></i> </span
-                  ><span class="count">{{ noteInfo.likeCount }}</span></span
+                    ></i>
+                  </span>
+                  <span class="count">{{ noteInfo.likeCount }}</span></span
                 >
                 <span class="chat-wrapper">
                   <span class="like-lottie">
@@ -137,9 +144,11 @@
 
 <script lang="ts" setup>
 import { Close, Star, ChatRound } from "@element-plus/icons-vue";
-import { ref, watchEffect, onMounted } from "vue";
+import { ref, watchEffect } from "vue";
 import { getNoteById } from "@/api/note";
+import { likeByDTO, isLikeOrCollection } from "@/api/likeOrCollection";
 import type { NoteInfo } from "@/type/note";
+import type { LikeOrCollectionDTO } from "@/type/likeOrCollection";
 import { formateTime, getRandomString } from "@/utils/util";
 import { isFollow, followById } from "@/api/follower";
 import Comment from "@/components/Comment.vue";
@@ -171,6 +180,7 @@ const props = defineProps({
 
 const noteInfo = ref<NoteInfo>({});
 const followerState = ref(false);
+const likeState = ref(false);
 const commentValue = ref("");
 const commentPlaceVal = ref("请输入内容");
 const commentObject = ref({});
@@ -190,12 +200,25 @@ const close = () => {
     commentIds.value = [];
     emit("clickMain", false);
   });
+  console.log("关闭详情页面监听器");
+  window.removeEventListener("scroll", handleMainScroll, true);
 };
 
 const follow = (fid: string, type: number) => {
   followById(fid).then((res) => {
     console.log("---关注", res.data);
     followerState.value = type == 0;
+  });
+};
+
+const like = (type: number) => {
+  const likeOrCollectionDTO = {} as LikeOrCollectionDTO;
+  likeOrCollectionDTO.likeOrCollectionId = noteInfo.value.id;
+  likeOrCollectionDTO.publishUid = noteInfo.value.uid;
+  likeOrCollectionDTO.type = 1;
+  likeByDTO(likeOrCollectionDTO).then(() => {
+    likeState.value = type == 1;
+    noteInfo.value.likeCount += type;
   });
 };
 
@@ -252,29 +275,9 @@ const clearCommeent = () => {
   showSaveBtn.value = false;
 };
 
-const handleMainScroll = () => {
-  //子组件滚动
-  const scrollHeight = document.getElementById("noteScroller")!.scrollHeight;
-  //滚动条滚动距离
-  const scrollTop = document.getElementById("noteScroller")!.scrollTop;
-  //窗口可视范围高度
-  const clientHeight = document.getElementById("noteScroller")!.clientHeight;
-
-  // topBtnShow.value = scrollTop > 30;
-  if (clientHeight + scrollTop >= scrollHeight) {
-    //快到底时----加载
-    console.log("到达底部");
-    loadMoreData();
-  }
-};
-
 const loadMoreData = () => {
   currentPage.value += 1;
 };
-
-onMounted(() => {
-  window.addEventListener("scroll", handleMainScroll, true);
-});
 
 watchEffect(() => {
   currentPage.value = 1;
@@ -285,14 +288,20 @@ watchEffect(() => {
       noteInfo.value = res.data;
       noteInfo.value.imgList = imgList;
       noteInfo.value.time = time;
-      resolve(res.data.uid);
+      resolve(res.data);
     });
   });
 
   p.then((data) => {
     console.log("data", data);
-    isFollow(data).then((res) => {
+    isFollow(data.uid).then((res) => {
       followerState.value = res.data;
+    });
+    const likeOrCollectionDTO = {} as LikeOrCollectionDTO;
+    likeOrCollectionDTO.likeOrCollectionId = data.id;
+    likeOrCollectionDTO.type = 1;
+    isLikeOrCollection(likeOrCollectionDTO).then((res) => {
+      likeState.value = res.data;
     });
   });
 });
