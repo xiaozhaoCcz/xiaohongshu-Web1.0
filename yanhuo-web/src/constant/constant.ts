@@ -2,6 +2,8 @@ import loading from "@/assets/loading.png";
 import error from "@/assets/error.png";
 import { reactive } from "vue";
 
+// 图片必须保持在336和186之间
+
 export const options = reactive({
     // 唯一key值
     rowKey: "id",
@@ -27,11 +29,11 @@ export const options = reactive({
       },
     },
     // 动画效果
-    animationEffect: "animate__fadeIn",
+    animationEffect: "animate__zoomIn",
     // 动画时间
     animationDuration: 2000,
     // 动画延迟
-    animationDelay: 1000,
+    animationDelay: 300,
     // 背景色
     backgroundColor: "#2C2E3A",
     // imgSelector

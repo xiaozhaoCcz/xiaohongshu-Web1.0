@@ -39,7 +39,7 @@
       >
         <template #item="{ item, url }">
           <div class="card">
-            <LazyImg :url="url" @click="toMain(item.id)" class="fadeImg" />
+            <LazyImg :url="url" @click="toMain(item.id)" />
             <div class="footer">
               <a class="title">
                 <span>{{ item.title }}</span>
@@ -200,7 +200,6 @@ const getCategoryData = () => {
   });
 };
 
-
 const initData = () => {
   getCategoryData();
   getNoteList();
@@ -209,6 +208,19 @@ const initData = () => {
 initData();
 </script>
 <style lang="less" scoped>
+.lazy__img[lazy="loading"] {
+  padding: 5em 0;
+  width: 48px;
+}
+
+.lazy__img[lazy="loaded"] {
+  width: 100%;
+}
+
+.lazy__img[lazy="error"] {
+  padding: 5em 0;
+  width: 48px;
+}
 .mainShow {
   -webkit-animation: zoom_1 0.5s;
 }
