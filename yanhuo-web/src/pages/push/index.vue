@@ -76,6 +76,7 @@
         </button>
       </div>
     </div>
+    <!-- <Crop></Crop> -->
   </div>
 </template>
 <script lang="ts" setup>
@@ -88,6 +89,7 @@ import { useUserStore } from "@/store/userStore";
 import axios from "axios";
 import { getCategoryTreeData } from "@/api/category";
 import { saveNoteByDTO } from "@/api/note";
+// import Crop from "@/components/Crop.vue";
 const props: CascaderProps = {
   label: "title",
   value: "id",

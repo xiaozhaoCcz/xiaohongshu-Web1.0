@@ -37,7 +37,6 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   (response: AxiosResponse) => {
     const { code } = response.data;
-    console.log("123", response.data);
     if (code === 200) {
       return response.data;
     }

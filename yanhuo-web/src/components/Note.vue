@@ -11,9 +11,16 @@
       :lazyload="options.lazyload"
       style="max-width: 1260px"
     >
-      <template #item="{ item, url }">
+      <template #item="{ item }">
         <div class="card">
-          <LazyImg :url="url" @click="toMain(item.id)" class="fadeImg" />
+          <el-image class="noteImg" @click="toMain(item.id)" :src="item.noteCover">
+            <template #error>
+              <div class="image-slot">
+                <el-icon><icon-picture /></el-icon>
+              </div>
+            </template>
+          </el-image>
+          <!-- <LazyImg :url="url" @click="toMain(item.id)" class="fadeImg" /> -->
           <div class="footer">
             <a class="title">
               <span>{{ item.title }}</span>
@@ -34,10 +41,15 @@
     </Waterfall>
   </div>
 
-  <Main v-show="mainShow" :nid="nid" class="mainShow" @click-main="close"></Main>
+  <Main
+    v-show="mainShow"
+    :nid="nid"
+    class="animate__animated animate__zoomIn animate__delay-0.5s"
+    @click-main="close"
+  ></Main>
 </template>
 <script lang="ts" setup>
-import { LazyImg, Waterfall } from "vue-waterfall-plugin-next";
+import { Waterfall } from "vue-waterfall-plugin-next";
 import "vue-waterfall-plugin-next/dist/style.css";
 import { ref, watch } from "vue";
 import { getTrendPageByUser } from "@/api/user";
@@ -84,14 +96,7 @@ const toMain = (noteId: string) => {
 const setData = (res: any) => {
   const { records, total } = res.data;
   noteTotal.value = total;
-  const dataList = [] as Array<any>;
-  records.forEach((item: any) => {
-    const objData: NoteSearch = Object.assign(item, {});
-    objData.src = item.noteCover;
-    dataList.push(objData);
-  });
-  noteList.value.push(...dataList);
-  if (currentPage.value * pageSize >= total) return;
+  noteList.value.push(...records);
 };
 
 const getNoteList = (type: number) => {
@@ -128,6 +133,13 @@ initData();
   position: relative;
   transition: width 0.5s;
   margin: 0 auto;
+
+  .noteImg {
+    width: 240px;
+    max-height: 300px;
+    object-fit: cover;
+    border-radius: 8px;
+  }
 
   .footer {
     padding: 12px;

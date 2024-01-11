@@ -6,7 +6,7 @@
   >
     <div class="note-container">
       <div class="media-container">
-        <el-carousel height="90vh">
+        <el-carousel height="90vh" :autoplay="false">
           <el-carousel-item v-for="(item, index) in noteInfo.imgList" :key="index">
             <el-image style="width: 100%; height: 100%" :src="item" fit="contain" />
           </el-carousel-item>
@@ -144,7 +144,7 @@
 
 <script lang="ts" setup>
 import { Close, Star, ChatRound } from "@element-plus/icons-vue";
-import { ref, watchEffect } from "vue";
+import { ref, watch } from "vue";
 import { getNoteById } from "@/api/note";
 import { likeByDTO, isLikeOrCollection } from "@/api/likeOrCollection";
 import type { NoteInfo } from "@/type/note";
@@ -159,16 +159,7 @@ const router = useRouter();
 
 // 这是路由传参
 // nid.value = history.state.nid;
-// watch(
-//   [props.nid],
-//   () => {
-//     console.log("发生改变");
-//   },
-//   {
-//     deep: true,
-//     immediate: true,
-//   }
-// );
+
 const emit = defineEmits(["clickMain"]);
 
 const props = defineProps({
@@ -177,6 +168,38 @@ const props = defineProps({
     default: "",
   },
 });
+
+watch(
+  () => [props.nid],
+  (newNid, oldNid) => {
+    console.log("发生改变", newNid, oldNid);
+    currentPage.value = 1;
+    noteInfo.value = {};
+    const p = new Promise((resolve) => {
+      getNoteById(props.nid).then((res: any) => {
+        const imgList = JSON.parse(res.data.urls);
+        const time = formateTime(res.data.time);
+        noteInfo.value = res.data;
+        noteInfo.value.imgList = imgList;
+        noteInfo.value.time = time;
+        resolve(res.data);
+      });
+    });
+
+    p.then((data) => {
+      console.log("data", data);
+      isFollow(data.uid).then((res) => {
+        followerState.value = res.data;
+      });
+      const likeOrCollectionDTO = {} as LikeOrCollectionDTO;
+      likeOrCollectionDTO.likeOrCollectionId = data.id;
+      likeOrCollectionDTO.type = 1;
+      isLikeOrCollection(likeOrCollectionDTO).then((res) => {
+        likeState.value = res.data;
+      });
+    });
+  }
+);
 
 const noteInfo = ref<NoteInfo>({});
 const followerState = ref(false);
@@ -278,33 +301,6 @@ const clearCommeent = () => {
 const loadMoreData = () => {
   currentPage.value += 1;
 };
-
-watchEffect(() => {
-  currentPage.value = 1;
-  const p = new Promise((resolve) => {
-    getNoteById(props.nid).then((res: any) => {
-      const imgList = JSON.parse(res.data.urls);
-      const time = formateTime(res.data.time);
-      noteInfo.value = res.data;
-      noteInfo.value.imgList = imgList;
-      noteInfo.value.time = time;
-      resolve(res.data);
-    });
-  });
-
-  p.then((data) => {
-    console.log("data", data);
-    isFollow(data.uid).then((res) => {
-      followerState.value = res.data;
-    });
-    const likeOrCollectionDTO = {} as LikeOrCollectionDTO;
-    likeOrCollectionDTO.likeOrCollectionId = data.id;
-    likeOrCollectionDTO.type = 1;
-    isLikeOrCollection(likeOrCollectionDTO).then((res) => {
-      likeState.value = res.data;
-    });
-  });
-});
 </script>
 
 <style lang="less" scoped>

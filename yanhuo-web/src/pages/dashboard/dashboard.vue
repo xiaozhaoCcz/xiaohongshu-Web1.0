@@ -37,9 +37,16 @@
         :lazyload="options.lazyload"
         style="max-width: 1260px"
       >
-        <template #item="{ item, url }">
+        <template #item="{ item }">
           <div class="card">
-            <LazyImg :url="url" @click="toMain(item.id)" />
+            <el-image class="noteImg" @click="toMain(item.id)" :src="item.noteCover">
+              <template #error>
+                <div class="image-slot">
+                  <el-icon><icon-picture /></el-icon>
+                </div>
+              </template>
+            </el-image>
+            <!-- <LazyImg :url="url" @click="toMain(item.id)" style="width: 240px; max-height: 300px; object-fit: cover"/> -->
             <div class="footer">
               <a class="title">
                 <span>{{ item.title }}</span>
@@ -63,18 +70,23 @@
       </div>
     </div>
     <FloatingBtn @click-refresh="refresh"></FloatingBtn>
-    <Main v-show="mainShow" :nid="nid" class="mainShow" @click-main="close"></Main>
+    <Main
+      v-show="mainShow"
+      :nid="nid"
+      class="animate__animated animate__zoomIn animate__delay-0.5s"
+      @click-main="close"
+    ></Main>
   </div>
 </template>
 <script lang="ts" setup>
 import { RefreshRight } from "@element-plus/icons-vue";
-import { LazyImg, Waterfall } from "vue-waterfall-plugin-next";
+import { Waterfall } from "vue-waterfall-plugin-next";
 import "vue-waterfall-plugin-next/dist/style.css";
 // import { useRouter } from "vue-router";
 import { ref } from "vue";
 import { getRecommendNotePage, getNotePageByDTO } from "@/api/search";
 import { getCategoryTreeData } from "@/api/category";
-import type { NoteSearch, NoteDTO } from "@/type/note";
+import type { NoteDTO } from "@/type/note";
 import type { Category } from "@/type/category";
 import Main from "@/pages/main/main.vue";
 import FloatingBtn from "@/components/FloatingBtn";
@@ -164,13 +176,7 @@ const loadMoreData = () => {
 const setData = (res: any) => {
   const { records, total } = res.data;
   noteTotal.value = total;
-  const dataList = [] as Array<any>;
-  records.forEach((item: any) => {
-    const objData: NoteSearch = Object.assign(item, {});
-    objData.src = item.noteCover;
-    dataList.push(objData);
-  });
-  noteList.value.push(...dataList);
+  noteList.value.push(...records);
 };
 
 const getNoteList = () => {
@@ -208,19 +214,6 @@ const initData = () => {
 initData();
 </script>
 <style lang="less" scoped>
-.lazy__img[lazy="loading"] {
-  padding: 5em 0;
-  width: 48px;
-}
-
-.lazy__img[lazy="loaded"] {
-  width: 100%;
-}
-
-.lazy__img[lazy="error"] {
-  padding: 5em 0;
-  width: 48px;
-}
 .mainShow {
   -webkit-animation: zoom_1 0.5s;
 }
@@ -228,78 +221,6 @@ initData();
   0% {
     -webkit-transform: scale(0);
     opacity: 0;
-  }
-}
-
-.fadeImg {
-  border-radius: 8px;
-  -webkit-animation: fadeinout 2s linear forwards;
-  animation: fadeinout 2s linear forwards;
-}
-
-@-webkit-keyframes fadeinout {
-  0% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.5;
-  }
-  100% {
-    opacity: 0;
-  }
-}
-
-@keyframes fadeinout {
-  0% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.5;
-  }
-  100% {
-    opacity: 0;
-  }
-}
-
-@-webkit-keyframes fadeinout {
-  0% {
-    opacity: 0;
-  }
-  50% {
-    opacity: 0.5;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-
-@keyframes fadeinout {
-  0% {
-    opacity: 0;
-  }
-  50% {
-    opacity: 0.5;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-
-@-webkit-keyframes fadeinout {
-  0% {
-    opacity: 0;
-  }
-  50% {
-    opacity: 1;
-  }
-}
-
-@keyframes fadeinout {
-  0% {
-    opacity: 0;
-  }
-  50% {
-    opacity: 1;
   }
 }
 
@@ -389,6 +310,13 @@ initData();
         -webkit-transform: translateY(-20px);
         opacity: 0;
       }
+    }
+
+    .noteImg {
+      width: 240px;
+      max-height: 300px;
+      object-fit: cover;
+      border-radius: 8px;
     }
 
     .footer {
