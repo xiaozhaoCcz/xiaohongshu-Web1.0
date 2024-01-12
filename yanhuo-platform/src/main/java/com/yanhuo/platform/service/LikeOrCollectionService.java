@@ -9,7 +9,8 @@ import com.yanhuo.xo.entity.LikeOrCollection;
  * @author xiaozhao
  */
 public interface LikeOrCollectionService extends IService<LikeOrCollection> {
-    void likeByDTO(LikeOrCollectionDTO likeOrCollectionDTO);
+    void likeOrCollectionByDTO(LikeOrCollectionDTO likeOrCollectionDTO);
 
     boolean isLikeOrCollection(LikeOrCollectionDTO likeOrCollectionDTO);
+
 }

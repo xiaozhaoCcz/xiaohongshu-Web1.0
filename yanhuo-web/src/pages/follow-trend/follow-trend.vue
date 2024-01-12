@@ -66,7 +66,7 @@ import { formateTime } from "@/utils/util";
 import FloatingBtn from "@/components/FloatingBtn.vue";
 import Main from "@/pages/main/main.vue";
 import type { LikeOrCollectionDTO } from "@/type/likeOrCollection";
-import { likeByDTO } from "@/api/likeOrCollection";
+import { likeOrCollectionByDTO } from "@/api/likeOrCollection";
 
 const currentPage = ref(1);
 const pageSize = ref(5);
@@ -164,7 +164,7 @@ const like = (nid: string, uid: string, index: number, val: number) => {
   likeOrCollectionDTO.value.likeOrCollectionId = nid;
   likeOrCollectionDTO.value.publishUid = uid;
   likeOrCollectionDTO.value.type = 1;
-  likeByDTO(likeOrCollectionDTO.value).then(() => {
+  likeOrCollectionByDTO(likeOrCollectionDTO.value).then(() => {
     trendData.value[index].isLike = val == 1;
     trendData.value[index].likeCount += val;
   });

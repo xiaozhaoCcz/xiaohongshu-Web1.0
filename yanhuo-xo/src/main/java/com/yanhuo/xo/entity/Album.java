@@ -17,6 +17,9 @@ public class Album extends BaseEntity {
 
     private String albumCover;
 
+    // 0默认专辑
+    private Integer type;
+
     private Integer sort;
 
     private Long imgCount;

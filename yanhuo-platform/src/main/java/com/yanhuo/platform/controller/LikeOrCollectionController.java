@@ -26,10 +26,10 @@ public class LikeOrCollectionController {
     }
 
 
-    @RequestMapping("/likeByDTO")
-    public Result<?> likeByDTO(@RequestBody LikeOrCollectionDTO likeOrCollectionDTO){
+    @RequestMapping("likeOrCollectionByDTO")
+    public Result<?> likeOrCollectionByDTO(@RequestBody LikeOrCollectionDTO likeOrCollectionDTO){
        // ValidatorUtils.validateEntity(likeOrCollectionDTO, AddGroup.class);
-        likeOrCollectionService.likeByDTO(likeOrCollectionDTO);
+        likeOrCollectionService.likeOrCollectionByDTO(likeOrCollectionDTO);
         return Result.ok();
     }
 
@@ -38,4 +38,5 @@ public class LikeOrCollectionController {
         boolean flag = likeOrCollectionService.isLikeOrCollection(likeOrCollectionDTO);
         return Result.ok(flag);
     }
+
 }

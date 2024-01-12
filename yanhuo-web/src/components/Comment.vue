@@ -153,7 +153,7 @@ import {
   getCommentPageWithCommentByNoteId,
   getTwoCommentPageByOneCommentId,
 } from "@/api/comment";
-import { likeByDTO } from "@/api/likeOrCollection";
+import { likeOrCollectionByDTO } from "@/api/likeOrCollection";
 import type { LikeOrCollectionDTO } from "@/type/likeOrCollection";
 import { formateTime } from "@/utils/util";
 const props = defineProps({
@@ -196,7 +196,7 @@ const likeComment = (comment: any, status: number, one: number, two: number) => 
   data.likeOrCollectionId = comment.id;
   data.publishUid = comment.uid;
   data.type = 2;
-  likeByDTO(data).then((res) => {
+  likeOrCollectionByDTO(data).then((res) => {
     console.log("点赞状态", res.data);
     if (two === -1) {
       dataList.value[one].isLike = status == 1;

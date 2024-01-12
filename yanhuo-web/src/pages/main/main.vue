@@ -146,7 +146,7 @@
 import { Close, Star, ChatRound } from "@element-plus/icons-vue";
 import { ref, watch } from "vue";
 import { getNoteById } from "@/api/note";
-import { likeByDTO, isLikeOrCollection } from "@/api/likeOrCollection";
+import { likeOrCollectionByDTO, isLikeOrCollection } from "@/api/likeOrCollection";
 import type { NoteInfo } from "@/type/note";
 import type { LikeOrCollectionDTO } from "@/type/likeOrCollection";
 import { formateTime, getRandomString } from "@/utils/util";
@@ -239,7 +239,7 @@ const like = (type: number) => {
   likeOrCollectionDTO.likeOrCollectionId = noteInfo.value.id;
   likeOrCollectionDTO.publishUid = noteInfo.value.uid;
   likeOrCollectionDTO.type = 1;
-  likeByDTO(likeOrCollectionDTO).then(() => {
+  likeOrCollectionByDTO(likeOrCollectionDTO).then(() => {
     likeState.value = type == 1;
     noteInfo.value.likeCount += type;
   });
