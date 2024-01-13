@@ -1,6 +1,5 @@
 package com.yanhuo.xo.vo;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -9,6 +8,8 @@ import java.io.Serializable;
 public class RecordSearchVo implements Serializable {
 
     private String content;
+
+    private String highlightContent;
 
     private Long searchCount;
 }

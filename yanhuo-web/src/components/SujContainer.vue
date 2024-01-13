@@ -5,22 +5,18 @@
         <div class="header">
           <span> 历史记录 </span>
           <div class="icon-group">
-            <div class="icon-box">
-              <svg data-v-7c2d5134="" class="reds-icon icon" width="16" height="16">
-                <use data-v-7c2d5134="" xlink:href="#delete"></use></svg
-              ><!---->
+            <div class="icon-box" @click="deleteRecord">
+              <Delete style="width: 1.2em; height: 1.2em"></Delete>
             </div>
             <!---->
           </div>
         </div>
         <div class="history-list">
-          <div class="history-item">
-            斗破苍穹漫画
-            <!---->
-          </div>
-          <div class="history-item">
-            小红书网页版
-            <!---->
+          <div v-for="(item, index) in historyRecordList" :key="index">
+            <div class="history-item" @click="searchPage(item)">
+              {{ item }}
+              <!---->
+            </div>
           </div>
           <!---->
         </div>
@@ -82,94 +78,16 @@
             />
           </div>
           <div class="hotspot-list">
-            <div class="hotspot-item">
-              <p class="hotspot-index">1</p>
-              <div class="hotspot-title">
-                <span class="text">收到了昆凌从北欧寄的明信片</span>
+            <div class="hotspot-item" v-for="(item, index) in hotList" :key="index">
+              <p class="hotspot-index">{{ index + 1 }}</p>
+              <div class="hotspot-title" @click="searchPage(item.content)">
+                <span class="text">{{ item.content }}</span>
                 <img
                   src="https://sns-img-qc.xhscdn.com/search/trends/icon/label/new/version/1"
                   crossorigin="anonymous"
                 />
               </div>
-              <span class="hotspot-score">1100.3w</span>
-            </div>
-            <div class="hotspot-item">
-              <p class="hotspot-index">2</p>
-              <div class="hotspot-title">
-                <span class="text">纸和光影为我招来满屋蝴蝶</span>
-                <img
-                  src="https://sns-img-qc.xhscdn.com/search/trends/icon/label/hot/version/1"
-                  crossorigin="anonymous"
-                />
-              </div>
-              <span class="hotspot-score">987.6w</span>
-            </div>
-            <div class="hotspot-item">
-              <p class="hotspot-index">3</p>
-              <div class="hotspot-title">
-                <span class="text">拍下了属于树的春夏秋冬</span>
-                <!---->
-              </div>
-              <span class="hotspot-score">985.6w</span>
-            </div>
-            <div class="hotspot-item">
-              <p class="hotspot-index">4</p>
-              <div class="hotspot-title">
-                <span class="text">假如我在博物馆看上某样东西</span>
-                <!---->
-              </div>
-              <span class="hotspot-score">985.9w</span>
-            </div>
-            <div class="hotspot-item">
-              <p class="hotspot-index">5</p>
-              <div class="hotspot-title">
-                <span class="text">跟着87岁男孩学变帅公式</span>
-                <!---->
-              </div>
-              <span class="hotspot-score">972.4w</span>
-            </div>
-            <div class="hotspot-item">
-              <p class="hotspot-index">6</p>
-              <div class="hotspot-title">
-                <span class="text">跟王家卫学会拍繁花感复古照</span>
-                <img
-                  src="https://sns-img-qc.xhscdn.com/search/trends/icon/label/hot/version/1"
-                  crossorigin="anonymous"
-                />
-              </div>
-              <span class="hotspot-score">965.1w</span>
-            </div>
-            <div class="hotspot-item">
-              <p class="hotspot-index">7</p>
-              <div class="hotspot-title">
-                <span class="text">新年新流行：轨迹画龙</span>
-                <!---->
-              </div>
-              <span class="hotspot-score">925.1w</span>
-            </div>
-            <div class="hotspot-item">
-              <p class="hotspot-index">8</p>
-              <div class="hotspot-title">
-                <span class="text">骨相立体跟港风妆容真的很搭</span>
-                <!---->
-              </div>
-              <span class="hotspot-score">874.1w</span>
-            </div>
-            <div class="hotspot-item">
-              <p class="hotspot-index">9</p>
-              <div class="hotspot-title">
-                <span class="text">冬天去不了武功山不如去浪漫广西</span>
-                <!---->
-              </div>
-              <span class="hotspot-score">853.4w</span>
-            </div>
-            <div class="hotspot-item">
-              <p class="hotspot-index">10</p>
-              <div class="hotspot-title">
-                <span class="text">当美食遇上非遗：自制福建线面</span>
-                <!---->
-              </div>
-              <span class="hotspot-score">722.8w</span>
+              <span class="hotspot-score">{{ item.searchCount }}</span>
             </div>
           </div>
         </div>
@@ -177,7 +95,50 @@
     </div>
   </div>
 </template>
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+import { Delete } from "@element-plus/icons-vue";
+import { ref, onMounted, watch } from "vue";
+import { useSearchStore } from "@/store/searchStore";
+import { getHotRecord } from "@/api/search";
+import { getRandomString } from "@/utils/util";
+
+const searchStore = useSearchStore();
+
+const historyRecordList = ref<Array<string>>([]);
+const hotList = ref([]);
+
+const deleteRecord = () => {
+  console.log(123);
+};
+
+watch(
+  () => [searchStore.seed],
+  (newVal, oldVal) => {
+    console.log("seed", newVal, oldVal);
+    historyRecordList.value = searchStore.getRecords();
+    getHotRecord().then((res) => {
+      console.log(res.data);
+      hotList.value = res.data;
+    });
+  }
+);
+
+const searchPage = (keyword: string) => {
+  searchStore.setKeyword(keyword);
+  searchStore.pushRecord(keyword);
+  const seed = getRandomString(12);
+  searchStore.setSeed(seed);
+  console.log("-----seed", seed);
+};
+
+onMounted(() => {
+  historyRecordList.value = searchStore.getRecords();
+  getHotRecord().then((res) => {
+    console.log(res.data);
+    hotList.value = res.data;
+  });
+});
+</script>
 <style lang="less" scoped>
 //隐藏滚动条
 .sug-container-wrapper::-webkit-scrollbar {
@@ -332,6 +293,12 @@
 
     .hotspot-item:first-child {
       color: #ff2442;
+    }
+    .hotspot-item:nth-child(2) {
+      color: rgb(128, 0, 94);
+    }
+    .hotspot-item:nth-child(3) {
+      color: #ff24a4;
     }
     .hotspot-item {
       padding: 0 12px;

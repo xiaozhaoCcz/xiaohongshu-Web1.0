@@ -28,4 +28,10 @@ public class OssController {
         System.out.println(stringList);
         return Result.ok(stringList);
     }
+
+    @RequestMapping("delete/{type}")
+    public Result<?> delete(String path, @PathVariable Integer type){
+        ossService.delete(path, type);
+        return Result.ok();
+    }
 }

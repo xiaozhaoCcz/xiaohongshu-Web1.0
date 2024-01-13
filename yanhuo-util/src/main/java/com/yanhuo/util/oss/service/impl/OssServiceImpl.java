@@ -38,4 +38,20 @@ public class OssServiceImpl implements OssService {
         }
         return result;
     }
+
+    @Override
+    public void delete(String path, Integer type) {
+        OssFactory factory = null;
+        switch (type) {
+            case 0:
+                // 本地上传图片
+               factory =  new UploadFileToLoacl();
+                break;
+            case 1:
+                break;
+            default:
+                break;
+        }
+        factory.delete(path);
+    }
 }

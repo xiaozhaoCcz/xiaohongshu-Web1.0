@@ -12,7 +12,7 @@
       style="max-width: 1260px"
     >
       <template #item="{ item }">
-        <div class="card">
+        <div class="card" style="width: 240px">
           <el-image class="noteImg" @click="toMain(item.id)" :src="item.noteCover">
             <template #error>
               <div class="image-slot">

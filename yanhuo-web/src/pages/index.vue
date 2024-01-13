@@ -1,10 +1,10 @@
 <template>
-  <div class="container">
+  <div class="container" id="container">
     <div class="top">
       <header class="mask-paper">
         <a style="display: flex">烟火</a>
         <div class="tool-box"></div>
-        <div class="input-box">
+        <div class="input-box" id="sujContainer">
           <input
             type="text"
             v-model="keyword"
@@ -12,7 +12,7 @@
             placeholder="搜索小红书"
             @input="changeInput"
             @focus="focusInput"
-            @blur="blurInput"
+            @keyup.enter="searchPage"
             ref="SearchInput"
           />
           <div class="input-button">
@@ -21,7 +21,7 @@
                 style="width: 1.2em; height: 1.2em; margin-right: 20px; margin-top: 5px"
               />
             </div>
-            <div class="search-icon">
+            <div class="search-icon" @click="searchPage">
               <Search
                 style="width: 1.2em; height: 1.2em; margin-right: 20px; margin-top: 5px"
               />
@@ -180,14 +180,17 @@ import {
 } from "@element-plus/icons-vue";
 import { useRouter } from "vue-router";
 import Login from "@/pages/login.vue";
-import { ref } from "vue";
+import { ref, watch, onMounted } from "vue";
 import { useUserStore } from "@/store/userStore";
+import { useSearchStore } from "@/store/searchStore";
 import SujContainer from "@/components/SujContainer.vue";
 import SearchContainer from "@/components/SearchContainer";
 import { getRecordByKeyWord } from "@/api/search";
+import { getRandomString } from "@/utils/util";
 
 const router = useRouter();
 const userStore = useUserStore();
+const searchStore = useSearchStore();
 const loginShow = ref(true);
 const userInfo = ref<any>({});
 const showHistory = ref(false);
@@ -200,6 +203,41 @@ const activeLink = ref(1);
 const padShow = ref(false);
 
 const routerList = ["/", "/followTrend", "/notice", "/push", "/user"];
+
+// 监听外部点击
+onMounted(() => {
+  document.getElementById("container")!.addEventListener("click", function (e) {
+    var event = e || window.event;
+    var target = event.target || event.srcElement;
+    // if(target.id == "name") {
+    if (document.getElementById("sujContainer")!.contains(target)) {
+      console.log("in");
+    } else {
+      showHistory.value = false;
+      showSearch.value = false;
+    }
+  });
+});
+
+const searchPage = () => {
+  console.log("search", keyword.value);
+  // 1.storage中添加搜索记录
+  searchStore.setKeyword(keyword.value);
+  if (keyword.value.length > 0) {
+    searchStore.pushRecord(keyword.value);
+    searchStore.setSeed(getRandomString(12));
+  }
+  showSearch.value = false;
+};
+
+watch(
+  () => [searchStore.seed],
+  (newVal, oldVal) => {
+    console.log("seed", newVal, oldVal);
+    keyword.value = searchStore.keyWord;
+    showHistory.value = false;
+  }
+);
 
 const changeInput = (e: any) => {
   const { value } = e.target;
@@ -221,10 +259,10 @@ const focusInput = () => {
   showHistory.value = keyword.value.length > 0 ? false : true;
 };
 
-const blurInput = () => {
-  showHistory.value = false;
-  showSearch.value = false;
-};
+// const blurInput = () => {
+//   showHistory.value = false;
+//   showSearch.value = false;
+// };
 
 const clearInput = () => {
   keyword.value = "";

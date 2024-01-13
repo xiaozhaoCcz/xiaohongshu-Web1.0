@@ -5,9 +5,14 @@
       <div class="sug-box">
         <!---->
         <div class="sug-wrapper">
-          <div class="sug-item" v-for="(item, index) in dataList" :key="index">
+          <div
+            class="sug-item"
+            v-for="(item, index) in dataList"
+            :key="index"
+            @click="searchPage(item.content)"
+          >
             <!---->
-            <span v-html="item.content"></span>
+            <span v-html="item.highlightContent"></span>
           </div>
         </div>
       </div>
@@ -16,6 +21,10 @@
 </template>
 <script lang="ts" setup>
 import { ref, watchEffect } from "vue";
+import { getRandomString } from "@/utils/util";
+import { useSearchStore } from "@/store/searchStore";
+
+const searchStore = useSearchStore();
 const props = defineProps({
  recordList: {
     type: Array<any>,
@@ -25,6 +34,14 @@ const props = defineProps({
 
 const dataList = ref<Array<any>>([])
 
+
+const searchPage = (keyword: string) => {
+  searchStore.setKeyword(keyword);
+  searchStore.pushRecord(keyword);
+  const seed = getRandomString(12);
+  searchStore.setSeed(seed);
+  console.log("-----seed", seed);
+};
 watchEffect(() => {
   console.log("发生改变", props.recordList);
   dataList.value = [];

@@ -38,7 +38,7 @@
         style="max-width: 1260px"
       >
         <template #item="{ item }">
-          <div class="card">
+          <div class="card" style="width: 240px">
             <el-image class="noteImg" @click="toMain(item.id)" :src="item.noteCover">
               <template #error>
                 <div class="image-slot">
@@ -83,14 +83,16 @@ import { RefreshRight } from "@element-plus/icons-vue";
 import { Waterfall } from "vue-waterfall-plugin-next";
 import "vue-waterfall-plugin-next/dist/style.css";
 // import { useRouter } from "vue-router";
-import { ref } from "vue";
-import { getRecommendNotePage, getNotePageByDTO } from "@/api/search";
+import { ref, watch } from "vue";
+import { getRecommendNotePage, getNotePageByDTO, addRecord } from "@/api/search";
 import { getCategoryTreeData } from "@/api/category";
 import type { NoteDTO } from "@/type/note";
 import type { Category } from "@/type/category";
 import Main from "@/pages/main/main.vue";
 import FloatingBtn from "@/components/FloatingBtn";
 import { options } from "@/constant/constant";
+import { useSearchStore } from "@/store/searchStore";
+const searchStore = useSearchStore();
 
 // const router = useRouter();
 
@@ -110,6 +112,18 @@ const queryParams = ref<NoteDTO>({
   cid: "",
   cpid: "",
 });
+
+watch(
+  () => [searchStore.seed],
+  (newVal, oldVal) => {
+    console.log("dashboardseed", newVal, oldVal);
+    queryParams.value.keyword = searchStore.keyWord;
+    queryParams.value.cpid = "";
+    categoryClass.value = "0";
+    getNoteListByKeyword();
+    addRecord(searchStore.keyWord);
+  }
+);
 
 const toMain = (noteId: string) => {
   // console.log("11", nid);
@@ -159,8 +173,8 @@ const refresh = () => {
 
 const loadMoreData = () => {
   currentPage.value += 1;
-  if (queryParams.value.cpid === "") {
-    console.log("-----getRecommendNotePage");
+  if (queryParams.value.cpid === "" && queryParams.value.keyword == "") {
+    console.log("-----getRecommendNotePage", queryParams.value.keyword);
     getRecommendNotePage(currentPage.value, pageSize).then((res: any) => {
       console.log("---res", res);
       setData(res);
@@ -192,6 +206,14 @@ const getNoteList = () => {
 const getNoteListByCategory = (id: string) => {
   categoryClass.value = id;
   queryParams.value.cpid = id;
+  noteList.value = [] as Array<any>;
+  currentPage.value = 1;
+  getNotePageByDTO(currentPage.value, pageSize, queryParams.value).then((res) => {
+    setData(res);
+  });
+};
+
+const getNoteListByKeyword = () => {
   noteList.value = [] as Array<any>;
   currentPage.value = 1;
   getNotePageByDTO(currentPage.value, pageSize, queryParams.value).then((res) => {

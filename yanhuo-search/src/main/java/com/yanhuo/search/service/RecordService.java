@@ -6,4 +6,8 @@ import java.util.List;
 
 public interface RecordService {
     List<RecordSearchVo> getRecordByKeyWord(String keyword);
+
+    List<RecordSearchVo> getHotRecord();
+
+    void addRecord(String keyword);
 }

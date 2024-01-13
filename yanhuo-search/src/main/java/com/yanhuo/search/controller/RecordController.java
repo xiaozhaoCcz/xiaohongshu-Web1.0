@@ -18,4 +18,16 @@ public class RecordController {
     public Result<?> getRecordByKeyWord(String keyword){
         return Result.ok(recordService.getRecordByKeyWord(keyword));
     }
+
+
+    @GetMapping("getHotRecord")
+    public Result<?> getHotRecord(){
+        return Result.ok(recordService.getHotRecord());
+    }
+
+    @RequestMapping("addRecord")
+    public Result<?> addRecord(String keyword){
+        recordService.addRecord(keyword);
+        return Result.ok();
+    }
 }

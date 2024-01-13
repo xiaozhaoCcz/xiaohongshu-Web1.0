@@ -43,8 +43,10 @@ public class NoteServiceImpl extends ServiceImpl<NoteDao, Note> implements NoteS
             SearchRequest.Builder builder = new SearchRequest.Builder().index(NoteConstant.NOTE_INDEX);
             if (StringUtils.isNotBlank(noteDTO.getKeyword())) {
                 builder.query(q -> q.bool(b -> b
-                        .should(h -> h.fuzzy(f -> f.field("title").value(noteDTO.getKeyword()).fuzziness("6")))
-                        .should(h -> h.fuzzy(f -> f.field("username").value(noteDTO.getKeyword()).fuzziness("4")))
+//                        .should(h -> h.fuzzy(f -> f.field("title").value(noteDTO.getKeyword()).fuzziness("6")))
+//                        .should(h -> h.fuzzy(f -> f.field("username").value(noteDTO.getKeyword()).fuzziness("4")))
+                                .should(h->h.match(f->f.field("title").query(noteDTO.getKeyword())))
+                                .should(h->h.match(f->f.field("username").query(noteDTO.getKeyword())))
                 ));
             }
             if (StringUtils.isNotBlank(noteDTO.getCpid())&&StringUtils.isNotBlank(noteDTO.getCid())) {

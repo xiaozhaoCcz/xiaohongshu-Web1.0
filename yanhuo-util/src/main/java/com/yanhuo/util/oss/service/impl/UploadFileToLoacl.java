@@ -3,6 +3,7 @@ package com.yanhuo.util.oss.service.impl;
 import com.yanhuo.common.constant.UploadFileConstant;
 import com.yanhuo.common.exception.YanHuoException;
 import com.yanhuo.util.oss.factory.OssFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -13,6 +14,7 @@ import java.nio.file.StandardCopyOption;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+@Slf4j
 public class UploadFileToLoacl implements OssFactory {
 
     @Override
@@ -46,5 +48,18 @@ public class UploadFileToLoacl implements OssFactory {
         } catch (Exception e) {
             throw new YanHuoException("文件上传错误");
         }
+    }
+
+    @Override
+    public Boolean delete(String path) {
+        String prePath = UploadFileConstant.ADDRESS;
+        String[] split = path.split(UploadFileConstant.OSS);
+        String filePath = prePath+split[1];
+        log.info("filePath:{}",filePath);
+        File file = new File(filePath);
+        if (file.exists()) {//文件是否存在
+          return file.delete();
+        }
+        return false;
     }
 }
