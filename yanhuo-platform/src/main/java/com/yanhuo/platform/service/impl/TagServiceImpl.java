@@ -1,5 +1,6 @@
 package com.yanhuo.platform.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yanhuo.platform.service.TagService;
@@ -8,6 +9,7 @@ import com.yanhuo.xo.dto.TagDTO;
 import com.yanhuo.xo.entity.Tag;
 import com.yanhuo.xo.vo.NoteVo;
 import com.yanhuo.xo.vo.TagVo;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,5 +32,15 @@ public class TagServiceImpl extends ServiceImpl<TagDao, Tag> implements TagServi
     @Override
     public void saveTagByDTO(TagDTO tagDTO) {
 
+    }
+
+    @Override
+    public Page<Tag> getPageTagByKeyword(long currentPage, long pageSize, String keyword) {
+        QueryWrapper<Tag> queryWrapper = new QueryWrapper<>();
+        if(StringUtils.isNotBlank(keyword)){
+            queryWrapper.like("title",keyword);
+        }
+        queryWrapper.orderByDesc("like_count");
+        return this.page(new Page((int) currentPage, (int) pageSize), queryWrapper);
     }
 }

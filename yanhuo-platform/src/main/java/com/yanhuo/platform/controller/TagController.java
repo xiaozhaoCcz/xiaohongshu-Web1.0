@@ -30,6 +30,11 @@ public class TagController {
         return Result.ok(voList);
     }
 
+    @RequestMapping("getPageTagByKeyword/{currentPage}/{pageSize}")
+    public Result<?> getPageTagByKeyword(@PathVariable long currentPage, @PathVariable long pageSize, String keyword) {
+        Page<Tag> page = tagService.getPageTagByKeyword(currentPage, pageSize,keyword);
+        return Result.ok(page);
+    }
     /**
      * 得到当前标签信息
      *

@@ -15,4 +15,6 @@ public interface TagService extends IService<Tag> {
     Page<NoteVo> getNotePageByTagId(long currentPage, long pageSize, String tagId, Integer type);
 
     void saveTagByDTO(TagDTO tagDTO);
+
+    Page<Tag> getPageTagByKeyword(long currentPage, long pageSize, String keyword);
 }

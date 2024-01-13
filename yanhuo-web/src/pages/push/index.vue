@@ -43,8 +43,25 @@
           v-model="content"
           placeholder="Please input"
           class="input-content"
+          id="inputContent"
         />
+
+        <div
+          v-infinite-scroll="loadMoreData"
+          class="scroll-tag-container"
+          v-show="showTagState"
+        >
+          <p
+            v-for="(item, index) in selectTagList"
+            :key="index"
+            class="scrollbar-tag-item"
+            @click="selectTag(item)"
+          >
+            {{ item.title }}
+          </p>
+        </div>
       </div>
+
       <div class="categorys">
         <el-cascader
           v-model="categoryList"
@@ -89,11 +106,20 @@ import { useUserStore } from "@/store/userStore";
 import axios from "axios";
 import { getCategoryTreeData } from "@/api/category";
 import { saveNoteByDTO } from "@/api/note";
+import { getPageTagByKeyword } from "@/api/tag";
+import Schema from "async-validator";
 // import Crop from "@/components/Crop.vue";
 const props: CascaderProps = {
   label: "title",
   value: "id",
 };
+
+// const rules = {
+//   title: { required: true, message: "标题不能为空" },
+//   content: { required: true, message: "内容不能为空" },
+//   category: { required: true, message: "分类不能为空" },
+// };
+// const validator = new Schema(rules);
 
 const userStore = useUserStore();
 
@@ -109,9 +135,38 @@ const uploadHeader = ref({
 const categoryList = ref<Array<any>>([]);
 const options = ref([]);
 const note = ref<any>({});
+const showTagState = ref(false);
+const tagList = ref([]);
+const selectTagList = ref([]);
+const currentPage = ref(1);
+const pageSize = 10;
+const tagTotal = ref(0);
 
 const addTag = () => {
   content.value += "#";
+  showTagState.value = true;
+  selectTagList.value = [];
+  setData();
+};
+
+const setData = () => {
+  getPageTagByKeyword(currentPage.value, pageSize, "").then((res) => {
+    console.log("res", res.data);
+    const { records, total } = res.data;
+    selectTagList.value.push(...records);
+    tagTotal.value = total;
+  });
+};
+
+const selectTag = (val: any) => {
+  content.value += val.title;
+  tagList.value.push(val.id);
+  showTagState.value = false;
+};
+
+const loadMoreData = () => {
+  currentPage.value += 1;
+  setData();
 };
 
 const handleRemove: UploadProps["onRemove"] = (uploadFile, uploadFiles) => {
@@ -177,22 +232,26 @@ const pubslish = () => {
     note.value.count = data.length;
     note.value.type = 1;
     note.value.title = title.value;
-    note.value.content = content.value;
+    note.value.content = content.value.split("#")[0];
     note.value.cpid = categoryList.value[0];
     note.value.cid = categoryList.value[1];
+    note.value.tagList = tagList.value;
 
-    // saveNoteByDTO(note.value).then((res) => {
-    //   note.value = {};
-    //   title.value = "";
-    //   content.value = "";
-    //   categoryList.value = [];
-    //   fileList.value = [];
-    //   console.log("保存成功", res.data);
-    //   ElMessage({
-    //     message: "发布成功",
-    //     type: "success",
-    //   });
-    // });
+    console.log(tagList.value);
+
+    saveNoteByDTO(note.value).then((res) => {
+      note.value = {};
+      title.value = "";
+      content.value = "";
+      categoryList.value = [];
+      fileList.value = [];
+      tagList.value = [];
+      console.log("保存成功", res.data);
+      ElMessage({
+        message: "发布成功",
+        type: "success",
+      });
+    });
   });
 };
 
@@ -256,6 +315,31 @@ initData();
 
     .push-content {
       padding: 0 12px 10px 12px;
+      position: relative;
+
+      .scroll-tag-container {
+        position: absolute;
+        width: 98%;
+        background-color: #fff;
+        z-index: 99999;
+        border: 1px solid #f4f4f4;
+        height: 300px;
+        overflow: auto;
+
+        .scrollbar-tag-item {
+          display: flex;
+          align-items: center;
+          height: 30px;
+          margin: 10px;
+          text-align: center;
+          border-radius: 4px;
+          padding-left: 2px;
+          color: #484848;
+        }
+        .scrollbar-tag-item:hover {
+          background-color: #f8f8f8;
+        }
+      }
 
       .input-title {
         margin-bottom: 5px;

@@ -25,6 +25,7 @@ public class RecordController {
         return Result.ok(recordService.getHotRecord());
     }
 
+
     @RequestMapping("addRecord")
     public Result<?> addRecord(String keyword){
         recordService.addRecord(keyword);

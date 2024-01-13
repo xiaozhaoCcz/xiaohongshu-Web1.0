@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -83,6 +84,18 @@ public class NoteServiceImpl extends ServiceImpl<NoteDao, Note> implements NoteS
         User user = userService.getById(currentUid);
         user.setTrendCount(user.getTrendCount() + 1);
         userService.updateById(user);
+
+        // 添加标签关系
+        List<String> tids = noteDTO.getTagList();
+        List<TagNoteRelation> tagNoteRelationList = new ArrayList<>();
+
+        for (String tid : tids) {
+            TagNoteRelation tagNoteRelation = new TagNoteRelation();
+            tagNoteRelation.setTid(tid);
+            tagNoteRelation.setNid(note.getId());
+            tagNoteRelationList.add(tagNoteRelation);
+        }
+        tagNoteRelationService.saveBatch(tagNoteRelationList);
 
         // 往es中添加数据
         NoteSearchVo noteSearchVo = ConvertUtils.sourceToTarget(note, NoteSearchVo.class);

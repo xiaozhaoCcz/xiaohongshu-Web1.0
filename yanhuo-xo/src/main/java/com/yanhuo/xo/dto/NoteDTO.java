@@ -20,6 +20,8 @@ public class NoteDTO implements Serializable {
 
     private List<String> urls;
 
+    private List<String> tagList;
+
     private Integer count;
 
     private Integer type;

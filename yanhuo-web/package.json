@@ -11,9 +11,11 @@
     "lint:prettier": "prettier --write \"**/*.{js,ts,json,css,less,scss,vue,html,md}\""
   },
   "dependencies": {
+    "@kangc/v-md-editor": "^2.3.18",
     "@lhlyu/vue-virtual-waterfall": "^1.0.2",
     "@opentiny/vue": "3",
     "animate.css": "^4.1.1",
+    "async-validator": "^4.2.5",
     "axios": "^1.5.1",
     "element-plus": "^2.4.1",
     "goeasy": "2.10.14",
