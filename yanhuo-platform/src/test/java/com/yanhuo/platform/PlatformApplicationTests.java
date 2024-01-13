@@ -58,4 +58,13 @@ public class PlatformApplicationTests {
            albumNoteRelationService.save(albumNoteRelation);
         }
     }
+
+    @Test
+    public void test3(){
+        List<Note> list = noteService.list();
+        for (Note note: list) {
+            note.setTitle(note.getContent());
+            noteService.updateById(note);
+        }
+    }
 }

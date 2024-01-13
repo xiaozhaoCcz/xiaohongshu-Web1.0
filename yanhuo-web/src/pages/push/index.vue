@@ -56,7 +56,7 @@
       </div>
       <div class="btns">
         <button class="css-fm44j css-osq2ks dyn">
-          <span class="btn-content"># 话题</span></button
+          <span class="btn-content" @click="addTag"># 话题</span></button
         ><button class="css-fm44j css-osq2ks dyn">
           <span class="btn-content"><span>@</span> 用户</span></button
         ><button class="css-fm44j css-osq2ks dyn">
@@ -109,6 +109,10 @@ const uploadHeader = ref({
 const categoryList = ref<Array<any>>([]);
 const options = ref([]);
 const note = ref<any>({});
+
+const addTag = () => {
+  content.value += "#";
+};
 
 const handleRemove: UploadProps["onRemove"] = (uploadFile, uploadFiles) => {
   console.log(uploadFile, uploadFiles);
@@ -176,18 +180,19 @@ const pubslish = () => {
     note.value.content = content.value;
     note.value.cpid = categoryList.value[0];
     note.value.cid = categoryList.value[1];
-    saveNoteByDTO(note.value).then((res) => {
-      note.value = {};
-      title.value = "";
-      content.value = "";
-      categoryList.value = [];
-      fileList.value = [];
-      console.log("保存成功", res.data);
-      ElMessage({
-        message: "发布成功",
-        type: "success",
-      });
-    });
+
+    // saveNoteByDTO(note.value).then((res) => {
+    //   note.value = {};
+    //   title.value = "";
+    //   content.value = "";
+    //   categoryList.value = [];
+    //   fileList.value = [];
+    //   console.log("保存成功", res.data);
+    //   ElMessage({
+    //     message: "发布成功",
+    //     type: "success",
+    //   });
+    // });
   });
 };
 

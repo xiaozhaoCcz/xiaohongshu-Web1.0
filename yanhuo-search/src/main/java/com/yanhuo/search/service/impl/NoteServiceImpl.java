@@ -46,6 +46,7 @@ public class NoteServiceImpl extends ServiceImpl<NoteDao, Note> implements NoteS
 //                        .should(h -> h.fuzzy(f -> f.field("title").value(noteDTO.getKeyword()).fuzziness("6")))
 //                        .should(h -> h.fuzzy(f -> f.field("username").value(noteDTO.getKeyword()).fuzziness("4")))
                                 .should(h->h.match(f->f.field("title").query(noteDTO.getKeyword())))
+                                .should(h->h.match(f->f.field("content").query(noteDTO.getKeyword())))
                                 .should(h->h.match(f->f.field("username").query(noteDTO.getKeyword())))
                 ));
             }

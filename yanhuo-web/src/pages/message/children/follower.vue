@@ -24,15 +24,14 @@
               @click="follow(item.uid, index, 1)"
               >已关注</el-button
             >
-            <button
+            <el-button
+              type="danger"
+              round
+              size="large"
               v-else
-              class="reds-button-new follow-button large primary follow-button"
               @click="follow(item.uid, index, -1)"
+              >回关</el-button
             >
-              <span class="reds-button-new-box"
-                ><span class="reds-button-new-text">回关</span></span
-              >
-            </button>
           </div>
         </div>
       </li>

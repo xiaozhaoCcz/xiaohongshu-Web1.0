@@ -87,7 +87,7 @@ public class RecordServiceImpl implements RecordService {
         try {
             SearchRequest.Builder builder = new SearchRequest.Builder().index(NoteConstant.RECOED_INDEX);
             if (StringUtils.isNotBlank(keyword)) {
-                builder.query(q->q.match(f->f.field("content").query(keyword)));
+                builder.query(q->q.match(f->f.field("content").query(keyword.trim())));
             }
             builder.size(10);
             SearchRequest searchRequest = builder.build();
@@ -95,21 +95,22 @@ public class RecordServiceImpl implements RecordService {
             //得到所有的数据
             List<Hit<RecordSearchVo>> hits = searchResponse.hits().hits();
 
-            if(hits.isEmpty()){
-                RecordSearchVo recordSearchVo = new RecordSearchVo();
-                recordSearchVo.setContent(keyword);
-                recordSearchVo.setSearchCount(1L);
-                String id = RandomUtil.randomString(12);
-                elasticsearchClient.create(c -> c.index(NoteConstant.RECOED_INDEX).id(id).document(recordSearchVo));
-                return;
-            }
-
+            List<String> contents = new ArrayList<>();
             // 高亮查询
             for (Hit<RecordSearchVo> hit : hits) {
                 RecordSearchVo recordSearchVo = hit.source();
                 recordSearchVo.setSearchCount(recordSearchVo.getSearchCount()+1);
                 UpdateResponse<RecordSearchVo> response = elasticsearchClient.update(u -> u.index(NoteConstant.RECOED_INDEX).id(hit.id()).doc(recordSearchVo), RecordSearchVo.class);
                 log.info("response",response.toString());
+                contents.add(recordSearchVo.getContent());
+            }
+
+            if(StringUtils.isNotBlank(keyword)&&!contents.contains(keyword.trim())){
+                RecordSearchVo recordSearchVo = new RecordSearchVo();
+                recordSearchVo.setContent(keyword);
+                recordSearchVo.setSearchCount(1L);
+                String id = RandomUtil.randomString(12);
+                elasticsearchClient.create(c -> c.index(NoteConstant.RECOED_INDEX).id(id).document(recordSearchVo));
             }
         }catch (Exception e) {
             e.printStackTrace();

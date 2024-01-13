@@ -29,6 +29,7 @@
       <Waterfall
         :list="noteList"
         :width="options.width"
+        :gutter="options.gutter"
         :hasAroundGutter="options.hasAroundGutter"
         :animation-effect="options.animationEffect"
         :animation-duration="options.animationDuration"

@@ -82,7 +82,7 @@ export const formateTime = (time: number) => {
   } else if (secondC >= 1) {
     return parseInt(secondC.toString()) + "秒前";
   } else {
-    return "0秒";
+    return "刚刚";
   }
 };
 

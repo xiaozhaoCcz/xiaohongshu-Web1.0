@@ -71,11 +71,12 @@
       <div>
         <div class="hotspots">
           <div class="header">
-            <img
+            <span style="color: #888888">热点</span>
+            <!-- <img
               class="header-img"
               src="https://picasso-static.xiaohongshu.com/fe-platform/0c824dd79820e11ad8e3a5c86d56892d6159f0a8.png"
               crossorigin="anonymous"
-            />
+            /> -->
           </div>
           <div class="hotspot-list">
             <div class="hotspot-item" v-for="(item, index) in hotList" :key="index">
