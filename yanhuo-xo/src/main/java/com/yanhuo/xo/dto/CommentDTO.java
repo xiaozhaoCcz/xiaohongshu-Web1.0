@@ -9,6 +9,8 @@ public class CommentDTO implements Serializable {
 
     private String nid;
 
+    private String noteUid;
+
     private String pid;
 
     private String replyId;

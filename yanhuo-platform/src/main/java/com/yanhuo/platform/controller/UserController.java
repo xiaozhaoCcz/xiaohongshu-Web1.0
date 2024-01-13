@@ -65,4 +65,5 @@ public class UserController {
         Page<FollowerVo> pageInfo = userService.getUserPageByKeyword(currentPage, pageSize, keyword);
         return Result.ok(pageInfo);
     }
+
 }

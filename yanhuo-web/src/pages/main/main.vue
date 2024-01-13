@@ -79,9 +79,13 @@
             <div class="buttons">
               <div class="left">
                 <span class="like-wrapper"
-                  ><span class="like-lottie">
-                    <Star style="width: 0.8em; height: 0.8em; color: #333" /> </span
-                  ><span class="count">{{ noteInfo.collectionCount }}</span></span
+                  ><span class="like-lottie" v-if="starState" @click="star(-1)">
+                    <StarFilled style="width: 0.9em; height: 0.9em; color: #333" />
+                  </span>
+                  <span class="like-lottie" v-else @click="star(1)">
+                    <Star style="width: 0.8em; height: 0.8em; color: #333" />
+                  </span>
+                  <span class="count">{{ noteInfo.collectionCount }}</span></span
                 >
                 <span class="collect-wrapper">
                   <span class="like-lottie" v-if="likeState" @click="like(-1)">
@@ -143,7 +147,7 @@
 </template>
 
 <script lang="ts" setup>
-import { Close, Star, ChatRound } from "@element-plus/icons-vue";
+import { Close, Star, ChatRound, StarFilled } from "@element-plus/icons-vue";
 import { ref, watch } from "vue";
 import { getNoteById } from "@/api/note";
 import { likeOrCollectionByDTO, isLikeOrCollection } from "@/api/likeOrCollection";
@@ -197,6 +201,10 @@ watch(
       isLikeOrCollection(likeOrCollectionDTO).then((res) => {
         likeState.value = res.data;
       });
+      likeOrCollectionDTO.type = 3;
+      isLikeOrCollection(likeOrCollectionDTO).then((res) => {
+        starState.value = res.data;
+      });
     });
   }
 );
@@ -204,6 +212,7 @@ watch(
 const noteInfo = ref<NoteInfo>({});
 const followerState = ref(false);
 const likeState = ref(false);
+const starState = ref(false);
 const commentValue = ref("");
 const commentPlaceVal = ref("请输入内容");
 const commentObject = ref({});
@@ -245,6 +254,17 @@ const like = (type: number) => {
   });
 };
 
+const star = (type: number) => {
+  const likeOrCollectionDTO = {} as LikeOrCollectionDTO;
+  likeOrCollectionDTO.likeOrCollectionId = noteInfo.value.id;
+  likeOrCollectionDTO.publishUid = noteInfo.value.uid;
+  likeOrCollectionDTO.type = 3;
+  likeOrCollectionByDTO(likeOrCollectionDTO).then(() => {
+    starState.value = type == 1;
+    noteInfo.value.collectionCount += type;
+  });
+};
+
 const clickComment = (comment: any) => {
   console.log("---main", comment);
   commentObject.value = comment;
@@ -262,18 +282,22 @@ const commenInput = (e: any) => {
 const saveComment = () => {
   const comment = {} as CommentDTO;
   comment.nid = props.nid;
-  console.log("commentObject.value", commentObject.value.pid === undefined);
+  comment.noteUid = noteInfo.value.uid;
+  console.log("commentObject.value", commentObject.value);
   if (commentObject.value.pid === undefined) {
     comment.pid = "0";
     comment.replyId = "0";
+    comment.replyUid = noteInfo.value.uid;
     comment.level = 1;
   } else if (commentObject.value.pid == "0") {
     comment.pid = commentObject.value.id;
     comment.replyId = commentObject.value.id;
+    comment.replyUid = commentObject.value.uid;
     comment.level = 2;
   } else {
     comment.pid = commentObject.value.pid;
     comment.replyId = commentObject.value.id;
+    comment.replyUid = commentObject.value.uid;
     comment.level = 2;
   }
   console.log("comment", comment);

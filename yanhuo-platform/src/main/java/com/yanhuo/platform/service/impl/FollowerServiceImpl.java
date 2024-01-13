@@ -20,9 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -121,6 +119,38 @@ public class FollowerServiceImpl extends ServiceImpl<FollowerDao, Follower> impl
         String userId = AuthContextHolder.getUserId();
         long count = this.count(new QueryWrapper<Follower>().eq("uid", userId).eq("fid", followerId));
         return count>0;
+    }
+
+    @Override
+    public Page<FollowerVo> getNoticeFollower(long currentPage, long pageSize) {
+        Page<FollowerVo> result = new Page<>();
+        String userId = AuthContextHolder.getUserId();
+
+        Page<Follower> followerPage = this.page(new Page<>((int) currentPage, (int) pageSize), new QueryWrapper<Follower>().eq("fid", userId).ne("uid",userId).orderByDesc("create_date"));
+        List<Follower> followerList = followerPage.getRecords();
+        long total = followerPage.getTotal();
+
+        Set<String> uids = followerList.stream().map(Follower::getUid).collect(Collectors.toSet());
+        Map<String, User> userMap = userService.listByIds(uids).stream().collect(Collectors.toMap(User::getId, user -> user));
+
+        // 得到当前用户的所有关注
+        List<Follower> followers = this.list(new QueryWrapper<Follower>().eq("uid", userId));
+        Set<String> followerSet = followers.stream().map(Follower::getFid).collect(Collectors.toSet());
+
+        List<FollowerVo> followerVoList = new ArrayList<>();
+        followerList.forEach(item->{
+            FollowerVo followerVo = new FollowerVo();
+            User user = userMap.get(item.getUid());
+            followerVo.setUid(user.getId())
+                  .setUsername(user.getUsername())
+                  .setAvatar(user.getAvatar())
+                  .setTime(item.getCreateDate().getTime())
+                  .setIsFollow(followerSet.contains(item.getUid()));
+            followerVoList.add(followerVo);
+        });
+        result.setRecords(followerVoList);
+        result.setTotal(total);
+        return result;
     }
 
 }

@@ -86,9 +86,11 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
         Page<LikeOrCollection> likeOrCollectionPage;
         // 得到当前用户发布的所有图片
         if(type==2){
+            // 所有点赞图片
             likeOrCollectionPage = likeOrCollectionService.page(new Page<>(currentPage, pageSize), new QueryWrapper<LikeOrCollection>().eq("uid", userId).eq("type",1).orderByDesc("create_date"));
         }else{
-            likeOrCollectionPage = likeOrCollectionService.page(new Page<>(currentPage, pageSize), new QueryWrapper<LikeOrCollection>().eq("uid", userId).eq("type",2).orderByDesc("create_date"));
+            // 所有收藏图片
+            likeOrCollectionPage = likeOrCollectionService.page(new Page<>(currentPage, pageSize), new QueryWrapper<LikeOrCollection>().eq("uid", userId).eq("type",3).orderByDesc("create_date"));
         }
 
         List<LikeOrCollection> likeOrCollectionList = likeOrCollectionPage.getRecords();

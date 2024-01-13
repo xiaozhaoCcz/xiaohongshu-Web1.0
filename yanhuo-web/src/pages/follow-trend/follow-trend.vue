@@ -6,7 +6,7 @@
     <ul class="trend-container">
       <li class="trend-item" v-for="(item, index) in trendData" :key="index">
         <a class="user-avatar">
-          <img class="avatar-item" :src="item.avatar" />
+          <img class="avatar-item" :src="item.avatar" @click="toUser(item.uid)" />
         </a>
         <div class="main">
           <div class="info">
@@ -67,7 +67,9 @@ import FloatingBtn from "@/components/FloatingBtn.vue";
 import Main from "@/pages/main/main.vue";
 import type { LikeOrCollectionDTO } from "@/type/likeOrCollection";
 import { likeOrCollectionByDTO } from "@/api/likeOrCollection";
+import { useRouter } from "vue-router";
 
+const router = useRouter();
 const currentPage = ref(1);
 const pageSize = ref(5);
 const trendData = ref<Array<any>>([]);
@@ -76,6 +78,10 @@ const topLoading = ref(false);
 const mainShow = ref(false);
 const nid = ref("");
 const likeOrCollectionDTO = ref<LikeOrCollectionDTO>({});
+
+const toUser = (uid: string) => {
+  router.push({ name: "user", state: { uid: uid } });
+};
 
 const getFollowTrends = () => {
   getFollowTrendPage(currentPage.value, pageSize.value).then((res) => {

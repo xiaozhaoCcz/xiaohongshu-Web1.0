@@ -1,76 +1,62 @@
 <template>
   <div>
-    <ul class="message-container">
-      <li class="message-item">
+    <ul class="message-container" v-infinite-scroll="loadMore">
+      <li class="message-item" v-for="(item, index) in dataList" :key="index">
         <a class="user-avatar">
           <!-- https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png -->
-          <img class="avatar-item" src="https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg" />
+          <img class="avatar-item" :src="item.avatar" @click="toUser(item.uid)" />
         </a>
         <div class="main">
           <div class="info">
             <div class="user-info">
-              <a class>这是名词</a>
+              <a class>{{ item.username }}</a>
             </div>
-            <div class="interaction-hint"><span>评论了您的笔记&nbsp;</span><span>2021-10-9</span></div>
+            <div class="interaction-hint">
+              <span v-if="item.pid === '0'">评论了您的笔记</span>
+              <span v-if="item.replyUid === currentUid && item.pid !== '0'"
+                >回复了您的评论</span
+              >
+              <span v-if="item.replyUid !== currentUid && item.pid !== '0'"
+                >回复了{{ item.replyUsername }}的评论</span
+              >
+              &nbsp;<span>{{ item.time }}</span>
+            </div>
             <div class="interaction-content">
-              <span>这是具体内容</span>
+              <span>{{ item.content }}</span>
             </div>
-            <div class="action">
+            <div class="quote-info" v-show="item.replyContent !== null">
+              {{ item.replyContent }}
+            </div>
+            <!-- <div class="action">
               <div class="action-reply">
                 <ChatRound style="width: 1.2em; height: 1.2em" />
                 <div class="action-text">回复</div>
               </div>
               <div class="action-like">
-                <Star style="width: 1.2em; height: 1.2em" />
+                <i class="iconfont icon-follow" style="color: #333"></i>
               </div>
-            </div>
+            </div> -->
           </div>
-          <div class="extra">
-            <img class="extra-image" src="https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg" />
+          <div class="extra" @click="toMain(item.nid)">
+            <img class="extra-image" :src="item.noteCover" />
           </div>
         </div>
       </li>
-      <li class="message-item">
+      <!-- <li class="message-item">
         <a class="user-avatar">
-          <!-- https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png -->
-          <img class="avatar-item" src="https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg" />
+          <img
+            class="avatar-item"
+            src="https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg"
+          />
         </a>
         <div class="main">
           <div class="info">
             <div class="user-info">
               <a class>这是名词</a>
             </div>
-            <div class="interaction-hint"><span>评论了您的笔记&nbsp;</span><span>2021-10-9</span></div>
-            <div class="interaction-content">
-              <span>这是具体内容</span>
+            <div class="interaction-hint">
+              <span>评论了您的笔记&nbsp;</span><span>2021-10-9</span>
             </div>
-            <div class="quote-info">确实是不行</div>
-            <div class="action">
-              <div class="action-reply">
-                <ChatRound style="width: 1.2em; height: 1.2em" />
-                <div class="action-text">回复</div>
-              </div>
-              <div class="action-like">
-                <Star style="width: 1.2em; height: 1.2em" />
-              </div>
-            </div>
-          </div>
-          <div class="extra">
-            <img class="extra-image" src="https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg" />
-          </div>
-        </div>
-      </li>
-      <li class="message-item">
-        <a class="user-avatar">
-          <!-- https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png -->
-          <img class="avatar-item" src="https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg" />
-        </a>
-        <div class="main">
-          <div class="info">
-            <div class="user-info">
-              <a class>这是名词</a>
-            </div>
-            <div class="interaction-hint"><span>评论了您的笔记&nbsp;</span><span>2021-10-9</span></div>
             <div class="interaction-content">
               <span>这是具体内容</span>
             </div>
@@ -95,15 +81,65 @@
             </div>
           </div>
           <div class="extra">
-            <img class="extra-image" src="https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg" />
+            <img
+              class="extra-image"
+              src="https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg"
+            />
           </div>
         </div>
-      </li>
+      </li> -->
     </ul>
   </div>
 </template>
 <script lang="ts" setup>
 import { ChatRound, Star } from "@element-plus/icons-vue";
+import { ref } from "vue";
+import { formateTime } from "@/utils/util";
+import { getNoticeComment } from "@/api/comment";
+import { useUserStore } from "@/store/userStore";
+import { useRouter } from "vue-router";
+
+const userStore = useUserStore();
+const router = useRouter();
+const currentPage = ref(1);
+const pageSize = 12;
+const dataList = ref([]);
+const dataTotal = ref(0);
+const currentUid = ref("");
+
+const emit = defineEmits(["clickMain"]);
+
+const loadMore = () => {
+  currentPage.value += 1;
+  getPageData();
+};
+
+const toMain = (nid: string) => {
+  emit("clickMain", nid);
+};
+
+const toUser = (uid: string) => {
+  router.push({ name: "user", state: { uid: uid } });
+};
+
+const getPageData = () => {
+  getNoticeComment(currentPage.value, pageSize).then((res) => {
+    console.log(res.data);
+    const { records, total } = res.data;
+    dataTotal.value = total;
+    records.forEach((item) => {
+      item.time = formateTime(item.time);
+      dataList.value.push(item);
+    });
+  });
+};
+
+const initData = () => {
+  console.log(1111, userStore.getUserInfo().id);
+  currentUid.value = userStore.getUserInfo().id;
+  getPageData();
+};
+initData();
 </script>
 <style lang="less" scoped>
 textarea {
@@ -111,6 +147,7 @@ textarea {
 }
 .message-container {
   width: 40rem;
+  height: 90vh;
   .message-item {
     display: flex;
     flex-direction: row;

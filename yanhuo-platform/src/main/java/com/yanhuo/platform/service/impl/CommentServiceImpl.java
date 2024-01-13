@@ -88,6 +88,56 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
     }
 
     @Override
+    public IPage<CommentVo> getNoticeComment(long currentPage, long pageSize) {
+        Page<CommentVo> result = new Page<>();
+        String currentUid = AuthContextHolder.getUserId();
+
+        Page<Comment> commentPage = this.page(new Page<>((int) currentPage, (int) pageSize), new QueryWrapper<Comment>().eq("reply_uid", currentUid).or(e->e.eq("note_uid",currentUid)).ne("uid", currentUid).orderByDesc("create_date"));
+
+        List<Comment> commentList = commentPage.getRecords();
+        long total = commentPage.getTotal();
+
+        List<CommentVo> commentVoList = new ArrayList<>();
+        if(!commentList.isEmpty()){
+            Set<String> uids = commentList.stream().map(Comment::getUid).collect(Collectors.toSet());
+            Map<String, User> userMap = userService.listByIds(uids).stream().collect(Collectors.toMap(User::getId, user -> user));
+
+            Set<String> nids = commentList.stream().map(Comment::getNid).collect(Collectors.toSet());
+            Map<String, Note> noteMap  = noteService.listByIds(nids).stream().collect(Collectors.toMap(Note::getId, note -> note));
+
+            // 得到所有回复的评论内容
+            Set<String> cids = commentList.stream().filter(item -> !"0".equals(item.getPid())).map(Comment::getReplyId).collect(Collectors.toSet());
+            Map<String, Comment> replyCommentMap = new HashMap<>(16);
+            if(!cids.isEmpty()){
+                replyCommentMap  = this.listByIds(cids).stream().collect(Collectors.toMap(Comment::getId, comment -> comment));
+            }
+
+
+
+            for (Comment comment:commentList){
+                CommentVo commentVo = ConvertUtils.sourceToTarget(comment, CommentVo.class);
+                User user = userMap.get(comment.getUid());
+                Note note = noteMap.get(comment.getNid());
+                commentVo.setUsername(user.getUsername())
+                        .setAvatar(user.getAvatar())
+                        .setTime(comment.getCreateDate().getTime())
+                        .setNoteCover(note.getNoteCover());
+
+                if(!"0".equals(comment.getPid())){
+                    User replyUser = userMap.get(comment.getReplyUid());
+                    Comment replyComment = replyCommentMap.get(comment.getReplyId());
+                    commentVo.setReplyContent(replyComment.getContent())
+                            .setReplyUsername(replyUser.getUsername());
+                }
+                commentVoList.add(commentVo);
+            }
+        }
+        result.setRecords(commentVoList);
+        result.setTotal(total);
+        return result;
+    }
+
+    @Override
     public Page<CommentVo> getTwoCommentPageByOneCommentId(long currentPage, long pageSize, String oneCommentId) {
         Page<CommentVo> result = new Page<>();
         String currentUid = AuthContextHolder.getUserId();

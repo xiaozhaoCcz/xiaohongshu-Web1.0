@@ -7,7 +7,11 @@ import java.io.Serializable;
 
 @Data
 @Accessors(chain = true)
-public class FollowerVo implements Serializable {
+public class LikeOrCollectionVo implements Serializable {
+
+    private String itemId;
+
+    private String itemCover;
 
     private String uid;
 
@@ -15,7 +19,10 @@ public class FollowerVo implements Serializable {
 
     private String avatar;
 
-    private Boolean isFollow;
+    private String content;
 
     private Long time;
+
+    private Integer type;
+
 }

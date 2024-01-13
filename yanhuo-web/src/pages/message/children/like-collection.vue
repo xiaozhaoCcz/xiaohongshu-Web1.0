@@ -1,57 +1,90 @@
 <template>
   <div>
-    <ul class="agree-container">
-      <li class="agree-item">
+    <ul class="agree-container" v-infinite-scroll="loadMore">
+      <li class="agree-item" v-for="(item, index) in dataList" :key="index">
         <a class="user-avatar">
           <!-- https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png -->
-          <img class="avatar-item" src="https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg" />
+          <img class="avatar-item" :src="item.avatar" @click="toUser(item.uid)" />
         </a>
         <div class="main">
           <div class="info">
             <div class="user-info">
-              <a class>这是名词</a>
+              <a class>{{ item.username }}</a>
             </div>
-            <div class="interaction-hint"><span>赞了您的笔记&nbsp;</span><span>2021-10-9</span></div>
-            <div class="interaction-content">
+            <div class="interaction-hint">
+              <span v-if="item.type == 1">赞了您的笔记</span>
+              <span v-if="item.type == 2">赞了您的评论</span>
+              <span v-if="item.type == 3">收藏您的笔记</span>
+              <span v-if="item.type == 4">赞了您的{{ item.content }}专辑</span>
+              &nbsp;<span>{{ item.time }}</span>
+            </div>
+            <!-- <div class="interaction-content">
               <span>这是具体内容</span>
-            </div>
+            </div> -->
+            <div class="quote-info" v-if="item.type == 2">{{ item.content }}</div>
           </div>
-          <div class="extra">
-            <img class="extra-image" src="https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg" />
-          </div>
-        </div>
-      </li>
-      <li class="agree-item">
-        <a class="user-avatar">
-          <!-- https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png -->
-          <img class="avatar-item" src="https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg" />
-        </a>
-        <div class="main">
-          <div class="info">
-            <div class="user-info">
-              <a class>这是名词</a>
-            </div>
-            <div class="interaction-hint"><span>赞了您的评论&nbsp;</span><span>2021-10-9</span></div>
-            <div class="interaction-content">
-              <span>这是具体内容</span>
-            </div>
-            <div class="quote-info">确实是不行</div>
-          </div>
-          <div class="extra">
-            <img class="extra-image" src="https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg" />
+          <div class="extra" @click="toPage(item.itemId)">
+            <img class="extra-image" :src="item.itemCover" />
           </div>
         </div>
       </li>
     </ul>
   </div>
 </template>
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+import { ref } from "vue";
+import { getNoticeLikeOrCollection } from "@/api/likeOrCollection";
+import { formateTime } from "@/utils/util";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
+
+const emit = defineEmits(["clickMain"]);
+
+const currentPage = ref(1);
+const pageSize = 12;
+const dataList = ref([]);
+const dataTotal = ref(0);
+
+const toPage = (nid: string) => {
+  emit("clickMain", nid);
+};
+
+const toUser = (uid: string) => {
+  router.push({ name: "user", state: { uid: uid } });
+};
+
+const getPageData = () => {
+  getNoticeLikeOrCollection(currentPage.value, pageSize).then((res) => {
+    console.log(1111, res.data);
+    const { records, total } = res.data;
+    dataTotal.value = total;
+    records.forEach((item) => {
+      item.time = formateTime(item.time);
+      dataList.value.push(item);
+    });
+  });
+};
+
+const loadMore = () => {
+  console.log("222");
+  currentPage.value += 1;
+  getPageData();
+};
+
+const initData = () => {
+  console.log(1111);
+  getPageData();
+};
+initData();
+</script>
 <style lang="less" scoped>
 textarea {
   overflow: auto;
 }
 .agree-container {
   width: 40rem;
+  height: 90vh;
   .agree-item {
     display: flex;
     flex-direction: row;

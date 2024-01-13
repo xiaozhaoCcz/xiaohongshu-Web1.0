@@ -26,3 +26,10 @@ export const isFollow = (followerId: string) => {
     },
   });
 };
+
+export const getNoticeFollower = (currentPage: number, pageSize: number) => {
+  return request<any>({
+    url: `/platform/follower/getNoticeFollower/${currentPage}/${pageSize}`, // mock接口
+    method: "get",
+  });
+};

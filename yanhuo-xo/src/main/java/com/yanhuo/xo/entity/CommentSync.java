@@ -13,6 +13,8 @@ public class CommentSync extends BaseEntity {
 
     private String nid;
 
+    private String noteUid;
+
     private String uid;
 
     private String pid;

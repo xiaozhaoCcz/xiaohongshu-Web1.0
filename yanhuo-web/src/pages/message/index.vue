@@ -44,22 +44,50 @@
       </div>
     </div>
     <Message v-if="type == 1"></Message>
-    <Comment v-if="type == 2"></Comment>
-    <LikeCollection v-if="type == 3"></LikeCollection>
-    <Follower v-else></Follower>
+    <Comment v-if="type == 2" @click-main="toMain"></Comment>
+    <LikeCollection v-if="type == 3" @click-main="toMain"></LikeCollection>
+    <Follower v-if="type == 4"></Follower>
     <!-- <router-view /> -->
+
+    <Main
+      v-show="mainShow"
+      :nid="nid"
+      class="animate__animated animate__zoomIn animate__delay-0.5s"
+      @click-main="close"
+    ></Main>
+
+    <el-backtop :bottom="80" :right="24">
+      <div class="back-top">
+        <Top style="width: 1.2em; height: 1.2em" color="rgba(51, 51, 51, 0.8)" />
+      </div>
+    </el-backtop>
   </div>
 </template>
 <script lang="ts" setup>
+import { Top } from "@element-plus/icons-vue";
 import { ref } from "vue";
 import Message from "@/pages/message/children/message.vue";
 import LikeCollection from "@/pages/message/children/like-collection.vue";
 import Follower from "@/pages/message/children/follower.vue";
 import Comment from "@/pages/message/children/comment.vue";
+import Main from "@/pages/main/main.vue";
+
 const type = ref(1);
+const nid = ref("");
+const mainShow = ref(false);
 
 const toPage = (val: number) => {
   type.value = val;
+};
+
+const close = () => {
+  mainShow.value = false;
+};
+
+const toMain = (val: string) => {
+  console.log("nid", val);
+  nid.value = val;
+  mainShow.value = true;
 };
 </script>
 <style lang="less" scoped>
@@ -72,7 +100,7 @@ const toPage = (val: number) => {
   .reds-sticky {
     top: 72px;
     position: fixed;
-    z-index: 10010;
+    z-index: 12;
     width: 40rem;
     box-sizing: border-box;
     height: 72px;
@@ -120,6 +148,19 @@ const toPage = (val: number) => {
       height: 0;
       border: solid rgba(0, 0, 0, 0.08);
       border-width: 1px 0 0;
+    }
+    .back-top {
+      width: 40px;
+      height: 40px;
+      background: #fff;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      border-radius: 100px;
+      color: rgba(51, 51, 51, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+      cursor: pointer;
     }
   }
 }

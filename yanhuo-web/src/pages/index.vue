@@ -79,7 +79,7 @@
         </ul>
 
         <div class="information-container">
-          <div class="information-pad">
+          <div class="information-pad" v-show="padShow">
             <div class="container">
               <div>
                 <div>
@@ -150,7 +150,7 @@
             </div>
           </div>
 
-          <div class="information-wrapper">
+          <div class="information-wrapper" @click="loadPad">
             <More style="width: 1em; height: 1em; margin-right: 8px" />
             <span class="channel"> 更多</span>
           </div>
@@ -197,6 +197,7 @@ const showClose = ref(false);
 const SearchInput = ref();
 const recordList = ref<Array<string>>([]);
 const activeLink = ref(1);
+const padShow = ref(false);
 
 const routerList = ["/", "/followTrend", "/notice", "/push", "/user"];
 
@@ -248,6 +249,8 @@ const close = (val: boolean) => {
   loginShow.value = val;
   userInfo.value = userStore.getUserInfo();
 };
+
+const loadPad = () => [(padShow.value = !padShow.value)];
 
 const initData = () => {
   userInfo.value = userStore.getUserInfo();

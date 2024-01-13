@@ -181,6 +181,7 @@ initData();
           border-radius: 20px;
           border: 1px solid rgba(0, 0, 0, 0.08);
           flex-shrink: 0;
+          object-fit: cover;
         }
 
         .name {

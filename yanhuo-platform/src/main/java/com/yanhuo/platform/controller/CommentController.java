@@ -57,6 +57,12 @@ public class CommentController {
     }
 
 
+    @RequestMapping("getNoticeComment/{currentPage}/{pageSize}")
+    public Result<?> getNoticeComment(@PathVariable long currentPage, @PathVariable long pageSize) {
+        IPage<CommentVo> pageInfo = commentService.getNoticeComment(currentPage, pageSize);
+        return Result.ok(pageInfo);
+    }
+
     @RequestMapping("getTwoCommentListByOneCommentId")
     public Result<?> getTwoCommentListByOneCommentId(String oneCommentId) {
         List<CommentVo> pageInfo = commentService.getTwoCommentListByOneCommentId(oneCommentId);

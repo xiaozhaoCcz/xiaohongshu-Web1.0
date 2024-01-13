@@ -185,7 +185,7 @@ const computedTotal = ref(0);
 const oneIndex = ref(-1);
 const twoIndex = ref(-1);
 
-const pageSize = 2;
+const pageSize = 5;
 const twoPageSize = 10;
 const showTwoCommentCount = 3;
 const commentMap = new Map();
@@ -297,8 +297,9 @@ watch(
     console.log("---newVal,oldVal", newNid, newSeed, oldNid, oldSeed);
     if (newNid !== oldNid) {
       dataList.value = [];
+      getCommentData();
     }
-    getCommentData();
+
     if (newSeed !== oldSeed) {
       addComment();
     }

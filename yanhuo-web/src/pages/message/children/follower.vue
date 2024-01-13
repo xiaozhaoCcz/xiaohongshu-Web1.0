@@ -1,59 +1,37 @@
 <template>
   <div>
-    <ul class="agree-container">
-      <li class="agree-item">
+    <ul class="agree-container" v-infinite-scroll="loadMore">
+      <li class="agree-item" v-for="(item, index) in dataList" :key="index">
         <a class="user-avatar">
           <!-- https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png -->
-          <img class="avatar-item" src="https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg" />
+          <img class="avatar-item" :src="item.avatar" @click="toUser(item.uid)" />
         </a>
         <div class="main">
           <div class="info">
             <div class="user-info">
-              <a class>这是名词</a>
+              <a class>{{ item.username }}</a>
             </div>
-            <div class="interaction-hint"><span>开始关注您了&nbsp;</span><span>2021-10-9</span></div>
+            <div class="interaction-hint">
+              <span>开始关注您了&nbsp;</span><span>{{ item.time }}</span>
+            </div>
           </div>
           <div class="extra">
-            <button class="reds-button-new follow-button large primary follow-button">
-              <span class="reds-button-new-box"><span class="reds-button-new-text">回关</span></span>
-            </button>
-          </div>
-        </div>
-      </li>
-      <li class="agree-item">
-        <a class="user-avatar">
-          <!-- https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png -->
-          <img class="avatar-item" src="https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg" />
-        </a>
-        <div class="main">
-          <div class="info">
-            <div class="user-info">
-              <a class>这是名词</a>
-            </div>
-            <div class="interaction-hint"><span>开始关注您了&nbsp;</span><span>2021-10-9</span></div>
-          </div>
-          <div class="extra">
-            <button class="reds-button-new follow-button large primary follow-button">
-              <span class="reds-button-new-box"><span class="reds-button-new-text">回关</span></span>
-            </button>
-          </div>
-        </div>
-      </li>
-      <li class="agree-item">
-        <a class="user-avatar">
-          <!-- https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png -->
-          <img class="avatar-item" src="https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg" />
-        </a>
-        <div class="main">
-          <div class="info">
-            <div class="user-info">
-              <a class>这是名词</a>
-            </div>
-            <div class="interaction-hint"><span>开始关注您了&nbsp;</span><span>2021-10-9</span></div>
-          </div>
-          <div class="extra">
-            <button class="reds-button-new follow-button large primary follow-button">
-              <span class="reds-button-new-box"><span class="reds-button-new-text">回关</span></span>
+            <el-button
+              type="info"
+              round
+              size="large"
+              v-if="item.isFollow"
+              @click="follow(item.uid, index, 1)"
+              >已关注</el-button
+            >
+            <button
+              v-else
+              class="reds-button-new follow-button large primary follow-button"
+              @click="follow(item.uid, index, -1)"
+            >
+              <span class="reds-button-new-box"
+                ><span class="reds-button-new-text">回关</span></span
+              >
             </button>
           </div>
         </div>
@@ -61,13 +39,61 @@
     </ul>
   </div>
 </template>
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+import { ref } from "vue";
+import { getNoticeFollower } from "@/api/follower";
+import { formateTime } from "@/utils/util";
+import { followById } from "@/api/follower";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
+const currentPage = ref(1);
+const pageSize = 12;
+const dataList = ref([]);
+const dataTotal = ref(0);
+
+const getPageData = () => {
+  getNoticeFollower(currentPage.value, pageSize).then((res) => {
+    console.log(res.data);
+    const { records, total } = res.data;
+    dataTotal.value = total;
+    records.forEach((item) => {
+      item.time = formateTime(item.time);
+      dataList.value.push(item);
+    });
+  });
+};
+
+const follow = (fid: string, index: number, type: number) => {
+  followById(fid).then((res) => {
+    dataList.value[index].isFollow = type == -1;
+  });
+};
+
+const loadMore = () => {
+  console.log("222");
+  currentPage.value += 1;
+  getPageData();
+};
+
+const toUser = (uid: string) => {
+  router.push({ name: "user", state: { uid: uid } });
+};
+
+const initData = () => {
+  console.log(1111);
+  getPageData();
+};
+initData();
+</script>
 <style lang="less" scoped>
 textarea {
   overflow: auto;
 }
 .agree-container {
   width: 40rem;
+  height: 90vh;
+
   .agree-item {
     display: flex;
     flex-direction: row;

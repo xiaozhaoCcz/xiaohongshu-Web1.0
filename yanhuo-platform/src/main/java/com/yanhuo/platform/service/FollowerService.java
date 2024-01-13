@@ -14,4 +14,6 @@ public interface FollowerService  extends IService<Follower> {
     void followById(String followerId);
 
     boolean isFollow(String followerId);
+
+    Page<FollowerVo> getNoticeFollower(long currentPage, long pageSize);
 }

@@ -16,3 +16,12 @@ export const isLikeOrCollection = (data: LikeOrCollectionDTO) => {
     data: data,
   });
 };
+
+export const getNoticeLikeOrCollection = (currentPage: number, pageSize: number) => {
+  return request<any>({
+    url: `/platform/likeOrCollection/getNoticeLikeOrCollection/${currentPage}/${pageSize}`, // mock接口
+    method: "get",
+  });
+};
+
+

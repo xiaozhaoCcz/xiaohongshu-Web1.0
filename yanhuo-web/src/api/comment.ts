@@ -45,3 +45,13 @@ export const getTwoCommentPageByOneCommentId = (
     },
   });
 };
+
+export const getNoticeComment = (
+  currentPage: number,
+  pageSize: number,
+) => {
+  return request<any>({
+    url: `/platform/comment/getNoticeComment/${currentPage}/${pageSize}`, // mock接口
+    method: "get",
+  });
+};

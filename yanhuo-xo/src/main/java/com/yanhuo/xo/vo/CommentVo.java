@@ -15,6 +15,10 @@ public class CommentVo implements Serializable {
 
     private String pid;
 
+    private String nid;
+
+    private String noteCover;
+
     private String uid;
 
     private String username;
@@ -25,7 +29,11 @@ public class CommentVo implements Serializable {
 
     private String replyUid;
 
+    private String replyUsername;
+
     private String content;
+
+    private String replyContent;
 
     private Long time;
 

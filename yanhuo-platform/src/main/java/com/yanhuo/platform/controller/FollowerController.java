@@ -47,4 +47,10 @@ public class FollowerController {
         boolean flag = followerService.isFollow(followerId);
         return Result.ok(flag);
     }
+
+    @RequestMapping("getNoticeFollower/{currentPage}/{pageSize}")
+    public Result<?> getNoticeFollower(@PathVariable long currentPage, @PathVariable long pageSize) {
+        Page<FollowerVo> pageInfo = followerService.getNoticeFollower(currentPage, pageSize);
+        return Result.ok(pageInfo);
+    }
 }

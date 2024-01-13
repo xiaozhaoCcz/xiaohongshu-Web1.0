@@ -38,4 +38,12 @@ public interface CommentService extends IService<Comment> {
     void deleteCommentById(String commentId);
 
     void syncCommentByIds(List<String> commentIds);
+
+    /**
+     * 得到通知的评论
+     * @param currentPage
+     * @param pageSize
+     * @return
+     */
+    IPage<CommentVo> getNoticeComment(long currentPage, long pageSize);
 }
