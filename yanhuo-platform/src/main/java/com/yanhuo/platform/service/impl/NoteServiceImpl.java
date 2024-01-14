@@ -149,40 +149,4 @@ public class NoteServiceImpl extends ServiceImpl<NoteDao, Note> implements NoteS
     public Page<NoteVo> getHotPage(long currentPage, long pageSize) {
         return null;
     }
-
-    @Override
-    public void addNoteBulkData() {
-        List<NoteSearchVo> noteSearchVoList = new ArrayList<>();
-        List<Note> noteList = this.list();
-        List<String> uids = noteList.stream().map(Note::getUid).collect(Collectors.toList());
-        List<User> userList = userService.listByIds(uids);
-        HashMap<String, User> userMap = new HashMap<>();
-        userList.forEach(item -> userMap.put(item.getId(), item));
-        User user;
-        for (Note note : noteList) {
-            NoteSearchVo noteSearchVo = ConvertUtils.sourceToTarget(note, NoteSearchVo.class);
-            user = userMap.get(note.getUid());
-            //懒得优化了
-            List<TagNoteRelation> tagNoteRelationList = tagNoteRelationService.list(new QueryWrapper<TagNoteRelation>().eq("nid", note.getId()));
-            if(!tagNoteRelationList.isEmpty()){
-                Set<String> tids = tagNoteRelationList.stream().map(TagNoteRelation::getTid).collect(Collectors.toSet());
-                List<Tag> tags = tagService.listByIds(tids);
-                String tagStr = tags.stream().map(Tag::getTitle).collect(Collectors.joining(","));
-                noteSearchVo.setTags(tagStr);
-            }else{
-                noteSearchVo.setTags("");
-            }
-
-            Category category = categoryService.getById(note.getCid());
-            Category parentCategory = categoryService.getById(note.getCpid());
-            noteSearchVo.setUid(user.getId())
-                    .setUsername(user.getUsername())
-                    .setAvatar(user.getAvatar())
-                    .setCategoryName(category.getTitle())
-                    .setCategoryParentName(parentCategory.getTitle())
-                    .setTime(note.getUpdateDate().getTime());
-            noteSearchVoList.add(noteSearchVo);
-        }
-        esClient.addNoteBulkData(noteSearchVoList);
-    }
 }

@@ -195,7 +195,7 @@ watch(
   }
 );
 
-const currentUid = userStore.getUserInfo().id;
+const currentUid = ref("");
 const noteInfo = ref<NoteInfo>({
   id: "",
   title: "",
@@ -316,6 +316,12 @@ const clearCommeent = () => {
 
 const loadMoreData = () => {
   currentPage.value += 1;
+};
+
+() => {
+  if (userStore.getUserInfo() !== null) {
+    currentUid.value = userStore.getUserInfo().id;
+  }
 };
 </script>
 

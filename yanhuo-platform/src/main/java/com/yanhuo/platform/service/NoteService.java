@@ -20,6 +20,4 @@ public interface NoteService extends IService<Note> {
     String updateNoteByDTO(NoteDTO noteDTO);
 
     Page<NoteVo> getHotPage(long currentPage, long pageSize);
-
-    void addNoteBulkData();
 }
