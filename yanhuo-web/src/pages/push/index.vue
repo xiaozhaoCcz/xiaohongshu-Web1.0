@@ -1,6 +1,6 @@
 <template>
-  <div class="container">
-    <div class="push-container">
+  <div class="container" id="container">
+    <div class="push-container" id="tagContainer">
       <div class="header">
         <span class="header-icon"></span><span class="header-title">发布图文</span>
       </div>
@@ -10,11 +10,7 @@
           action="http://localhost:88/api/util/oss/saveBatch/0"
           list-type="picture-card"
           multiple
-          :on-preview="handlePreview"
-          :on-remove="handleRemove"
-          :before-remove="beforeRemove"
           :limit="9"
-          :on-exceed="handleExceed"
           :headers="uploadHeader"
           :auto-upload="false"
         >
@@ -97,17 +93,16 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { Plus } from "@element-plus/icons-vue";
-
-import type { UploadProps, UploadUserFile, CascaderProps } from "element-plus";
-import { ElMessage, ElMessageBox } from "element-plus";
+import type { UploadUserFile, CascaderProps } from "element-plus";
+import { ElMessage } from "element-plus";
 import { useUserStore } from "@/store/userStore";
 import axios from "axios";
 import { getCategoryTreeData } from "@/api/category";
 import { saveNoteByDTO } from "@/api/note";
 import { getPageTagByKeyword } from "@/api/tag";
-import Schema from "async-validator";
+// import Schema from "async-validator";
 // import Crop from "@/components/Crop.vue";
 const props: CascaderProps = {
   label: "title",
@@ -142,6 +137,21 @@ const currentPage = ref(1);
 const pageSize = 10;
 const tagTotal = ref(0);
 
+// 监听外部点击
+onMounted(() => {
+  document.getElementById("container")!.addEventListener("click", function (e) {
+    var event = e || window.event;
+    var target = event.target || event.srcElement;
+    // if(target.id == "name") {
+    if (document.getElementById("tagContainer")!.contains(target)) {
+      console.log("in");
+    } else {
+      console.log("out");
+      showTagState.value = false;
+    }
+  });
+});
+
 const addTag = () => {
   content.value += "#";
   showTagState.value = true;
@@ -169,29 +179,6 @@ const loadMoreData = () => {
   setData();
 };
 
-const handleRemove: UploadProps["onRemove"] = (uploadFile, uploadFiles) => {
-  console.log(uploadFile, uploadFiles);
-};
-
-const handlePreview: UploadProps["onPreview"] = (uploadFile) => {
-  console.log(uploadFile);
-};
-
-const handleExceed: UploadProps["onExceed"] = (files, uploadFiles) => {
-  ElMessage.warning(
-    `The limit is 3, you selected ${files.length} files this time, add up to ${
-      files.length + uploadFiles.length
-    } totally`
-  );
-};
-
-const beforeRemove: UploadProps["beforeRemove"] = (uploadFile, uploadFiles) => {
-  return ElMessageBox.confirm(`Cancel the transfer of ${uploadFile.name} ?`).then(
-    () => true,
-    () => false
-  );
-};
-
 const handleChange = (ids: Array<any>) => {
   console.log(ids);
   categoryList.value = ids;
@@ -199,6 +186,31 @@ const handleChange = (ids: Array<any>) => {
 
 // 上传图片功能
 const pubslish = () => {
+  // 验证
+  if (fileList.value.length <= 0) {
+    ElMessage({
+      message: "图片数量不能为空",
+      type: "error",
+    });
+    return;
+  }
+
+  if (title.value === null || content.value == null) {
+    ElMessage({
+      message: "标题或内容不能为空",
+      type: "error",
+    });
+    return;
+  }
+
+  if (categoryList.value.length <= 0) {
+    ElMessage({
+      message: "请选择分类",
+      type: "error",
+    });
+    return;
+  }
+
   const p = new Promise((resolve, reject) => {
     let params = new FormData();
     // 注意此处对文件数组进行了参数循环添加
@@ -279,11 +291,10 @@ initData();
 
 .container {
   flex: 1;
-  padding: 0 24px;
   padding-top: 72px;
-  width: 67%;
-  margin: 0 auto;
+
   .push-container {
+    margin-left: 12vw;
     width: 600px;
     border-radius: 8px;
     box-sizing: border-box;
@@ -335,6 +346,7 @@ initData();
           border-radius: 4px;
           padding-left: 2px;
           color: #484848;
+          font-size: 14px;
         }
         .scrollbar-tag-item:hover {
           background-color: #f8f8f8;

@@ -12,11 +12,17 @@ public class NoteSearchVo  implements Serializable {
 
     private String title;
 
+    private String content;
+
     private String noteCover;
 
     private String cid;
 
+    private String categoryName;
+
     private String cpid;
+
+    private String categoryParentName;
 
     private String uid;
 
@@ -25,6 +31,8 @@ public class NoteSearchVo  implements Serializable {
     private String avatar;
 
     private String urls;
+
+    private String tags;
 
     //是否置顶
     private Integer pinned;

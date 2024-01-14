@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yanhuo.common.auth.AuthContextHolder;
 import com.yanhuo.common.utils.ConvertUtils;
+import com.yanhuo.common.utils.RedisUtils;
 import com.yanhuo.platform.service.LikeOrCollectionService;
 import com.yanhuo.platform.service.NoteService;
 import com.yanhuo.platform.service.UserService;
@@ -32,7 +33,6 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
 
     @Autowired
     LikeOrCollectionService likeOrCollectionService;
-
 
     @Override
     public Page<NoteSearchVo> getTrendPageByUser(long currentPage, long pageSize, String userId,Integer type) {
@@ -127,5 +127,10 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
     @Override
     public Page<FollowerVo> getUserPageByKeyword(long currentPage, long pageSize, String keyword) {
         return null;
+    }
+
+    @Override
+    public void saveUserSearchRecord(String keyword) {
+
     }
 }

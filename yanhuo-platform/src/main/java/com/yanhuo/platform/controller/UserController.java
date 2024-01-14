@@ -66,4 +66,11 @@ public class UserController {
         return Result.ok(pageInfo);
     }
 
+
+    @RequestMapping("saveUserSearchRecord")
+    public  Result<?> saveUserSearchRecord(String keyword){
+        userService.saveUserSearchRecord(keyword);
+        return Result.ok();
+    }
+
 }

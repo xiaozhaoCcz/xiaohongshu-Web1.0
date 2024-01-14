@@ -16,4 +16,6 @@ public interface UserService extends IService<User> {
     User updateUser(User user);
 
     Page<FollowerVo> getUserPageByKeyword(long currentPage, long pageSize, String keyword);
+
+    void saveUserSearchRecord(String keyword);
 }

@@ -40,7 +40,7 @@ public class NoteController {
 
     @RequestMapping("saveNoteByDTO")
     public Result<?> saveNoteByDTO(@RequestBody NoteDTO noteDTO) {
-       // ValidatorUtils.validateEntity(noteDTO, AddGroup.class);
+        ValidatorUtils.validateEntity(noteDTO, AddGroup.class);
         String id = noteService.saveNoteByDTO(noteDTO);
         return Result.ok(id);
     }

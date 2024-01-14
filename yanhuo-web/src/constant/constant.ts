@@ -19,10 +19,10 @@ export const options = reactive({
         // 当屏幕宽度小于等于1200
         rowPerView: 4,
       },
-      800: {
-        // 当屏幕宽度小于等于800
-        rowPerView: 3,
-      },
+      // 800: {
+      //   // 当屏幕宽度小于等于800
+      //   rowPerView: 3,
+      // },
       500: {
         // 当屏幕宽度小于等于500
         rowPerView: 2,

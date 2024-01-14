@@ -11,16 +11,9 @@
       :lazyload="options.lazyload"
       style="max-width: 1260px"
     >
-      <template #item="{ item }">
+      <template #item="{ item, url }">
         <div class="card" style="width: 240px">
-          <el-image class="noteImg" @click="toMain(item.id)" :src="item.noteCover">
-            <template #error>
-              <div class="image-slot">
-                <el-icon><icon-picture /></el-icon>
-              </div>
-            </template>
-          </el-image>
-          <!-- <LazyImg :url="url" @click="toMain(item.id)" class="fadeImg" /> -->
+          <LazyImg :url="url" @click="toMain(item.id)" style="object-fit: cover" />
           <div class="footer">
             <a class="title">
               <span>{{ item.title }}</span>
@@ -49,7 +42,7 @@
   ></Main>
 </template>
 <script lang="ts" setup>
-import { Waterfall } from "vue-waterfall-plugin-next";
+import { Waterfall, LazyImg } from "vue-waterfall-plugin-next";
 import "vue-waterfall-plugin-next/dist/style.css";
 import { ref, watch } from "vue";
 import { getTrendPageByUser } from "@/api/user";
@@ -96,7 +89,12 @@ const toMain = (noteId: string) => {
 const setData = (res: any) => {
   const { records, total } = res.data;
   noteTotal.value = total;
-  noteList.value.push(...records);
+  records.forEach((element) => {
+    const dataObj = Object.assign(element, {});
+    dataObj.src = element.noteCover;
+    noteList.value.push(dataObj);
+  });
+  console.log(noteList.value);
 };
 
 const getNoteList = (type: number) => {

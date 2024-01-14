@@ -12,7 +12,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
 import com.yanhuo.common.exception.YanHuoException;
 import com.yanhuo.search.common.NoteConstant;
-import com.yanhuo.search.config.ESConfig;
 import com.yanhuo.search.dto.NoteDTO;
 import com.yanhuo.search.service.NoteService;
 import com.yanhuo.xo.dao.NoteDao;
@@ -23,9 +22,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -42,12 +39,13 @@ public class NoteServiceImpl extends ServiceImpl<NoteDao, Note> implements NoteS
         try {
             SearchRequest.Builder builder = new SearchRequest.Builder().index(NoteConstant.NOTE_INDEX);
             if (StringUtils.isNotBlank(noteDTO.getKeyword())) {
-                builder.query(q -> q.bool(b -> b
-//                        .should(h -> h.fuzzy(f -> f.field("title").value(noteDTO.getKeyword()).fuzziness("6")))
-//                        .should(h -> h.fuzzy(f -> f.field("username").value(noteDTO.getKeyword()).fuzziness("4")))
-                                .should(h->h.match(f->f.field("title").query(noteDTO.getKeyword())))
-                                .should(h->h.match(f->f.field("content").query(noteDTO.getKeyword())))
-                                .should(h->h.match(f->f.field("username").query(noteDTO.getKeyword())))
+                builder.query(q->q.bool(b->b.
+                        should(h->h.match(f->f.field("title").boost(2f).query(noteDTO.getKeyword())))
+                        .should(h->h.match(f->f.field("username").boost(1f).query(noteDTO.getKeyword())))
+                        .should(h->h.match(f->f.field("content").boost(1f).query(noteDTO.getKeyword())))
+                        .should(h->h.match(f->f.field("tags").boost(4f).query(noteDTO.getKeyword())))
+                        .should(h->h.match(f->f.field("categoryName").boost(3f).query(noteDTO.getKeyword())))
+                        .should(h->h.match(f->f.field("categoryParentName").boost(2f).query(noteDTO.getKeyword())))
                 ));
             }
             if (StringUtils.isNotBlank(noteDTO.getCpid())&&StringUtils.isNotBlank(noteDTO.getCid())) {
@@ -61,7 +59,7 @@ public class NoteServiceImpl extends ServiceImpl<NoteDao, Note> implements NoteS
 
             if (noteDTO.getType() == 1) {
                 builder.sort(o -> o.field(f -> f.field("likeCount").order(SortOrder.Desc)));
-            } else {
+            } else if(noteDTO.getType() == 2){
                 builder.sort(o -> o.field(f -> f.field("time").order(SortOrder.Desc)));
             }
             builder.from((int) (currentPage - 1) * (int) pageSize);
@@ -105,7 +103,7 @@ public class NoteServiceImpl extends ServiceImpl<NoteDao, Note> implements NoteS
             page.setTotal(totalHits.value());
             page.setRecords(noteSearchVos);
         }catch (Exception e) {
-            throw new YanHuoException("es查找数据异常");
+            e.printStackTrace();
         }
         return page;
     }

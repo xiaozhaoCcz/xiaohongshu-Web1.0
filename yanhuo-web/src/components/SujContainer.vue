@@ -5,7 +5,7 @@
         <div class="header">
           <span> 历史记录 </span>
           <div class="icon-group">
-            <div class="icon-box" @click="deleteRecord">
+            <div class="icon-box" @click="showDeleteTag">
               <Delete style="width: 1.2em; height: 1.2em"></Delete>
             </div>
             <!---->
@@ -13,9 +13,12 @@
         </div>
         <div class="history-list">
           <div v-for="(item, index) in historyRecordList" :key="index">
-            <div class="history-item" @click="searchPage(item)">
-              {{ item }}
+            <div class="history-item">
+              <span @click="searchPage(item)">{{ item }}</span>
               <!---->
+              <span class="close-tag" v-show="showTagState" @click="deleteRecord(index)"
+                >X</span
+              >
             </div>
           </div>
           <!---->
@@ -24,47 +27,14 @@
       <div class="sug-box">
         <div class="header">猜你想搜</div>
         <div class="sug-wrapper">
-          <div class="sug-item query-trending query-trending hotspot">
+          <div
+            class="sug-item query-trending query-trending hotspot"
+            v-for="(item, index) in recommendRecords"
+            :key="index"
+          >
             <div class="sug-text">
-              斗破苍穹漫画
-              <!---->
+              {{ item }}
             </div>
-            <!---->
-          </div>
-          <div class="sug-item query-trending query-trending hotspot">
-            <div class="sug-text">
-              坂田银时
-              <!---->
-            </div>
-            <!---->
-          </div>
-          <div class="sug-item query-trending query-trending hotspot">
-            <div class="sug-text">
-              胖男生穿搭
-              <!---->
-            </div>
-            <!---->
-          </div>
-          <div class="sug-item query-trending query-trending hotspot">
-            <div class="sug-text">
-              朱竹清稀有图片
-              <!---->
-            </div>
-            <!---->
-          </div>
-          <div class="sug-item query-trending query-trending hotspot">
-            <div class="sug-text">
-              美杜莎全身
-              <!---->
-            </div>
-            <!---->
-          </div>
-          <div class="sug-item query-trending query-trending hotspot">
-            <div class="sug-text">
-              男士冬季外套
-              <!---->
-            </div>
-            <!---->
           </div>
         </div>
       </div>
@@ -102,14 +72,25 @@ import { ref, onMounted, watch } from "vue";
 import { useSearchStore } from "@/store/searchStore";
 import { getHotRecord } from "@/api/search";
 import { getRandomString } from "@/utils/util";
+import { storage } from "@/utils/storage";
 
 const searchStore = useSearchStore();
 
 const historyRecordList = ref<Array<string>>([]);
 const hotList = ref([]);
+const showTagState = ref(false);
+const recommendRecords = ["壁纸", "风景", "情侣", "头像", "动漫", "动物"];
 
-const deleteRecord = () => {
+const showDeleteTag = () => {
   console.log(123);
+  showTagState.value = !showTagState.value;
+};
+
+const deleteRecord = (index: number) => {
+  console.log(index);
+  historyRecordList.value.splice(index, 1);
+  // 使用store失效
+  storage.set("historyRecords", historyRecordList.value);
 };
 
 watch(
@@ -208,7 +189,23 @@ onMounted(() => {
       grid-gap: 8px;
       gap: 8px;
 
+      .close-tag {
+        position: absolute;
+        top: -8px;
+        right: 0;
+        width: 16px;
+        height: 16px;
+        text-align: center;
+        line-height: 16px;
+        background-color: #fff;
+        border-radius: 50%;
+        color: #888888;
+        border: 1px solid #f4f4f4;
+        z-index: 99999;
+      }
+
       .history-item {
+        position: relative;
         display: flex;
         align-items: center;
         justify-content: center;
