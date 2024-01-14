@@ -156,6 +156,7 @@ const addTag = () => {
   content.value += "#";
   showTagState.value = true;
   selectTagList.value = [];
+  currentPage.value = 1;
   setData();
 };
 

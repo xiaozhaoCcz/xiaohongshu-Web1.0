@@ -6,6 +6,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.List;
+
 @FeignClient(value = "search",url = "http://localhost:8804")
 @Component
 public interface EsClient {
@@ -16,4 +18,6 @@ public interface EsClient {
     @RequestMapping("/search/note/addNote")
     void addNote(@RequestBody NoteSearchVo noteSearchVo);
 
+    @RequestMapping("/search/note/addNoteBulkData")
+    void addNoteBulkData(@RequestBody List<NoteSearchVo> noteSearchVoList);
 }

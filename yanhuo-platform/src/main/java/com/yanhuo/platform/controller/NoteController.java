@@ -63,4 +63,10 @@ public class NoteController {
         Page<NoteVo> pageInfo = noteService.getHotPage(currentPage, pageSize);
         return Result.ok(pageInfo);
     }
+
+    @RequestMapping("addNoteBulkData")
+    public Result<?> addNoteBulkData() {
+        noteService.addNoteBulkData();
+        return Result.ok();
+    }
 }

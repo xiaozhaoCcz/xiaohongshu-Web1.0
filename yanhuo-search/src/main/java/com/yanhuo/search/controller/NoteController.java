@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * @author xiaozhao
@@ -38,5 +39,10 @@ public class NoteController {
     @RequestMapping("addNote")
     public void addNote(@RequestBody NoteSearchVo noteSearchVo){
         noteService.addNote(noteSearchVo);
+    }
+
+    @RequestMapping("addNoteBulkData")
+    public void addNoteBulkData(@RequestBody List<NoteSearchVo> noteSearchVoList){
+        noteService.addNoteBulkData(noteSearchVoList);
     }
 }

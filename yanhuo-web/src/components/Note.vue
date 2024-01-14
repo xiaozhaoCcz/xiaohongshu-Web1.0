@@ -89,7 +89,7 @@ const toMain = (noteId: string) => {
 const setData = (res: any) => {
   const { records, total } = res.data;
   noteTotal.value = total;
-  records.forEach((element) => {
+  records.forEach((element: any) => {
     const dataObj = Object.assign(element, {});
     dataObj.src = element.noteCover;
     noteList.value.push(dataObj);

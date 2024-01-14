@@ -2,9 +2,11 @@ package com.yanhuo.search.service.impl;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch._types.SortOrder;
+import co.elastic.clients.elasticsearch.core.BulkResponse;
 import co.elastic.clients.elasticsearch.core.CreateResponse;
 import co.elastic.clients.elasticsearch.core.SearchRequest;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
+import co.elastic.clients.elasticsearch.core.bulk.BulkOperation;
 import co.elastic.clients.elasticsearch.core.search.Hit;
 import co.elastic.clients.elasticsearch.core.search.TotalHits;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -39,13 +41,13 @@ public class NoteServiceImpl extends ServiceImpl<NoteDao, Note> implements NoteS
         try {
             SearchRequest.Builder builder = new SearchRequest.Builder().index(NoteConstant.NOTE_INDEX);
             if (StringUtils.isNotBlank(noteDTO.getKeyword())) {
-                builder.query(q->q.bool(b->b.
-                        should(h->h.match(f->f.field("title").boost(2f).query(noteDTO.getKeyword())))
-                        .should(h->h.match(f->f.field("username").boost(1f).query(noteDTO.getKeyword())))
+                builder.query(q->q.bool(b->b
+                                .should(h->h.match(f->f.field("title").boost(1f).query(noteDTO.getKeyword())))
+                        .should(h->h.match(f->f.field("username").boost(0.5f).query(noteDTO.getKeyword())))
                         .should(h->h.match(f->f.field("content").boost(1f).query(noteDTO.getKeyword())))
                         .should(h->h.match(f->f.field("tags").boost(4f).query(noteDTO.getKeyword())))
-                        .should(h->h.match(f->f.field("categoryName").boost(3f).query(noteDTO.getKeyword())))
-                        .should(h->h.match(f->f.field("categoryParentName").boost(2f).query(noteDTO.getKeyword())))
+                        .should(h->h.match(f->f.field("categoryName").boost(2f).query(noteDTO.getKeyword())))
+                        .should(h->h.match(f->f.field("categoryParentName").boost(1.5f).query(noteDTO.getKeyword())))
                 ));
             }
             if (StringUtils.isNotBlank(noteDTO.getCpid())&&StringUtils.isNotBlank(noteDTO.getCid())) {
@@ -113,6 +115,21 @@ public class NoteServiceImpl extends ServiceImpl<NoteDao, Note> implements NoteS
         try {
             CreateResponse createResponse = elasticsearchClient.create(e -> e.index(NoteConstant.NOTE_INDEX).id(noteSearchVo.getId()).document(noteSearchVo));
             log.info("createResponse.result{}", createResponse.result());
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void addNoteBulkData(List<NoteSearchVo> noteSearchVoList) {
+        try {
+        List<BulkOperation> result = new ArrayList<>();
+        for (NoteSearchVo noteSearchVo : noteSearchVoList) {
+            result.add(new BulkOperation.Builder().create(
+                    d -> d.document(noteSearchVo).id(noteSearchVo.getId()).index(NoteConstant.NOTE_INDEX)).build());
+        }
+        BulkResponse bulkResponse = elasticsearchClient.bulk(e -> e.index(NoteConstant.NOTE_INDEX).operations(result));
+        log.info("createResponse.result{}", bulkResponse.toString());
         }catch (Exception e) {
             e.printStackTrace();
         }

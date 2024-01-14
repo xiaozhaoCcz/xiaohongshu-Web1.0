@@ -6,10 +6,14 @@ import com.yanhuo.search.dto.NoteDTO;
 import com.yanhuo.xo.entity.Note;
 import com.yanhuo.xo.vo.NoteSearchVo;
 
+import java.util.List;
+
 public interface NoteService extends IService<Note> {
     Page<NoteSearchVo> getNotePageByDTO(long currentPage, long pageSize, NoteDTO noteDTO);
 
     Page<NoteSearchVo> getRecommendNotePage(long currentPage, long pageSize);
 
     void addNote(NoteSearchVo noteSearchVo);
+
+    void addNoteBulkData(List<NoteSearchVo> noteSearchVoList);
 }
