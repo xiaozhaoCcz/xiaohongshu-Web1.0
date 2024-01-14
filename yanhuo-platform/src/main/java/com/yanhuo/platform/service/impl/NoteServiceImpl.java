@@ -9,6 +9,7 @@ import com.yanhuo.common.utils.ConvertUtils;
 import com.yanhuo.platform.client.EsClient;
 import com.yanhuo.platform.service.*;
 import com.yanhuo.xo.dao.NoteDao;
+import com.yanhuo.xo.dto.LikeOrCollectionDTO;
 import com.yanhuo.xo.dto.NoteDTO;
 import com.yanhuo.xo.entity.*;
 import com.yanhuo.xo.vo.NoteSearchVo;
@@ -40,6 +41,12 @@ public class NoteServiceImpl extends ServiceImpl<NoteDao, Note> implements NoteS
     @Autowired
     EsClient esClient;
 
+    @Autowired
+    FollowerService followerService;
+
+    @Autowired
+    LikeOrCollectionService likeOrCollectionService;
+
     @Override
     public Page<NoteVo> getNotePage(long currentPage, long pageSize) {
         return null;
@@ -54,6 +61,17 @@ public class NoteServiceImpl extends ServiceImpl<NoteDao, Note> implements NoteS
         noteVo.setUsername(user.getUsername())
                 .setAvatar(user.getAvatar())
                 .setTime(note.getUpdateDate().getTime());
+
+        boolean follow = followerService.isFollow(user.getId());
+        noteVo.setIsFollow(follow);
+
+        String currentUid = AuthContextHolder.getUserId();
+        List<LikeOrCollection> likeOrCollectionList = likeOrCollectionService.list(new QueryWrapper<LikeOrCollection>().eq("like_or_collection_id", noteId).eq("uid", currentUid));
+        if(!likeOrCollectionList.isEmpty()) {
+            Set<Integer> types = likeOrCollectionList.stream().map(LikeOrCollection::getType).collect(Collectors.toSet());
+            noteVo.setIsLike(types.contains(1));
+            noteVo.setIsCollection(types.contains(3));
+        }
 
         //得到标签
         List<TagNoteRelation> tagNoteRelationList = tagNoteRelationService.list(new QueryWrapper<TagNoteRelation>().eq("nid", noteId));

@@ -1,8 +1,5 @@
 <template>
-  <div class="container" @scroll="handleScroll">
-    <div class="feeds-loading-top" v-show="topLoading">
-      <RefreshRight style="width: 1.2em; height: 1.2em" color="rgba(51, 51, 51, 0.8)" />
-    </div>
+  <div class="container" v-infinite-scroll="loadMoreData">
     <ul class="trend-container">
       <li class="trend-item" v-for="(item, index) in trendData" :key="index">
         <a class="user-avatar">
@@ -21,7 +18,10 @@
             </div>
             <div class="interaction-imgs" @click="toMain(item.nid)">
               <div class="details-box" v-for="(url, index) in item.imgUrls" :key="index">
-                <img :src="url" class="animate__animated animate__fadeIn" />
+                <img
+                  :src="url"
+                  class="animate__animated animate__fadeIn animate__delay-0.5s"
+                />
               </div>
             </div>
             <div class="interaction-footer">
@@ -55,12 +55,17 @@
       <RefreshRight style="width: 1.2em; height: 1.2em" color="rgba(51, 51, 51, 0.8)" />
     </div>
     <FloatingBtn @click-refresh="refresh"></FloatingBtn>
-    <Main v-show="mainShow" :nid="nid" class="mainShow" @click-main="close"></Main>
+    <Main
+      v-show="mainShow"
+      :nid="nid"
+      class="animate__animated animate__zoomIn animate__delay-0.5s"
+      @click-main="close"
+    ></Main>
   </div>
 </template>
 <script lang="ts" setup>
 import { ChatRound, More, RefreshRight } from "@element-plus/icons-vue";
-import { ref, onMounted } from "vue";
+import { ref } from "vue";
 import { getFollowTrendPage } from "@/api/follower";
 import { formateTime } from "@/utils/util";
 import FloatingBtn from "@/components/FloatingBtn.vue";
@@ -77,7 +82,11 @@ const trendTotal = ref(0);
 const topLoading = ref(false);
 const mainShow = ref(false);
 const nid = ref("");
-const likeOrCollectionDTO = ref<LikeOrCollectionDTO>({});
+const likeOrCollectionDTO = ref<LikeOrCollectionDTO>({
+  likeOrCollectionId: "",
+  publishUid: "",
+  type: 0,
+});
 
 const toUser = (uid: string) => {
   router.push({ name: "user", state: { uid: uid } });
@@ -85,39 +94,17 @@ const toUser = (uid: string) => {
 
 const getFollowTrends = () => {
   getFollowTrendPage(currentPage.value, pageSize.value).then((res) => {
-    console.log("--trends", res.data);
     const { records, total } = res.data;
     records.forEach((item: any) => {
-      const date = formateTime(item.time);
-      item.time = date;
+      item.time = formateTime(item.time);
       trendData.value.push(item);
     });
     trendTotal.value = total;
   });
 };
 
-const handleScroll = () => {
-  const scrollHeight = Math.max(
-    document.documentElement.scrollHeight,
-    document.body.scrollHeight
-  );
-  //滚动条滚动距离
-  const scrollTop =
-    window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
-  //窗口可视范围高度
-  const clientHeight =
-    window.innerHeight ||
-    Math.min(document.documentElement.clientHeight, document.body.clientHeight);
-
-  // topBtnShow.value = scrollTop > 30;
-  if (clientHeight + scrollTop >= scrollHeight && currentPage.value <= trendTotal.value) {
-    //快到底时----加载
-    console.log("到达底部");
-    loadMoreData();
-  }
-};
-
 const loadMoreData = () => {
+  console.log("Loading more data");
   currentPage.value += 1;
   getFollowTrends();
 };
@@ -138,8 +125,6 @@ const refresh = () => {
   const clientHeight =
     window.innerHeight ||
     Math.min(document.documentElement.clientHeight, document.body.clientHeight);
-
-  console.log(scrollTop, "scrollTop");
   if (scrollTop <= clientHeight * 2) {
     const timeTop = setInterval(() => {
       document.documentElement.scrollTop = document.body.scrollTop = scrollTop -= 100;
@@ -151,7 +136,7 @@ const refresh = () => {
           trendData.value = [];
           getFollowTrends();
           topLoading.value = false;
-        }, 1000);
+        }, 500);
       }
     }, 10); //定时调用函数使其更顺滑
   } else {
@@ -162,7 +147,7 @@ const refresh = () => {
       trendData.value = [];
       getFollowTrends();
       topLoading.value = false;
-    }, 1000);
+    }, 500);
   }
 };
 
@@ -176,10 +161,6 @@ const like = (nid: string, uid: string, index: number, val: number) => {
   });
 };
 
-onMounted(() => {
-  window.addEventListener("scroll", handleScroll);
-});
-
 const initData = () => {
   getFollowTrends();
 };
@@ -188,41 +169,17 @@ initData();
 </script>
 
 <style lang="less" scoped>
-.mainShow {
-  -webkit-animation: zoom_1 0.5s;
-}
-@-webkit-keyframes zoom_1 {
-  0% {
-    -webkit-transform: scale(0);
-    opacity: 0;
-  }
-}
 .container {
   flex: 1;
   padding: 0 24px;
   padding-top: 72px;
   width: 67%;
+  height: 100vh;
   margin: 0 auto;
 
   .feeds-loading {
     margin: 3vh;
     text-align: center;
-  }
-
-  .feeds-loading-top {
-    text-align: center;
-    line-height: 6vh;
-    height: 6vh;
-  }
-
-  .feeds-loading-top {
-    -webkit-animation: move_1 0.5s;
-  }
-  @-webkit-keyframes move_1 {
-    0% {
-      -webkit-transform: translateY(-20px);
-      opacity: 0;
-    }
   }
 
   .trend-container {

@@ -241,12 +241,12 @@ const loadTwoMore = (oneCommentId: string, index: number) => {
     const { records } = res.data;
     if (page === 1) {
       const spliceData = records.splice(showTwoCommentCount, records.length);
-      spliceData.forEach((item) => {
+      spliceData.forEach((item: any) => {
         item.time = formateTime(item.time);
         dataList.value[index].children.push(item);
       });
     } else {
-      records.forEach((item) => {
+      records.forEach((item: any) => {
         item.time = formateTime(item.time);
         dataList.value[index].children.push(item);
       });
@@ -267,15 +267,15 @@ const getCommentData = () => {
   getCommentPageWithCommentByNoteId(props.currentPage, pageSize, props.nid).then(
     (res: any) => {
       const { records, total } = res.data;
-      records.forEach((item) => {
+      records.forEach((item: any) => {
         item.time = formateTime(item.time);
         const twoComments = item.children;
         // 设置每一个一级评论的集合
         commentMap.set(item.id, 0);
         commentTotalMap.set(item.id, 0);
         if (twoComments != null) {
-          const twoData = [];
-          twoComments.forEach((element) => {
+          const twoData = [] as Array<any>;
+          twoComments.forEach((element: any) => {
             element.time = formateTime(element.time);
             twoData.push(element);
           });
@@ -294,7 +294,6 @@ const getCommentData = () => {
 watch(
   () => [props.nid, props.seed, props.currentPage],
   ([newNid, newSeed], [oldNid, oldSeed]) => {
-    console.log("---newVal,oldVal", newNid, newSeed, oldNid, oldSeed);
     if (newNid !== oldNid) {
       dataList.value = [];
       getCommentData();

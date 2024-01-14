@@ -36,35 +36,31 @@
     <div class="main">
       <div class="side-bar">
         <ul class="channel-list">
-          <li :class="activeLink == 1 ? 'active-channel' : ''">
+          <li :class="activeLink == 0 ? 'active-channel' : ''" @click="toLink(0)">
             <a class="link-wrapper">
               <House style="width: 1em; height: 1em; margin-right: 8px" /><span
                 class="channel"
-                @click="toLink(1)"
                 >发现</span
               ></a
             >
           </li>
-          <li :class="activeLink == 2 ? 'active-channel' : ''">
+          <li :class="activeLink == 1 ? 'active-channel' : ''" @click="toLink(1)">
             <Star style="width: 1em; height: 1em; margin-right: 8px" /><span
               class="channel"
-              @click="toLink(2)"
             >
               动态</span
             >
           </li>
-          <li :class="activeLink == 3 ? 'active-channel' : ''">
+          <li :class="activeLink == 2 ? 'active-channel' : ''" @click="toLink(2)">
             <Bell style="width: 1em; height: 1em; margin-right: 8px" /><span
               class="channel"
-              @click="toLink(3)"
             >
               消息</span
             >
           </li>
-          <li :class="activeLink == 4 ? 'active-channel' : ''">
+          <li :class="activeLink == 3 ? 'active-channel' : ''" @click="toLink(3)">
             <CirclePlus style="width: 1em; height: 1em; margin-right: 8px" /><span
               class="channel"
-              @click="toLink(4)"
             >
               发布</span
             >
@@ -72,9 +68,9 @@
           <li v-if="userInfo == null">
             <el-button type="danger" round>登录</el-button>
           </li>
-          <li v-else :class="activeLink == 5 ? 'active-channel' : ''">
+          <li v-else :class="activeLink == 4 ? 'active-channel' : ''" @click="toLink(4)">
             <el-avatar :src="userInfo.avatar" :size="22" />
-            <span class="channel" @click="toLink(5)">我</span>
+            <span class="channel">我</span>
           </li>
         </ul>
 
@@ -184,7 +180,7 @@ import { ref, watch, onMounted } from "vue";
 import { useUserStore } from "@/store/userStore";
 import { useSearchStore } from "@/store/searchStore";
 import SujContainer from "@/components/SujContainer.vue";
-import SearchContainer from "@/components/SearchContainer";
+import SearchContainer from "@/components/SearchContainer.vue";
 import { getRecordByKeyWord } from "@/api/search";
 import { getRandomString } from "@/utils/util";
 
@@ -202,16 +198,16 @@ const recordList = ref<Array<string>>([]);
 const activeLink = ref(1);
 const padShow = ref(false);
 
-const routerList = ["/", "/followTrend", "/notice", "/push", "/user"];
+const routerList = ["/dashboard", "/followTrend", "/notice", "/push", "/user"];
 
 // 监听外部点击
 onMounted(() => {
   document.getElementById("container")!.addEventListener("click", function (e) {
-    var event = e || window.event;
-    var target = event.target || event.srcElement;
+    let event = e || window.event;
+    let target = event.target || (event.srcElement as any);
     // if(target.id == "name") {
     if (document.getElementById("sujContainer")!.contains(target)) {
-      console.log("in");
+      console.log("在div内");
     } else {
       showHistory.value = false;
       showSearch.value = false;
@@ -242,13 +238,11 @@ watch(
 const changeInput = (e: any) => {
   const { value } = e.target;
   keyword.value = value;
-  console.log("检测到变化" + value);
   showClose.value = keyword.value == "" ? false : true;
   showSearch.value = keyword.value.length == 0 ? false : true;
   showHistory.value = keyword.value.length > 0 ? false : true;
   if (keyword.value.length > 0) {
     getRecordByKeyWord(keyword.value).then((res) => {
-      console.log("---res", res.data);
       recordList.value = res.data;
     });
   }
@@ -258,11 +252,6 @@ const focusInput = () => {
   showSearch.value = keyword.value.length == 0 ? false : true;
   showHistory.value = keyword.value.length > 0 ? false : true;
 };
-
-// const blurInput = () => {
-//   showHistory.value = false;
-//   showSearch.value = false;
-// };
 
 const clearInput = () => {
   keyword.value = "";
@@ -274,32 +263,28 @@ const clearInput = () => {
 
 const toLink = (num: number) => {
   activeLink.value = num;
-  const url = routerList[num - 1];
+  const url = routerList[num];
   if (url === "/user") {
     router.push({ name: "user", state: { uid: userInfo.value.id } });
-  } else {
-    router.push({ path: url });
+    return;
   }
+  router.push({ path: url });
 };
 
 const close = (val: boolean) => {
-  console.log(val);
   loginShow.value = val;
   userInfo.value = userStore.getUserInfo();
 };
 
-const loadPad = () => [(padShow.value = !padShow.value)];
+const loadPad = () => {
+  padShow.value = !padShow.value;
+};
 
 const initData = () => {
   userInfo.value = userStore.getUserInfo();
   const url = window.location.href;
   const path = url.substring(url.lastIndexOf("/"), url.length);
-  for (let i = 1; i <= routerList.length; i++) {
-    if (routerList[i - 1] === path) {
-      activeLink.value = i;
-      break;
-    }
-  }
+  activeLink.value = routerList.findIndex((item) => item === path);
   if (userInfo.value != null) {
     loginShow.value = false;
   }

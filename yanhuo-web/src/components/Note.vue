@@ -46,7 +46,6 @@ import { Waterfall, LazyImg } from "vue-waterfall-plugin-next";
 import "vue-waterfall-plugin-next/dist/style.css";
 import { ref, watch } from "vue";
 import { getTrendPageByUser } from "@/api/user";
-import type { NoteSearch } from "@/type/note";
 import Main from "@/pages/main/main.vue";
 import { options } from "@/constant/constant";
 
@@ -59,8 +58,7 @@ const props = defineProps({
 
 watch(
   () => [props.type],
-  ([newType], [oldType]) => {
-    console.log("---newVal,oldVal", newType, oldType);
+  ([newType]) => {
     currentPage.value = 1;
     noteList.value = [] as Array<any>;
     getNoteList(newType);
@@ -118,15 +116,6 @@ const initData = () => {
 initData();
 </script>
 <style lang="less" scoped>
-.mainShow {
-  -webkit-animation: zoom_1 0.5s;
-}
-@-webkit-keyframes zoom_1 {
-  0% {
-    -webkit-transform: scale(0);
-    opacity: 0;
-  }
-}
 .feeds-container {
   position: relative;
   transition: width 0.5s;

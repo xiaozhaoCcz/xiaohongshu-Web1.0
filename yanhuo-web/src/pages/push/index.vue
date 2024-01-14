@@ -131,8 +131,8 @@ const categoryList = ref<Array<any>>([]);
 const options = ref([]);
 const note = ref<any>({});
 const showTagState = ref(false);
-const tagList = ref([]);
-const selectTagList = ref([]);
+const tagList = ref<Array<any>>([]);
+const selectTagList = ref<Array<any>>([]);
 const currentPage = ref(1);
 const pageSize = 10;
 const tagTotal = ref(0);
@@ -141,7 +141,7 @@ const tagTotal = ref(0);
 onMounted(() => {
   document.getElementById("container")!.addEventListener("click", function (e) {
     var event = e || window.event;
-    var target = event.target || event.srcElement;
+    var target = event.target || (event.srcElement as any);
     // if(target.id == "name") {
     if (document.getElementById("tagContainer")!.contains(target)) {
       console.log("in");
@@ -162,7 +162,6 @@ const addTag = () => {
 
 const setData = () => {
   getPageTagByKeyword(currentPage.value, pageSize, "").then((res) => {
-    console.log("res", res.data);
     const { records, total } = res.data;
     selectTagList.value.push(...records);
     tagTotal.value = total;

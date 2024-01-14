@@ -48,8 +48,8 @@ public class LoggingAspect {
      * 匹配我们自己项目的repositories、service、rest端点的切面
      */
     @Pointcut("within(com.yanhuo..*)"+
-            " || within(com.yanhuo..service..*)"+
-            " || within(com.yanhuo..controller..*)")
+            " || within(com.yanhuo.*.service..*)"+
+            " || within(com.yanhuo.*.controller..*)")
     public void applicationPackagePointcut() {
         // 方法为空，因为这只是一个切入点，实现在通知中。
     }

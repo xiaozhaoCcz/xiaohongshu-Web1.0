@@ -48,7 +48,7 @@ import { useRouter } from "vue-router";
 const router = useRouter();
 const currentPage = ref(1);
 const pageSize = 12;
-const dataList = ref([]);
+const dataList = ref<Array<any>>([]);
 const dataTotal = ref(0);
 
 const getPageData = () => {
@@ -56,7 +56,7 @@ const getPageData = () => {
     console.log(res.data);
     const { records, total } = res.data;
     dataTotal.value = total;
-    records.forEach((item) => {
+    records.forEach((item: any) => {
       item.time = formateTime(item.time);
       dataList.value.push(item);
     });
@@ -64,7 +64,7 @@ const getPageData = () => {
 };
 
 const follow = (fid: string, index: number, type: number) => {
-  followById(fid).then((res) => {
+  followById(fid).then(() => {
     dataList.value[index].isFollow = type == -1;
   });
 };

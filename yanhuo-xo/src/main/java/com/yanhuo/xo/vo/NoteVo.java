@@ -43,4 +43,11 @@ public class NoteVo implements Serializable {
     private List<Tag> tagList;
 
     private Long time;
+
+    //点赞关注收藏
+    private Boolean isFollow;
+
+    private Boolean isLike;
+
+    private Boolean isCollection;
 }

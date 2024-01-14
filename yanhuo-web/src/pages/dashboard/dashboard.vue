@@ -87,10 +87,10 @@ import "vue-waterfall-plugin-next/dist/style.css";
 import { ref, watch } from "vue";
 import { getRecommendNotePage, getNotePageByDTO, addRecord } from "@/api/search";
 import { getCategoryTreeData } from "@/api/category";
-import type { NoteDTO } from "@/type/note";
+import type { NoteDTO, NoteSearch } from "@/type/note";
 import type { Category } from "@/type/category";
 import Main from "@/pages/main/main.vue";
-import FloatingBtn from "@/components/FloatingBtn";
+import FloatingBtn from "@/components/FloatingBtn.vue";
 import { options } from "@/constant/constant";
 import { useSearchStore } from "@/store/searchStore";
 const searchStore = useSearchStore();
@@ -98,7 +98,7 @@ const searchStore = useSearchStore();
 // const router = useRouter();
 
 const topLoading = ref(false);
-const noteList = ref<Array<any>>([]);
+const noteList = ref<Array<NoteSearch>>([]);
 const categoryList = ref<Array<Category>>([]);
 const currentPage = ref(1);
 const pageSize = 20;
@@ -107,7 +107,7 @@ const noteTotal = ref(0);
 const categoryClass = ref("0");
 const mainShow = ref(false);
 const nid = ref("");
-const queryParams = ref<NoteDTO>({
+const noteDTO = ref<NoteDTO>({
   keyword: "",
   type: 0,
   cid: "",
@@ -118,8 +118,8 @@ watch(
   () => [searchStore.seed],
   (newVal, oldVal) => {
     console.log("dashboardseed", newVal, oldVal);
-    queryParams.value.keyword = searchStore.keyWord;
-    queryParams.value.cpid = "";
+    noteDTO.value.keyword = searchStore.keyWord;
+    noteDTO.value.cpid = "";
     categoryClass.value = "0";
     getNoteListByKeyword();
     addRecord(searchStore.keyWord);
@@ -127,7 +127,6 @@ watch(
 );
 
 const toMain = (noteId: string) => {
-  // console.log("11", nid);
   // router.push({ name: "main", state: { nid: nid } });
   nid.value = noteId;
   mainShow.value = true;
@@ -174,15 +173,15 @@ const refresh = () => {
 
 const loadMoreData = () => {
   currentPage.value += 1;
-  if (queryParams.value.cpid === "" && queryParams.value.keyword == "") {
-    console.log("-----getRecommendNotePage", queryParams.value.keyword);
+  if (noteDTO.value.cpid === "" && noteDTO.value.keyword == "") {
+    console.log("-----getRecommendNotePage", noteDTO.value.keyword);
     getRecommendNotePage(currentPage.value, pageSize).then((res: any) => {
       console.log("---res", res);
       setData(res);
     });
   } else {
     console.log("-----getNotePageByDTO");
-    getNotePageByDTO(currentPage.value, pageSize, queryParams.value).then((res) => {
+    getNotePageByDTO(currentPage.value, pageSize, noteDTO.value).then((res) => {
       setData(res);
     });
   }
@@ -196,7 +195,6 @@ const setData = (res: any) => {
     dataObj.src = element.noteCover;
     noteList.value.push(dataObj);
   });
-  console.log(noteList.value);
 };
 
 const getNoteList = () => {
@@ -211,10 +209,10 @@ const getNoteList = () => {
 
 const getNoteListByCategory = (id: string) => {
   categoryClass.value = id;
-  queryParams.value.cpid = id;
+  noteDTO.value.cpid = id;
   noteList.value = [] as Array<any>;
   currentPage.value = 1;
-  getNotePageByDTO(currentPage.value, pageSize, queryParams.value).then((res) => {
+  getNotePageByDTO(currentPage.value, pageSize, noteDTO.value).then((res) => {
     setData(res);
   });
 };
@@ -222,7 +220,7 @@ const getNoteListByCategory = (id: string) => {
 const getNoteListByKeyword = () => {
   noteList.value = [] as Array<any>;
   currentPage.value = 1;
-  getNotePageByDTO(currentPage.value, pageSize, queryParams.value).then((res) => {
+  getNotePageByDTO(currentPage.value, pageSize, noteDTO.value).then((res) => {
     setData(res);
   });
 };
@@ -242,16 +240,6 @@ const initData = () => {
 initData();
 </script>
 <style lang="less" scoped>
-.mainShow {
-  -webkit-animation: zoom_1 0.5s;
-}
-@-webkit-keyframes zoom_1 {
-  0% {
-    -webkit-transform: scale(0);
-    opacity: 0;
-  }
-}
-
 .feeds-page {
   flex: 1;
   padding: 0 24px;

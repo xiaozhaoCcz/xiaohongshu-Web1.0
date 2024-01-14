@@ -24,12 +24,12 @@
               />
               <span class="name">{{ noteInfo.username }}</span>
             </div>
-            <div class="follow-btn">
+            <div class="follow-btn" v-show="currentUid !== noteInfo.uid">
               <el-button
                 type="info"
                 size="large"
                 round
-                v-if="followerState"
+                v-if="noteInfo.isFollow"
                 @click="follow(noteInfo.uid, 1)"
                 >已关注</el-button
               >
@@ -79,22 +79,30 @@
             <div class="buttons">
               <div class="left">
                 <span class="like-wrapper"
-                  ><span class="like-lottie" v-if="starState" @click="star(-1)">
+                  ><span
+                    class="like-lottie"
+                    v-if="noteInfo.isCollection"
+                    @click="likeOrCollection(3, -1)"
+                  >
                     <StarFilled style="width: 0.9em; height: 0.9em; color: #333" />
                   </span>
-                  <span class="like-lottie" v-else @click="star(1)">
+                  <span class="like-lottie" v-else @click="likeOrCollection(3, 1)">
                     <Star style="width: 0.8em; height: 0.8em; color: #333" />
                   </span>
                   <span class="count">{{ noteInfo.collectionCount }}</span></span
                 >
                 <span class="collect-wrapper">
-                  <span class="like-lottie" v-if="likeState" @click="like(-1)">
+                  <span
+                    class="like-lottie"
+                    v-if="noteInfo.isLike"
+                    @click="likeOrCollection(1, -1)"
+                  >
                     <i
                       class="iconfont icon-follow-fill"
                       style="width: 0.8em; height: 0.8em; color: #333"
                     ></i>
                   </span>
-                  <span class="like-lottie" v-else @click="like(1)">
+                  <span class="like-lottie" v-else @click="likeOrCollection(1, 1)">
                     <i
                       class="iconfont icon-follow"
                       style="width: 0.8em; height: 0.8em; color: #333"
@@ -150,15 +158,17 @@
 import { Close, Star, ChatRound, StarFilled } from "@element-plus/icons-vue";
 import { ref, watch } from "vue";
 import { getNoteById } from "@/api/note";
-import { likeOrCollectionByDTO, isLikeOrCollection } from "@/api/likeOrCollection";
+import { likeOrCollectionByDTO } from "@/api/likeOrCollection";
 import type { NoteInfo } from "@/type/note";
 import type { LikeOrCollectionDTO } from "@/type/likeOrCollection";
 import { formateTime, getRandomString } from "@/utils/util";
-import { isFollow, followById } from "@/api/follower";
+import { followById } from "@/api/follower";
 import Comment from "@/components/Comment.vue";
 import type { CommentDTO } from "@/type/comment";
 import { saveCommentByDTO, syncCommentByIds } from "@/api/comment";
 import { useRouter } from "vue-router";
+import { useUserStore } from "@/store/userStore";
+const userStore = useUserStore();
 const router = useRouter();
 
 // 这是路由传参
@@ -175,48 +185,40 @@ const props = defineProps({
 
 watch(
   () => [props.nid],
-  (newNid, oldNid) => {
-    console.log("发生改变", newNid, oldNid);
+  () => {
     currentPage.value = 1;
-    noteInfo.value = {};
-    const p = new Promise((resolve) => {
-      getNoteById(props.nid).then((res: any) => {
-        const imgList = JSON.parse(res.data.urls);
-        const time = formateTime(res.data.time);
-        noteInfo.value = res.data;
-        noteInfo.value.imgList = imgList;
-        noteInfo.value.time = time;
-        resolve(res.data);
-      });
-    });
-
-    p.then((data) => {
-      console.log("data", data);
-      isFollow(data.uid).then((res) => {
-        followerState.value = res.data;
-      });
-      const likeOrCollectionDTO = {} as LikeOrCollectionDTO;
-      likeOrCollectionDTO.likeOrCollectionId = data.id;
-      likeOrCollectionDTO.type = 1;
-      isLikeOrCollection(likeOrCollectionDTO).then((res) => {
-        likeState.value = res.data;
-      });
-      likeOrCollectionDTO.type = 3;
-      isLikeOrCollection(likeOrCollectionDTO).then((res) => {
-        starState.value = res.data;
-      });
+    getNoteById(props.nid).then((res: any) => {
+      noteInfo.value = res.data;
+      noteInfo.value.imgList = JSON.parse(res.data.urls);
+      noteInfo.value.time = formateTime(res.data.time);
     });
   }
 );
 
-const noteInfo = ref<NoteInfo>({});
-const followerState = ref(false);
-const likeState = ref(false);
-const starState = ref(false);
+const currentUid = userStore.getUserInfo().id;
+const noteInfo = ref<NoteInfo>({
+  id: "",
+  title: "",
+  content: "",
+  noteCover: "",
+  uid: "",
+  username: "",
+  avatar: "",
+  imgList: [],
+  type: -1,
+  likeCount: 0,
+  collectionCount: 0,
+  commentCount: 0,
+  tagList: [],
+  time: "",
+  isFollow: false,
+  isLike: false,
+  isCollection: false,
+});
 const commentValue = ref("");
 const commentPlaceVal = ref("请输入内容");
-const commentObject = ref({});
-const replyComment = ref({});
+const commentObject = ref<any>({});
+const replyComment = ref<any>({});
 const showSaveBtn = ref(false);
 const currentPage = ref(1);
 const seed = ref("");
@@ -227,41 +229,32 @@ const toUser = (uid: string) => {
 };
 
 const close = () => {
-  console.log("----同步的数据", commentIds.value);
   syncCommentByIds(commentIds.value).then(() => {
     commentIds.value = [];
     emit("clickMain", false);
   });
-  console.log("关闭详情页面监听器");
-  window.removeEventListener("scroll", handleMainScroll, true);
 };
 
 const follow = (fid: string, type: number) => {
   followById(fid).then((res) => {
     console.log("---关注", res.data);
-    followerState.value = type == 0;
+    noteInfo.value.isFollow = type == 0;
   });
 };
 
-const like = (type: number) => {
+const likeOrCollection = (type: number, val: number) => {
   const likeOrCollectionDTO = {} as LikeOrCollectionDTO;
   likeOrCollectionDTO.likeOrCollectionId = noteInfo.value.id;
   likeOrCollectionDTO.publishUid = noteInfo.value.uid;
-  likeOrCollectionDTO.type = 1;
+  likeOrCollectionDTO.type = type == 1 ? 1 : 3;
   likeOrCollectionByDTO(likeOrCollectionDTO).then(() => {
-    likeState.value = type == 1;
-    noteInfo.value.likeCount += type;
-  });
-};
-
-const star = (type: number) => {
-  const likeOrCollectionDTO = {} as LikeOrCollectionDTO;
-  likeOrCollectionDTO.likeOrCollectionId = noteInfo.value.id;
-  likeOrCollectionDTO.publishUid = noteInfo.value.uid;
-  likeOrCollectionDTO.type = 3;
-  likeOrCollectionByDTO(likeOrCollectionDTO).then(() => {
-    starState.value = type == 1;
-    noteInfo.value.collectionCount += type;
+    if (type == 1) {
+      noteInfo.value.isLike = val == 1;
+      noteInfo.value.likeCount += val;
+    } else {
+      noteInfo.value.isCollection = val == 1;
+      noteInfo.value.collectionCount += val;
+    }
   });
 };
 
@@ -274,7 +267,6 @@ const clickComment = (comment: any) => {
 const commenInput = (e: any) => {
   const { value } = e.target;
   commentValue.value = value;
-  console.log("检测到变化" + value, commentObject.value.pid);
   showSaveBtn.value =
     commentValue.value.length > 0 || commentObject.value.pid !== undefined;
 };
@@ -303,7 +295,7 @@ const saveComment = () => {
   console.log("comment", comment);
 
   comment.content = commentValue.value;
-  saveCommentByDTO(comment).then((res) => {
+  saveCommentByDTO(comment).then((res: any) => {
     console.log("添加评论成功", res.data);
     replyComment.value = res.data;
     commentValue.value = "";

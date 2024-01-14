@@ -43,7 +43,7 @@ const emit = defineEmits(["clickMain"]);
 
 const currentPage = ref(1);
 const pageSize = 12;
-const dataList = ref([]);
+const dataList = ref<Array<any>>([]);
 const dataTotal = ref(0);
 
 const toPage = (nid: string) => {
@@ -56,10 +56,9 @@ const toUser = (uid: string) => {
 
 const getPageData = () => {
   getNoticeLikeOrCollection(currentPage.value, pageSize).then((res) => {
-    console.log(1111, res.data);
     const { records, total } = res.data;
     dataTotal.value = total;
-    records.forEach((item) => {
+    records.forEach((item:any) => {
       item.time = formateTime(item.time);
       dataList.value.push(item);
     });
@@ -67,13 +66,11 @@ const getPageData = () => {
 };
 
 const loadMore = () => {
-  console.log("222");
   currentPage.value += 1;
   getPageData();
 };
 
 const initData = () => {
-  console.log(1111);
   getPageData();
 };
 initData();

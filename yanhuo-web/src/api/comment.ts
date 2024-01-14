@@ -7,7 +7,7 @@ export const getCommentPageWithCommentByNoteId = (
   noteId: string
 ) => {
   return request<any>({
-    url: `/platform/comment/getCommentPageWithCommentByNoteId/${currentPage}/${pageSize}`, // mock接口
+    url: `/platform/comment/getCommentPageWithCommentByNoteId/${currentPage}/${pageSize}`,
     method: "get",
     params: {
       noteId,
@@ -17,7 +17,7 @@ export const getCommentPageWithCommentByNoteId = (
 
 export const saveCommentByDTO = (data: CommentDTO) => {
   return request<any>({
-    url: `/platform/comment/saveCommentByDTO`, // mock接口
+    url: `/platform/comment/saveCommentByDTO`, 
     method: "post",
     data: data,
   });
@@ -25,7 +25,7 @@ export const saveCommentByDTO = (data: CommentDTO) => {
 
 export const syncCommentByIds = (data: Array<string>) => {
   return request<any>({
-    url: `/platform/comment/syncCommentByIds`, // mock接口
+    url: `/platform/comment/syncCommentByIds`,
     method: "post",
     data: data,
   });
@@ -38,7 +38,7 @@ export const getTwoCommentPageByOneCommentId = (
   oneCommentId: string
 ) => {
   return request<any>({
-    url: `/platform/comment/getTwoCommentPageByOneCommentId/${currentPage}/${pageSize}`, // mock接口
+    url: `/platform/comment/getTwoCommentPageByOneCommentId/${currentPage}/${pageSize}`,
     method: "get",
     params: {
       oneCommentId,
@@ -51,7 +51,7 @@ export const getNoticeComment = (
   pageSize: number,
 ) => {
   return request<any>({
-    url: `/platform/comment/getNoticeComment/${currentPage}/${pageSize}`, // mock接口
+    url: `/platform/comment/getNoticeComment/${currentPage}/${pageSize}`,
     method: "get",
   });
 };

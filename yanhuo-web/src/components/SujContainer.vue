@@ -77,7 +77,7 @@ import { storage } from "@/utils/storage";
 const searchStore = useSearchStore();
 
 const historyRecordList = ref<Array<string>>([]);
-const hotList = ref([]);
+const hotList = ref<Array<any>>([]);
 const showTagState = ref(false);
 const recommendRecords = ["壁纸", "风景", "情侣", "头像", "动漫", "动物"];
 

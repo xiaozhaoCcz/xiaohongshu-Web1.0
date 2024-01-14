@@ -5,7 +5,6 @@ export interface UserLogin {
 }
 
 export interface User {
-  value: any;
   id: string;
   yxId: string;
   username: string;

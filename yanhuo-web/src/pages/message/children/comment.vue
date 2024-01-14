@@ -92,7 +92,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { ChatRound, Star } from "@element-plus/icons-vue";
+// import { ChatRound, Star } from "@element-plus/icons-vue";
 import { ref } from "vue";
 import { formateTime } from "@/utils/util";
 import { getNoticeComment } from "@/api/comment";
@@ -103,7 +103,7 @@ const userStore = useUserStore();
 const router = useRouter();
 const currentPage = ref(1);
 const pageSize = 12;
-const dataList = ref([]);
+const dataList = ref<Array<any>>([]);
 const dataTotal = ref(0);
 const currentUid = ref("");
 
@@ -127,7 +127,7 @@ const getPageData = () => {
     console.log(res.data);
     const { records, total } = res.data;
     dataTotal.value = total;
-    records.forEach((item) => {
+    records.forEach((item: any) => {
       item.time = formateTime(item.time);
       dataList.value.push(item);
     });
@@ -135,7 +135,6 @@ const getPageData = () => {
 };
 
 const initData = () => {
-  console.log(1111, userStore.getUserInfo().id);
   currentUid.value = userStore.getUserInfo().id;
   getPageData();
 };

@@ -29,12 +29,14 @@ export interface NoteInfo {
   commentCount: number;
   tagList: Array<any>;
   time: string;
+  isFollow:boolean,
+  isLike:boolean,
+  isCollection:boolean
 }
 
-
-export interface NoteDTO{
-  keyword:string;
-  type:number;
-  cid:string;
-  cpid:string;
+export interface NoteDTO {
+  keyword: string;
+  type: number;
+  cid: string;
+  cpid: string;
 }
