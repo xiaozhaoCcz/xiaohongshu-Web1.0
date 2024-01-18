@@ -1,0 +1,105 @@
+package com.yanhuo.im.websocket;
+
+import com.yanhuo.im.config.ServerEncoder;
+import com.yanhuo.im.entity.Message;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+
+import javax.websocket.*;
+import javax.websocket.server.PathParam;
+import javax.websocket.server.ServerEndpoint;
+import java.io.IOException;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
+
+@ServerEndpoint(value = "/ws/{uid}",encoders = { ServerEncoder.class })
+@Component
+@Slf4j
+public class WebSocketServer {
+	 //静态变量，用来记录当前在线连接数。应该把它设计成线程安全的。
+    private static AtomicInteger onlineNum = new AtomicInteger();
+
+    //concurrent包的线程安全Set，用来存放每个客户端对应的WebSocketServer对象。
+    private static ConcurrentHashMap<String, Session> sessionPools = new ConcurrentHashMap<>();
+
+    private final Object lockObj = new Object();
+    //发送消息
+    public void sendMessage(Session session, Message<?> message) {
+        if(session != null){
+            synchronized (lockObj) {
+                log.info("发送数据={}",message);
+                try {
+                    session.getBasicRemote().sendObject(message);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+    //给指定用户发送信息
+    public void sendInfo(Message<?> message){
+        Session session = sessionPools.get(message.getAcceptUid());
+        try {
+            sendMessage(session, message);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    // 群发消息
+    public void broadcast(Message<?> message){
+    	for (Session session: sessionPools.values()) {
+            try {
+                sendMessage(session, message);
+            } catch(Exception e){
+                e.printStackTrace();
+            }
+        }
+    }
+
+    //建立连接成功调用
+    @OnOpen
+    public void onOpen(Session session, @PathParam(value = "uid") String uid){
+        sessionPools.put(uid, session);
+        addOnlineCount();
+        log.info("{}加入webSocket！当前人数为={}",uid,onlineNum);
+    }
+
+    //关闭连接时调用
+    @OnClose
+    public void onClose(@PathParam(value = "uid") String uid){
+        sessionPools.remove(uid);
+        subOnlineCount();
+        log.info("{}断开webSocket连接！当前人数为={}",uid,onlineNum);
+    }
+
+    //收到客户端信息后，根据接收人的username把消息推下去或者群发
+    // to=-1群发消息
+    @OnMessage
+    public void onMessage(String message){
+         log.info("收到客户端消息{}",message);
+//        broadcast(message);
+    }
+
+    //错误时调用
+    @OnError
+    public void onError(Session session, Throwable throwable){
+        log.error("发生错误",throwable);
+        throwable.printStackTrace();
+    }
+
+    public static void addOnlineCount(){
+        onlineNum.incrementAndGet();
+    }
+
+    public static void subOnlineCount() {
+        onlineNum.decrementAndGet();
+    }
+    
+    public static AtomicInteger getOnlineNumber() {
+        return onlineNum;
+    }
+    
+    public static ConcurrentHashMap<String, Session> getSessionPools() {
+        return sessionPools;
+    }
+}

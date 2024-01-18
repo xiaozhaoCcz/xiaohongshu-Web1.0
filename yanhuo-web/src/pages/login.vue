@@ -123,10 +123,8 @@ import { loginByCode } from "@/api/user";
 import { ref } from "vue";
 import { storage } from "@/utils/storage";
 import { useUserStore } from "@/store/userStore";
-import useZimStore from "@/store/zimStore";
 
 const userStore = useUserStore();
-const zimStore = useZimStore();
 
 const userLogin = ref<UserLogin>({
   phone: "",

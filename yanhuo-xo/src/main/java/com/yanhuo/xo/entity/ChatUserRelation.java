@@ -1,21 +1,24 @@
 package com.yanhuo.xo.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.yanhuo.common.entity.BaseEntity;
 import lombok.Data;
 
-/**
- * @author xiaozhao
- */
+import java.io.Serializable;
+
 @Data
-@TableName("t_chat")
-public class Chat extends BaseEntity {
+@TableName("t_chat_user_relation")
+public class ChatUserRelation implements Serializable {
+
+    private String id;
 
     private String sendUid;
 
     private String acceptUid;
 
     private String content;
+
+    // 用户未读消息数量
+    private Integer count;
 
     // 0是私聊，1是群聊
     private Integer chatType;

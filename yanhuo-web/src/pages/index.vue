@@ -280,6 +280,19 @@ const loadPad = () => {
   padShow.value = !padShow.value;
 };
 
+const connectWs = (uid: string) => {
+  const ws = new WebSocket(`ws://127.0.0.1:8802/im/ws/${uid}`);
+  ws.onopen = () => {
+    console.log("连接成功");
+  };
+  ws.onclose = () => {
+    console.log("连接断开");
+  };
+  ws.onmessage = (e) => {
+    console.log("收到消息", e);
+  };
+};
+
 const initData = () => {
   userInfo.value = userStore.getUserInfo();
   const url = window.location.href;
@@ -287,6 +300,7 @@ const initData = () => {
   activeLink.value = routerList.findIndex((item) => item === path);
   if (userInfo.value != null) {
     loginShow.value = false;
+    connectWs(userInfo.value.id);
   }
 };
 initData();
