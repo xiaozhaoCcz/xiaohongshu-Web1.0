@@ -1,5 +1,9 @@
 <template>
-  <div class="container">
+  <div
+    class="container"
+    style="transition: background-color 0.4s ease 0s;
+  hsla(0,0%,100%,0.98)"
+  >
     <div class="chat-container">
       <header class="chat-header">
         <div class="header-left"></div>
@@ -52,10 +56,15 @@
         </div>
       </main>
     </div>
+    <div class="close-cricle" @click="close">
+      <div class="close close-mask-white">
+        <Close style="width: 1.2em; height: 1.2em; color: rgba(51, 51, 51, 0.8)" />
+      </div>
+    </div>
   </div>
 </template>
 <script lang="ts" setup>
-import { More, PieChart, Picture, Clock } from "@element-plus/icons-vue";
+import { More, PieChart, Picture, Clock, Close } from "@element-plus/icons-vue";
 import { ref, onMounted, watch } from "vue";
 import { getUserById } from "@/api/user";
 import { getAllChatRecord, sendMsg } from "@/api/im";
@@ -83,12 +92,20 @@ watch(
   () => imStore.message,
   (newVal) => {
     console.log("0---0", newVal);
-    dataList.value?.push(newVal);
+    if (newVal.sendUid === acceptUser.value.id) {
+      dataList.value?.push(newVal);
+    }
   },
   {
     deep: true,
   }
 );
+
+const emit = defineEmits(["clickChat"]);
+
+const close = () => {
+  emit("clickChat", false);
+};
 
 const submit = () => {
   const message = ref({}) as any;
@@ -241,6 +258,33 @@ onMounted(() => {
           outline: none;
         }
       }
+    }
+  }
+
+  .close-cricle {
+    left: 18vw;
+    top: 1.3vw;
+    position: fixed;
+    display: flex;
+    z-index: 100;
+    cursor: pointer;
+
+    .close-mask-white {
+      box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.04), 0 1px 2px 0 rgba(0, 0, 0, 0.02);
+      border: 1px solid rgba(0, 0, 0, 0.08);
+    }
+
+    .close {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 100%;
+      width: 40px;
+      height: 40px;
+      border-radius: 40px;
+      cursor: pointer;
+      transition: all 0.3s;
+      background-color: #fff;
     }
   }
 }

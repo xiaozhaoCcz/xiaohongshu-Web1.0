@@ -23,7 +23,12 @@
         </div>
       </li>
     </ul>
-    <Chat v-if="chatShow" :acceptUid="acceptUid"></Chat>
+    <Chat
+      v-if="chatShow"
+      :acceptUid="acceptUid"
+      class="animate__animated animate__zoomIn animate__delay-0.5s"
+      @click-chat="close"
+    ></Chat>
   </div>
 </template>
 <script lang="ts" setup>
@@ -53,6 +58,10 @@ watchEffect(() => {
 const toChat = (uid: string) => {
   acceptUid.value = uid;
   chatShow.value = true;
+};
+
+const close = () => {
+  chatShow.value = false;
 };
 </script>
 <style lang="less" scoped>
