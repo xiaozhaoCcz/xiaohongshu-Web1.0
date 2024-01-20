@@ -196,8 +196,7 @@ const likeComment = (comment: any, status: number, one: number, two: number) => 
   data.likeOrCollectionId = comment.id;
   data.publishUid = comment.uid;
   data.type = 2;
-  likeOrCollectionByDTO(data).then((res) => {
-    console.log("点赞状态", res.data);
+  likeOrCollectionByDTO(data).then(() => {
     if (two === -1) {
       dataList.value[one].isLike = status == 1;
       dataList.value[one].likeCount += status;
@@ -209,14 +208,12 @@ const likeComment = (comment: any, status: number, one: number, two: number) => 
 };
 
 const saveComment = (comment: any, one: number, two: number) => {
-  console.log("---comment", comment);
   oneIndex.value = one;
   twoIndex.value = two;
   emit("clickComment", comment);
 };
 
 const addComment = () => {
-  console.log("props.replyComment", props.replyComment);
   //   if (props.replyComment.pid === undefined) return;
 
   let comment = props.replyComment;
@@ -231,7 +228,6 @@ const addComment = () => {
     }
     dataList.value[oneIndex.value].children.splice(twoIndex.value + 1, 0, comment);
   }
-  console.log("----datai", dataList.value);
 };
 
 const loadTwoMore = (oneCommentId: string, index: number) => {
@@ -285,7 +281,6 @@ const getCommentData = () => {
         dataList.value.push(item);
       });
       commentTotal.value = total;
-      console.log("-----------comments", dataList.value);
       if (pageSize * props.currentPage >= commentTotal.value) return;
     }
   );
@@ -305,13 +300,6 @@ watch(
   }
 );
 
-// watchEffect(() => {
-//   console.log("进入评论组建", props.nid, props.replyComment, props.currentPage);
-//   if (props.currentPage === 1) {
-//     dataList.value = [];
-//     getCommentData();
-//   }
-// });
 </script>
 <style lang="less" scoped>
 .comments-container {

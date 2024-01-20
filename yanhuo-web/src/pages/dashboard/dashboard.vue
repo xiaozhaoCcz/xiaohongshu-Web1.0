@@ -23,7 +23,7 @@
     <div class="loading-container"></div>
     <div class="feeds-container" v-infinite-scroll="loadMoreData">
       <div class="feeds-loading-top" v-show="topLoading">
-        <RefreshRight style="width: 1.2em; height: 1.2em" color="rgba(51, 51, 51, 0.8)" />
+        <Refresh style="width: 1.2em; height: 1.2em" color="rgba(51, 51, 51, 0.8)" />
       </div>
 
       <Waterfall
@@ -67,7 +67,7 @@
         </template>
       </Waterfall>
       <div class="feeds-loading">
-        <RefreshRight style="width: 1.2em; height: 1.2em" color="rgba(51, 51, 51, 0.8)" />
+        <Refresh style="width: 1.2em; height: 1.2em" color="rgba(51, 51, 51, 0.8)" />
       </div>
     </div>
     <FloatingBtn @click-refresh="refresh"></FloatingBtn>
@@ -80,7 +80,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { RefreshRight } from "@element-plus/icons-vue";
+import { Refresh } from "@element-plus/icons-vue";
 import { Waterfall, LazyImg } from "vue-waterfall-plugin-next";
 import "vue-waterfall-plugin-next/dist/style.css";
 // import { useRouter } from "vue-router";
@@ -116,8 +116,7 @@ const noteDTO = ref<NoteDTO>({
 
 watch(
   () => [searchStore.seed],
-  (newVal, oldVal) => {
-    console.log("dashboardseed", newVal, oldVal);
+  () => {
     noteDTO.value.keyword = searchStore.keyWord;
     noteDTO.value.cpid = "";
     categoryClass.value = "0";
@@ -137,14 +136,12 @@ const close = () => {
 };
 
 const refresh = () => {
-  console.log("刷新数据");
   let scrollTop =
     window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
   const clientHeight =
     window.innerHeight ||
     Math.min(document.documentElement.clientHeight, document.body.clientHeight);
 
-  console.log(scrollTop, "scrollTop");
   if (scrollTop <= clientHeight * 2) {
     const timeTop = setInterval(() => {
       document.documentElement.scrollTop = document.body.scrollTop = scrollTop -= 100;
@@ -174,13 +171,10 @@ const refresh = () => {
 const loadMoreData = () => {
   currentPage.value += 1;
   if (noteDTO.value.cpid === "" && noteDTO.value.keyword == "") {
-    console.log("-----getRecommendNotePage", noteDTO.value.keyword);
     getRecommendNotePage(currentPage.value, pageSize).then((res: any) => {
-      console.log("---res", res);
       setData(res);
     });
   } else {
-    console.log("-----getNotePageByDTO");
     getNotePageByDTO(currentPage.value, pageSize, noteDTO.value).then((res) => {
       setData(res);
     });
@@ -202,7 +196,6 @@ const getNoteList = () => {
   noteList.value = [] as Array<any>;
   currentPage.value = 1;
   getRecommendNotePage(currentPage.value, pageSize).then((res: any) => {
-    console.log("---res", res);
     setData(res);
   });
 };
@@ -227,7 +220,6 @@ const getNoteListByKeyword = () => {
 
 const getCategoryData = () => {
   getCategoryTreeData().then((res: any) => {
-    console.log("--category", res.data);
     categoryList.value = res.data;
   });
 };

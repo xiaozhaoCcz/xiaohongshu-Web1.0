@@ -92,12 +92,10 @@ const setData = (res: any) => {
     dataObj.src = element.noteCover;
     noteList.value.push(dataObj);
   });
-  console.log(noteList.value);
 };
 
 const getNoteList = (type: number) => {
   getTrendPageByUser(currentPage.value, pageSize, uid, type).then((res) => {
-    console.log("-----", res.data);
     setData(res);
   });
 };
@@ -108,8 +106,6 @@ const loadMoreData = () => {
 };
 
 const initData = () => {
-  console.log("----note", uid);
-  console.log("----监听当前路由", window.location.href);
   getNoteList(1);
 };
 

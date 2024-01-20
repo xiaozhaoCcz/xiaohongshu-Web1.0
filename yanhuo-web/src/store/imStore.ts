@@ -1,6 +1,5 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
-import { storage } from "@/utils/storage";
 import { store } from "@/store";
 
 // 使用setup模式定义
@@ -25,7 +24,6 @@ export const imStore = defineStore("imStore", () => {
   };
 
   const setMessage = (data: any) => {
-    console.log("-----",data)
     message.value = data;
   };
 

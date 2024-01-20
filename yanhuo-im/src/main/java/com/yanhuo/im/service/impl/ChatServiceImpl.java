@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yanhuo.common.auth.AuthContextHolder;
+import com.yanhuo.common.constant.ImConstant;
 import com.yanhuo.common.utils.ConvertUtils;
 import com.yanhuo.common.utils.RedisUtils;
 import com.yanhuo.common.im.Message;
@@ -68,9 +69,13 @@ public class ChatServiceImpl extends ServiceImpl<ChatDao, Chat> implements ChatS
     @Override
     public CountMessage getCountMessage() {
         String currentUid = AuthContextHolder.getUserId();
-        String messageCountKey = "messageCountKey:" + currentUid;
+        String messageCountKey = ImConstant.MESSAGE_COUNT_KEY + currentUid;
         if (Boolean.FALSE.equals(redisUtils.hasKey(messageCountKey))) {
-            return new CountMessage();
+            CountMessage countMessage = new CountMessage();
+            countMessage.setFollowCount(0L);
+            countMessage.setCommentCount(0L);
+            countMessage.setLikeOrCollectionCount(0L);
+            return countMessage;
         }
         String json = redisUtils.get(messageCountKey);
         return JSONUtil.toBean(json, CountMessage.class);
@@ -105,12 +110,30 @@ public class ChatServiceImpl extends ServiceImpl<ChatDao, Chat> implements ChatS
     }
 
     @Override
-    public void clearMessageCount(String sendUid) {
-        String currentUid = AuthContextHolder.getUserId();
-        ChatUserRelation chatUserRelation = chatUserRelationService.getOne(new QueryWrapper<ChatUserRelation>().eq("send_uid", sendUid).eq("accept_uid", currentUid));
-        if(chatUserRelation!=null){
-            chatUserRelation.setCount(0);
-            chatUserRelationService.updateById(chatUserRelation);
+    public void clearMessageCount(String sendUid,Integer type) {
+        if(type==3){
+            String currentUid = AuthContextHolder.getUserId();
+            ChatUserRelation chatUserRelation = chatUserRelationService.getOne(new QueryWrapper<ChatUserRelation>().eq("send_uid", sendUid).eq("accept_uid", currentUid));
+            if(chatUserRelation!=null){
+                chatUserRelation.setCount(0);
+                chatUserRelationService.updateById(chatUserRelation);
+            }
+        }else{
+            String messageCountKey = ImConstant.MESSAGE_COUNT_KEY + sendUid;
+            String json = redisUtils.get(messageCountKey);
+            CountMessage countMessage = JSONUtil.toBean(json, CountMessage.class);
+            switch (type){
+                case 0:
+                    countMessage.setLikeOrCollectionCount(0L);
+                    break;
+                case 1:
+                    countMessage.setCommentCount(0L);
+                    break;
+                default:
+                    countMessage.setFollowCount(0L);
+                    break;
+            }
+            redisUtils.set(messageCountKey, JSONUtil.toJsonStr(countMessage));
         }
     }
 }

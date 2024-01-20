@@ -40,14 +40,11 @@ const searchPage = (keyword: string) => {
   searchStore.pushRecord(keyword);
   const seed = getRandomString(12);
   searchStore.setSeed(seed);
-  console.log("-----seed", seed);
 };
 watchEffect(() => {
-  console.log("发生改变", props.recordList);
   dataList.value = [];
   if(props.recordList.length>0){
     dataList.value = props.recordList
-    console.log("----dataList.value",dataList.value)
   }
 });
 </script>

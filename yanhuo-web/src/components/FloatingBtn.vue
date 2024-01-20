@@ -7,12 +7,12 @@
     </el-backtop>
 
     <div class="reload" @click="refresh">
-      <RefreshRight style="width: 1.2em; height: 1.2em" color="rgba(51, 51, 51, 0.8)" />
+      <Refresh style="width: 1.2em; height: 1.2em" color="rgba(51, 51, 51, 0.8)" />
     </div>
   </div>
 </template>
 <script lang="ts" setup>
-import { RefreshRight, Top } from "@element-plus/icons-vue";
+import { Refresh, Top } from "@element-plus/icons-vue";
 
 const emit = defineEmits(["clickRefresh"]);
 const refresh = () => {

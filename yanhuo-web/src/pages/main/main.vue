@@ -236,8 +236,7 @@ const close = () => {
 };
 
 const follow = (fid: string, type: number) => {
-  followById(fid).then((res) => {
-    console.log("---关注", res.data);
+  followById(fid).then(() => {
     noteInfo.value.isFollow = type == 0;
   });
 };
@@ -259,7 +258,6 @@ const likeOrCollection = (type: number, val: number) => {
 };
 
 const clickComment = (comment: any) => {
-  console.log("---main", comment);
   commentObject.value = comment;
   commentPlaceVal.value = "回复" + comment.username;
 };
@@ -275,7 +273,6 @@ const saveComment = () => {
   const comment = {} as CommentDTO;
   comment.nid = props.nid;
   comment.noteUid = noteInfo.value.uid;
-  console.log("commentObject.value", commentObject.value);
   if (commentObject.value.pid === undefined) {
     comment.pid = "0";
     comment.replyId = "0";
@@ -292,11 +289,9 @@ const saveComment = () => {
     comment.replyUid = commentObject.value.uid;
     comment.level = 2;
   }
-  console.log("comment", comment);
 
   comment.content = commentValue.value;
   saveCommentByDTO(comment).then((res: any) => {
-    console.log("添加评论成功", res.data);
     replyComment.value = res.data;
     commentValue.value = "";
     commentObject.value = {};

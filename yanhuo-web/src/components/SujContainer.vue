@@ -82,12 +82,10 @@ const showTagState = ref(false);
 const recommendRecords = ["壁纸", "风景", "情侣", "头像", "动漫", "动物"];
 
 const showDeleteTag = () => {
-  console.log(123);
   showTagState.value = !showTagState.value;
 };
 
 const deleteRecord = (index: number) => {
-  console.log(index);
   historyRecordList.value.splice(index, 1);
   // 使用store失效
   storage.set("historyRecords", historyRecordList.value);
@@ -95,11 +93,9 @@ const deleteRecord = (index: number) => {
 
 watch(
   () => [searchStore.seed],
-  (newVal, oldVal) => {
-    console.log("seed", newVal, oldVal);
+  () => {
     historyRecordList.value = searchStore.getRecords();
     getHotRecord().then((res) => {
-      console.log(res.data);
       hotList.value = res.data;
     });
   }
@@ -110,13 +106,11 @@ const searchPage = (keyword: string) => {
   searchStore.pushRecord(keyword);
   const seed = getRandomString(12);
   searchStore.setSeed(seed);
-  console.log("-----seed", seed);
 };
 
 onMounted(() => {
   historyRecordList.value = searchStore.getRecords();
   getHotRecord().then((res) => {
-    console.log(res.data);
     hotList.value = res.data;
   });
 });

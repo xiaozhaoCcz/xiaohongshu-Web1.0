@@ -70,6 +70,7 @@ import { getUserById } from "@/api/user";
 import { getAllChatRecord, sendMsg } from "@/api/im";
 import { useUserStore } from "@/store/userStore";
 import { useImStore } from "@/store/imStore";
+
 const imStore = useImStore();
 const userStore = useUserStore();
 const props = defineProps({
@@ -83,7 +84,7 @@ const content = ref("");
 const ChatRef = ref();
 const currentUser = ref<any>({});
 const acceptUser = ref<any>({});
-const dataList = ref<Array<any>>();
+const dataList = ref<any>();
 const currentPage = ref(1);
 const pageSize = 15;
 const messageTotal = ref(0);
@@ -91,7 +92,6 @@ const messageTotal = ref(0);
 watch(
   () => imStore.message,
   (newVal) => {
-    console.log("0---0", newVal);
     if (newVal.sendUid === acceptUser.value.id) {
       insertMessage(newVal);
     }
@@ -113,7 +113,7 @@ const insertMessage = async (message: any) => {
 const emit = defineEmits(["clickChat"]);
 
 const close = () => {
-  emit("clickChat", false);
+  emit("clickChat", props.acceptUid);
 };
 
 const submit = () => {
@@ -128,7 +128,6 @@ const submit = () => {
   message.chatType = 0;
   sendMsg(message).then(() => {
     content.value = "";
-    console.log("发送成功", message);
     insertMessage(message);
   });
 };
@@ -136,7 +135,6 @@ const submit = () => {
 const showScroll = () => {
   const topval = ChatRef.value.scrollTop;
   if (topval === 0) {
-    console.log("到达顶部", ChatRef.value.scrollTop, ChatRef.value.clientHeight);
     loadMoreData();
   }
 };
@@ -148,7 +146,6 @@ const loadMoreData = () => {
 
 const getAllChatRecordMethod = () => {
   getAllChatRecord(currentPage.value, pageSize, props.acceptUid).then((res) => {
-    console.log("data", res.data);
     const { records, total } = res.data;
     messageTotal.value = total;
     records.forEach((item: any) => {
@@ -169,11 +166,10 @@ onMounted(async () => {
   });
   dataList.value = [];
   getAllChatRecord(currentPage.value, pageSize, props.acceptUid).then(async (res) => {
-    console.log("data", res.data);
     const { records, total } = res.data;
     messageTotal.value = total;
     records.forEach((item: any) => {
-      dataList.value?.splice(0, 0, item);
+      dataList.value.splice(0, 0, item);
     });
     await nextTick();
     ChatRef.value.lastElementChild.scrollIntoView({

@@ -16,15 +16,22 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@RequestMapping("/chat")
+@RequestMapping("/im/chat")
 @RestController
 public class ChatController {
 
     @Autowired
     ChatService chatService;
 
-    @RequestMapping("/sendMsg")
+    @RequestMapping("test")
+    public void test(){
+        System.out.println("test11");
+    }
+
+
+    @RequestMapping("sendMsg")
     public Result<?> sendMsg(@RequestBody Message message) {
+        System.out.println("---"+message);
         chatService.sendMsg(message);
         return Result.ok();
     }
@@ -63,8 +70,8 @@ public class ChatController {
     }
 
     @RequestMapping("clearMessageCount")
-    public Result<?> clearMessageCount(String sendUid){
-        chatService.clearMessageCount(sendUid);
+    public Result<?> clearMessageCount(String sendUid,Integer type){
+        chatService.clearMessageCount(sendUid,type);
         return Result.ok();
     }
 }

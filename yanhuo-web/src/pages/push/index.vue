@@ -146,7 +146,6 @@ onMounted(() => {
     if (document.getElementById("tagContainer")!.contains(target)) {
       console.log("in");
     } else {
-      console.log("out");
       showTagState.value = false;
     }
   });
@@ -180,7 +179,6 @@ const loadMoreData = () => {
 };
 
 const handleChange = (ids: Array<any>) => {
-  console.log(ids);
   categoryList.value = ids;
 };
 
@@ -230,7 +228,6 @@ const pubslish = () => {
       },
     })
       .then((res: any) => {
-        console.log("上传成功", res.data);
         resolve(res.data.data);
       })
       .catch((err: any) => {
@@ -249,16 +246,13 @@ const pubslish = () => {
     note.value.cid = categoryList.value[1];
     note.value.tagList = tagList.value;
 
-    console.log(tagList.value);
-
-    saveNoteByDTO(note.value).then((res) => {
+    saveNoteByDTO(note.value).then(() => {
       note.value = {};
       title.value = "";
       content.value = "";
       categoryList.value = [];
       fileList.value = [];
       tagList.value = [];
-      console.log("保存成功", res.data);
       ElMessage({
         message: "发布成功",
         type: "success",
@@ -269,7 +263,6 @@ const pubslish = () => {
 
 const initData = () => {
   getCategoryTreeData().then((res) => {
-    console.log(res.data);
     options.value = res.data;
   });
 };

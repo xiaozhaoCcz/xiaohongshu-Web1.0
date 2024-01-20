@@ -10,49 +10,67 @@
           >
             <div
               :class="
-                type === 1 ? 'reds-tab-item active tab-item' : 'reds-tab-item tab-item'
+                type === 3 ? 'reds-tab-item active tab-item' : 'reds-tab-item tab-item'
               "
             >
-              <div class="badge-container" @click="toPage(1)">
+              <div class="badge-container" @click="toPage(3)">
                 <span>我的消息</span>
               </div>
             </div>
           </el-badge>
-          <div
-            :class="
-              type === 2 ? 'reds-tab-item active tab-item' : 'reds-tab-item tab-item'
-            "
+          <el-badge
+            :value="_countMessage.commentCount"
+            :max="99"
+            :hidden="_countMessage.commentCount == 0"
           >
-            <div class="badge-container" @click="toPage(2)">
-              <span>评论和@</span>
+            <div
+              :class="
+                type === 1 ? 'reds-tab-item active tab-item' : 'reds-tab-item tab-item'
+              "
+            >
+              <div class="badge-container" @click="toPage(1)">
+                <span>评论和@</span>
+              </div>
             </div>
-          </div>
-          <div
-            :class="
-              type === 3 ? 'reds-tab-item active tab-item' : 'reds-tab-item tab-item'
-            "
+          </el-badge>
+          <el-badge
+            :value="_countMessage.likeOrCollectionCount"
+            :max="99"
+            :hidden="_countMessage.likeOrCollectionCount == 0"
           >
-            <div class="badge-container" @click="toPage(3)">
-              <span>赞和收藏</span>
+            <div
+              :class="
+                type === 0 ? 'reds-tab-item active tab-item' : 'reds-tab-item tab-item'
+              "
+            >
+              <div class="badge-container" @click="toPage(0)">
+                <span>赞和收藏</span>
+              </div>
             </div>
-          </div>
-          <div
-            :class="
-              type === 4 ? 'reds-tab-item active tab-item' : 'reds-tab-item tab-item'
-            "
+          </el-badge>
+          <el-badge
+            :value="_countMessage.followCount"
+            :max="99"
+            :hidden="_countMessage.followCount == 0"
           >
-            <div class="badge-container" @click="toPage(4)">
-              <span>新增关注</span>
+            <div
+              :class="
+                type === 2 ? 'reds-tab-item active tab-item' : 'reds-tab-item tab-item'
+              "
+            >
+              <div class="badge-container" @click="toPage(2)">
+                <span>新增关注</span>
+              </div>
             </div>
-          </div>
+          </el-badge>
         </div>
         <div class="divider" style="margin: 16px 32px 0px"></div>
       </div>
     </div>
-    <Message v-if="type == 1"></Message>
-    <Comment v-if="type == 2" @click-main="toMain"></Comment>
-    <LikeCollection v-if="type == 3" @click-main="toMain"></LikeCollection>
-    <Follower v-if="type == 4"></Follower>
+    <Message v-if="type == 3"></Message>
+    <Comment v-if="type == 1" @click-main="toMain"></Comment>
+    <LikeCollection v-if="type == 0" @click-main="toMain"></LikeCollection>
+    <Follower v-if="type == 2"></Follower>
     <!-- <router-view /> -->
 
     <Main
@@ -78,10 +96,14 @@ import Follower from "@/pages/message/children/follower.vue";
 import Comment from "@/pages/message/children/comment.vue";
 import Main from "@/pages/main/main.vue";
 import { useImStore } from "@/store/imStore";
+import { clearMessageCount } from "@/api/im";
+import { useUserStore } from "@/store/userStore";
 const imStore = useImStore();
+const userStore = useUserStore();
 
-const type = ref(1);
+const type = ref(3);
 const nid = ref("");
+const currentUid = userStore.getUserInfo().id;
 const mainShow = ref(false);
 const _countMessage = ref({
   chatCount: 0,
@@ -93,7 +115,7 @@ const _countMessage = ref({
 watch(
   () => imStore.countMessage,
   (newVal) => {
-    console.log("--------------", newVal);
+    console.log("countMessage", newVal);
     _countMessage.value = newVal;
   },
   {
@@ -102,7 +124,22 @@ watch(
 );
 
 const toPage = (val: number) => {
-  type.value = val;
+  const _countMessage = imStore.countMessage;
+  clearMessageCount(currentUid, val).then(() => {
+    switch (val) {
+      case 0:
+        _countMessage.likeOrCollectionCount = 0;
+        break;
+      case 1:
+        _countMessage.commentCount = 0;
+        break;
+      default:
+        _countMessage.followCount = 0;
+        break;
+    }
+    imStore.setCountMessage(_countMessage);
+    type.value = val;
+  });
 };
 
 const close = () => {
@@ -110,7 +147,6 @@ const close = () => {
 };
 
 const toMain = (val: string) => {
-  console.log("nid", val);
   nid.value = val;
   mainShow.value = true;
 };

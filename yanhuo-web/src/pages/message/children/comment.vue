@@ -124,7 +124,6 @@ const toUser = (uid: string) => {
 
 const getPageData = () => {
   getNoticeComment(currentPage.value, pageSize).then((res) => {
-    console.log(res.data);
     const { records, total } = res.data;
     dataTotal.value = total;
     records.forEach((item: any) => {

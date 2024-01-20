@@ -137,7 +137,6 @@ const toChat = () => {
 };
 
 const initData = () => {
-  console.log("uid", uid);
   getUserById(uid).then((res) => {
     userInfo.value = res.data;
   });

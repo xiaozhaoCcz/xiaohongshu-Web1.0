@@ -14,12 +14,13 @@ export const getChatUserList = () => {
   });
 };
 
-export const clearMessageCount = (sendUid:string) => {
+export const clearMessageCount = (sendUid:string,type:number) => {
   return request<any>({
     url: "/im/chat/clearMessageCount", // mock接口
     method: "get",
     params:{
-      sendUid
+      sendUid,
+      type
     }
   });
 };

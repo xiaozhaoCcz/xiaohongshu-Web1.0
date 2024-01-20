@@ -19,5 +19,5 @@ public interface ChatService extends IService<Chat> {
 
     Page<Chat> getAllChatRecord(long currentPage, long pageSize, String acceptUid);
 
-    void clearMessageCount(String sendUid);
+    void clearMessageCount(String sendUid,Integer type);
 }

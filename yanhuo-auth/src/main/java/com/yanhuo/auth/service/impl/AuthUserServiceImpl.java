@@ -121,9 +121,10 @@ public class AuthUserServiceImpl extends ServiceImpl<UserDao, User> implements A
     }
 
     @Override
-    public void loginOut(AuthUserDTO authUserDTO) {
-        String key = AuthConstant.USER_KEY + authUserDTO.getId();
+    public void loginOut(String userId) {
+        String key = AuthConstant.USER_KEY + userId;
         redisUtils.delete(key);
+        redisUtils.delete(AuthConstant.REFRESH_TOKEN_START_TIME + userId);
     }
 
     @Override

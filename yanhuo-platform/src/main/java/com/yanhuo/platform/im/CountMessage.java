@@ -1,4 +1,4 @@
-package com.yanhuo.im.entity;
+package com.yanhuo.platform.im;
 
 import lombok.Data;
 

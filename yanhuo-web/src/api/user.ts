@@ -72,4 +72,14 @@ export const getUserById = (userId:string) => {
   });
 };
 
+export const loginOut = (userId:string) => {
+  return request<any>({
+    url: `/auth/auth/loginOut`, // mock接口
+    method: "get",
+    params: {
+      userId
+    },
+  });
+};
+
 

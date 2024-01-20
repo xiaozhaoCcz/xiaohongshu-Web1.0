@@ -3,15 +3,15 @@
     <i tabindex="-1" class="reds-mask" aria-label="弹窗遮罩"></i
     ><!---->
     <div class="login-container">
-      <div class="icon-btn-wrapper close-button" @click="close"><Close style="width: 1em; height: 1em" /></div>
+      <div class="icon-btn-wrapper close-button" @click="close">
+        <Close style="width: 1em; height: 1em" />
+      </div>
       <div class="left">
         <img class="logo" src="@/assets/logo.png" />
         <div class="course-video" style="display: none">
           <video
             src="https://fe-video-qc.xhscdn.com/fe-platform/f3ddbc4d8062e08c8684e1fa3bea7c2e2bb77c21.mp4"
             preload="auto"
-            autoplay=""
-            loop=""
           ></video>
         </div>
         <div class="qrcode">
@@ -36,7 +36,11 @@
           <form onsubmit="return false">
             <label class="phone"
               ><span class="country-code">+86</span
-              ><input placeholder="输入手机号" type="text" name="blur" v-model="userLogin.phone" autofocus="" /><svg
+              ><input
+                placeholder="输入手机号"
+                type="text"
+                name="blur"
+                v-model="userLogin.phone" /><svg
                 class="reds-icon clear"
                 width="24"
                 height="24"
@@ -47,10 +51,12 @@
             ></label>
             <div style="height: 16px"></div>
             <label class="auth-code"
-              ><input type="number" placeholder="输入验证码" autocomplete="false" v-model="userLogin.code" /><span
-                class="code-button"
-                >获取验证码</span
-              ></label
+              ><input
+                type="number"
+                placeholder="输入验证码"
+                autocomplete="false"
+                v-model="userLogin.code"
+              /><span class="code-button">获取验证码</span></label
             >
             <div class="err-msg"></div>
             <button class="submit" @click="login">登录</button>
@@ -59,9 +65,15 @@
         <div class="agreements">
           <span class="agree-icon"></span>
           <label> 我已阅读并同意</label
-          ><a class="links" target="_blank" href="https://agree.xiaohongshu.com/h5/terms/ZXXY20220331001/-1"
+          ><a
+            class="links"
+            target="_blank"
+            href="https://agree.xiaohongshu.com/h5/terms/ZXXY20220331001/-1"
             >《用户协议》</a
-          ><a class="links" target="_blank" href="https://agree.xiaohongshu.com/h5/terms/ZXXY20220509001/-1"
+          ><a
+            class="links"
+            target="_blank"
+            href="https://agree.xiaohongshu.com/h5/terms/ZXXY20220509001/-1"
             >《隐私政策》</a
           ><br /><a
             class="links"
@@ -91,9 +103,15 @@
         <div class="reds-alert-content">
           <!----><!----><label data-v-44ecdae0-s="" class="alert-content"
             ><div data-v-44ecdae0-s="" class="alert-text">
-              <a data-v-44ecdae0-s="" target="_blank" href="https://agree.xiaohongshu.com/h5/terms/ZXXY20220331001/-1"
+              <a
+                data-v-44ecdae0-s=""
+                target="_blank"
+                href="https://agree.xiaohongshu.com/h5/terms/ZXXY20220331001/-1"
                 >《用户协议》</a
-              ><a data-v-44ecdae0-s="" target="_blank" href="https://agree.xiaohongshu.com/h5/terms/ZXXY20220509001/-1"
+              ><a
+                data-v-44ecdae0-s=""
+                target="_blank"
+                href="https://agree.xiaohongshu.com/h5/terms/ZXXY20220509001/-1"
                 >《隐私政策》</a
               ><br data-v-44ecdae0-s="" /><a
                 data-v-44ecdae0-s=""
@@ -123,8 +141,10 @@ import { loginByCode } from "@/api/user";
 import { ref } from "vue";
 import { storage } from "@/utils/storage";
 import { useUserStore } from "@/store/userStore";
+import { useRouter } from "vue-router";
 
 const userStore = useUserStore();
+const router = useRouter();
 
 const userLogin = ref<UserLogin>({
   phone: "",
@@ -139,15 +159,13 @@ const close = () => {
 };
 
 const login = () => {
-  console.log("---user", userLogin.value);
   loginByCode(userLogin.value).then((res: any) => {
     const { data } = res;
-    console.log("---res", data);
     const currentUser = data.userInfo;
     storage.set("accessToken", data.accessToken);
     storage.set("refreshToken", data.refreshToken);
     userStore.setUserInfo(currentUser);
-
+    router.push({ path: "/", query: { date: Date.now() } });
     emit("clickChild", false);
   });
 };
@@ -176,9 +194,7 @@ a {
   box-sizing: border-box;
   visibility: visible;
   opacity: 1;
-  transition:
-    opacity 0.2s,
-    visibility 0.2s;
+  transition: opacity 0.2s, visibility 0.2s;
 
   .reds-mask {
     position: absolute;
@@ -197,9 +213,7 @@ a {
     height: 480px;
     background: #fff;
     border-radius: 16px;
-    box-shadow:
-      0 4px 32px 0 rgba(0, 0, 0, 0.08),
-      0 1px 4px 0 rgba(0, 0, 0, 0.04);
+    box-shadow: 0 4px 32px 0 rgba(0, 0, 0, 0.08), 0 1px 4px 0 rgba(0, 0, 0, 0.04);
     transition: all 0.2s;
 
     .close-button {

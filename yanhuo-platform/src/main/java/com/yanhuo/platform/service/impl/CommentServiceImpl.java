@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yanhuo.common.auth.AuthContextHolder;
 import com.yanhuo.common.utils.ConvertUtils;
+import com.yanhuo.platform.im.ChatUtils;
 import com.yanhuo.platform.service.*;
 import com.yanhuo.xo.dao.CommentDao;
 import com.yanhuo.xo.dto.CommentDTO;
@@ -32,6 +33,9 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
 
     @Autowired
     CommentSyncService commentSyncService;
+
+    @Autowired
+    ChatUtils chatUtils;
     @Override
     public Page<CommentVo> getOneCommentPageByNoteId(long currentPage, long pageSize, String noteId) {
         return null;
@@ -84,6 +88,13 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
             List<CommentSync> commentSyncs = commentSyncService.list(new QueryWrapper<CommentSync>().in("id", commentIds));
             List<Comment> comments = ConvertUtils.sourceToTarget(commentSyncs, Comment.class);
             this.saveBatch(comments);
+
+            for (Comment comment : comments) {
+                if(!Objects.equals(comment.getReplyUid(), comment.getNoteUid())){
+                    chatUtils.sendMessage(comment.getNoteUid(),1);
+                }
+                chatUtils.sendMessage(comment.getReplyUid(),1);
+            }
         }
     }
 

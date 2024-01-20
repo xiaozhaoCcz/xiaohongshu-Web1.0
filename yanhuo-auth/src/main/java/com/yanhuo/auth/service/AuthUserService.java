@@ -57,7 +57,7 @@ public interface AuthUserService extends IService<User> {
      * @param authUserDTO
      * @return
      */
-    void loginOut(AuthUserDTO authUserDTO);
+    void loginOut(String userId);
 
     /**
      * 修改密码

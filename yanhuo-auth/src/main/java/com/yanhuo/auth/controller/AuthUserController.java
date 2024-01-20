@@ -105,8 +105,8 @@ public class AuthUserController {
      * @return
      */
     @RequestMapping("loginOut")
-    public Result<?> loginOut(@RequestBody AuthUserDTO authUserDTO) {
-        authUserService.loginOut(authUserDTO);
+    public Result<?> loginOut(String userId) {
+        authUserService.loginOut(userId);
         return Result.ok();
     }
 

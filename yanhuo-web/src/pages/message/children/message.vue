@@ -47,19 +47,16 @@ watchEffect(() => {
   const _countMessage = imStore.countMessage;
   _countMessage.chatCount = 0;
   imStore.userList.forEach((item) => {
-    console.log("-----", item);
     item.time = formateTime(item.timestamp);
     _countMessage.chatCount += item.count;
     dataList.value.push(item);
   });
   imStore.setCountMessage(_countMessage);
-  console.log("_countMessage", _countMessage);
 });
 
 const toChat = (uid: string, index: number) => {
-  console.log("index", dataList.value[index]);
   const _countMessage = imStore.countMessage;
-  clearMessageCount(uid).then(() => {
+  clearMessageCount(uid, 3).then(() => {
     const chatCount = dataList.value[index].count;
     _countMessage.chatCount -= chatCount;
     dataList.value[index].count = 0;
@@ -69,8 +66,16 @@ const toChat = (uid: string, index: number) => {
   });
 };
 
-const close = () => {
-  chatShow.value = false;
+const close = (uid: string) => {
+  const index = dataList.value.findIndex((item) => item.uid === uid);
+  const _countMessage = imStore.countMessage;
+  clearMessageCount(uid, 3).then(() => {
+    const chatCount = dataList.value[index].count;
+    _countMessage.chatCount -= chatCount;
+    dataList.value[index].count = 0;
+    imStore.setCountMessage(_countMessage);
+    chatShow.value = false;
+  });
 };
 </script>
 <style lang="less" scoped>

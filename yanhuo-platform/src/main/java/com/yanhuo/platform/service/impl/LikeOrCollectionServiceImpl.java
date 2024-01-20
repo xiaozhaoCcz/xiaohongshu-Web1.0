@@ -1,17 +1,22 @@
 package com.yanhuo.platform.service.impl;
 
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yanhuo.common.auth.AuthContextHolder;
+import com.yanhuo.common.im.Message;
 import com.yanhuo.common.utils.ConvertUtils;
+import com.yanhuo.common.utils.RedisUtils;
+import com.yanhuo.platform.client.ChatClient;
+import com.yanhuo.platform.im.ChatUtils;
+import com.yanhuo.platform.im.CountMessage;
 import com.yanhuo.platform.service.*;
 import com.yanhuo.xo.dao.LikeOrCollectionDao;
 import com.yanhuo.xo.dto.LikeOrCollectionDTO;
 import com.yanhuo.xo.entity.*;
 import com.yanhuo.xo.vo.CommentVo;
 import com.yanhuo.xo.vo.LikeOrCollectionVo;
-import com.yanhuo.xo.vo.NoteVo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,6 +30,12 @@ import java.util.stream.Collectors;
  */
 @Service
 public class LikeOrCollectionServiceImpl extends ServiceImpl<LikeOrCollectionDao, LikeOrCollection> implements LikeOrCollectionService {
+
+    @Autowired
+    RedisUtils redisUtils;
+
+    @Autowired
+    ChatClient chatClient;
 
     @Autowired
     NoteService noteService;
@@ -44,6 +55,9 @@ public class LikeOrCollectionServiceImpl extends ServiceImpl<LikeOrCollectionDao
     @Autowired
     UserService userService;
 
+    @Autowired
+    ChatUtils chatUtils;
+
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void likeOrCollectionByDTO(LikeOrCollectionDTO likeOrCollectionDTO) {
@@ -59,7 +73,8 @@ public class LikeOrCollectionServiceImpl extends ServiceImpl<LikeOrCollectionDao
             likeOrCollection.setUid(currentUid);
             this.save(likeOrCollection);
             updateLikeCollectionCount(likeOrCollectionDTO,1);
-            // TODO 发送消息
+
+            chatUtils.sendMessage(likeOrCollectionDTO.getPublishUid(),0);
         }
     }
 

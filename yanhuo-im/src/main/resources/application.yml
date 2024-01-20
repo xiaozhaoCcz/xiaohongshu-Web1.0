@@ -7,8 +7,6 @@ spring:
 
 server:
   port: 8802
-  servlet:
-    context-path: /im
 
 goeasy:
   host: rest-hz.goeasy.io

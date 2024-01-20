@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yanhuo.common.auth.AuthContextHolder;
+import com.yanhuo.platform.im.ChatUtils;
 import com.yanhuo.platform.service.FollowerService;
 import com.yanhuo.platform.service.LikeOrCollectionService;
 import com.yanhuo.platform.service.NoteService;
@@ -34,6 +35,9 @@ public class FollowerServiceImpl extends ServiceImpl<FollowerDao, Follower> impl
 
     @Autowired
     LikeOrCollectionService likeOrCollectionService;
+
+    @Autowired
+    ChatUtils chatUtils;
 
     @Override
     public Page<TrendVo> getFollowTrendPage(long currentPage, long pageSize) {
@@ -109,6 +113,7 @@ public class FollowerServiceImpl extends ServiceImpl<FollowerDao, Follower> impl
             currentUser.setFollowerCount(currentUser.getFollowerCount()+1);
             followerUser.setFanCount(followerUser.getFanCount()+1);
             this.save(follower);
+            chatUtils.sendMessage(followerId,2);
         }
         userService.updateById(currentUser);
         userService.updateById(followerUser);

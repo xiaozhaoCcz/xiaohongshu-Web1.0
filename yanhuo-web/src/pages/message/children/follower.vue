@@ -53,7 +53,6 @@ const dataTotal = ref(0);
 
 const getPageData = () => {
   getNoticeFollower(currentPage.value, pageSize).then((res) => {
-    console.log(res.data);
     const { records, total } = res.data;
     dataTotal.value = total;
     records.forEach((item: any) => {
@@ -70,7 +69,6 @@ const follow = (fid: string, index: number, type: number) => {
 };
 
 const loadMore = () => {
-  console.log("222");
   currentPage.value += 1;
   getPageData();
 };
@@ -80,7 +78,6 @@ const toUser = (uid: string) => {
 };
 
 const initData = () => {
-  console.log(1111);
   getPageData();
 };
 initData();

@@ -52,7 +52,7 @@
       </li>
     </ul>
     <div class="feeds-loading">
-      <RefreshRight style="width: 1.2em; height: 1.2em" color="rgba(51, 51, 51, 0.8)" />
+      <Refresh style="width: 1.2em; height: 1.2em" color="rgba(51, 51, 51, 0.8)" />
     </div>
     <FloatingBtn @click-refresh="refresh"></FloatingBtn>
     <Main
@@ -64,7 +64,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { ChatRound, More, RefreshRight } from "@element-plus/icons-vue";
+import { ChatRound, More, Refresh } from "@element-plus/icons-vue";
 import { ref } from "vue";
 import { getFollowTrendPage } from "@/api/follower";
 import { formateTime } from "@/utils/util";
@@ -104,7 +104,6 @@ const getFollowTrends = () => {
 };
 
 const loadMoreData = () => {
-  console.log("Loading more data");
   currentPage.value += 1;
   getFollowTrends();
 };
@@ -119,7 +118,6 @@ const close = () => {
 };
 
 const refresh = () => {
-  console.log("刷新数据");
   let scrollTop =
     window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
   const clientHeight =
