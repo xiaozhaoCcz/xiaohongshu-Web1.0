@@ -108,6 +108,9 @@ const close = () => {
 };
 
 const submit = () => {
+  if (content.value.length <= 0) {
+    return;
+  }
   const message = ref({}) as any;
   message.sendUid = currentUser.value.id;
   message.acceptUid = acceptUser.value.id;
