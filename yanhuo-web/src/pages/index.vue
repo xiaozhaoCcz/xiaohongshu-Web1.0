@@ -137,8 +137,8 @@
                         </button>
                       </div>
                     </div>
-                    <div class="menu-item hover-effect">
-                      <span>推出登录</span>
+                    <div class="menu-item hover-effect" @click="logout">
+                      <span>退出登录</span>
                     </div>
                   </div>
                 </div>
@@ -321,6 +321,12 @@ const getCountMessageMethod = () => {
     console.log("aaa", res.data);
     imStore.setCountMessage(res.data);
   });
+};
+
+const logout = () => {
+  userStore.loginOut();
+  userInfo.value = null;
+  loginShow.value = true;
 };
 
 const initData = () => {

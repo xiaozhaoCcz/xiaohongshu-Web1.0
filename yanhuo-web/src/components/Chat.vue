@@ -85,7 +85,7 @@ const currentUser = ref<any>({});
 const acceptUser = ref<any>({});
 const dataList = ref<Array<any>>();
 const currentPage = ref(1);
-const pageSize = 10;
+const pageSize = 15;
 const messageTotal = ref(0);
 
 watch(

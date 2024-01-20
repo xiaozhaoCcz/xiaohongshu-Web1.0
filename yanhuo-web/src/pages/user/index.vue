@@ -58,6 +58,11 @@
           </div>
           <div class="follow"><!----></div>
         </div>
+
+        <div class="tool-btn" v-show="uid !== currentUid">
+          <el-button :icon="ChatLineRound" circle @click="toChat" />
+          <el-button type="danger" round>关注</el-button>
+        </div>
       </div>
     </div>
     <div
@@ -94,21 +99,41 @@
       style="--1ee3a37c: all 0.4s cubic-bezier(0.2, 0, 0.25, 1) 0s"
     >
       <!-- <router-view /> -->
+      <Chat
+        v-if="chatShow"
+        :acceptUid="uid"
+        class="animate__animated animate__zoomIn animate__delay-0.5s"
+        @click-chat="close"
+      ></Chat>
 
       <Note :type="type"></Note>
     </div>
   </div>
 </template>
 <script lang="ts" setup>
+import { ChatLineRound } from "@element-plus/icons-vue";
 import { ref } from "vue";
 import { getUserById } from "@/api/user";
 import Note from "@/components/Note.vue";
+import { useUserStore } from "@/store/userStore";
+import Chat from "@/components/Chat.vue";
+const userStore = useUserStore();
+const currentUid = userStore.getUserInfo().id;
 const userInfo = ref<any>({});
 const uid = history.state.uid;
 const type = ref(1);
+const chatShow = ref(false);
 
 const toPage = (val: number) => {
   type.value = val;
+};
+
+const close = () => {
+  chatShow.value = false;
+};
+
+const toChat = () => {
+  chatShow.value = true;
 };
 
 const initData = () => {
@@ -264,6 +289,12 @@ initData();
           right: 0;
           top: 0;
         }
+      }
+
+      .tool-btn {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
       }
     }
   }

@@ -33,7 +33,14 @@ export const userStore = defineStore("userStore", () => {
     });
   };
 
-  return { token, getToken, getNewToken, getUserInfo, setUserInfo };
+  const loginOut = ()=>{
+    storage.remove("accessToken");
+    storage.remove("refreshToken");
+    storage.remove("userInfo");
+
+  }
+
+  return { token, getToken, getNewToken, getUserInfo, setUserInfo,loginOut };
 });
 
 export function useUserStore() {

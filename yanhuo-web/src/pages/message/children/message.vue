@@ -15,7 +15,7 @@
               </div>
             </div>
 
-            <div class="interaction-content" @click="toChat(item.uid)">
+            <div class="interaction-content" @click="toChat(item.uid, index)">
               <span>{{ item.content }}</span>
               <div class="msg-count" v-show="item.count > 0">{{ item.count }}</div>
             </div>
@@ -36,6 +36,7 @@ import { useImStore } from "@/store/imStore";
 import { ref, watchEffect } from "vue";
 import { formateTime } from "@/utils/util";
 import Chat from "@/components/Chat.vue";
+import { clearMessageCount } from "@/api/im";
 const imStore = useImStore();
 const dataList = ref<Array<any>>([]);
 const chatShow = ref(false);
@@ -55,9 +56,17 @@ watchEffect(() => {
   console.log("_countMessage", _countMessage);
 });
 
-const toChat = (uid: string) => {
-  acceptUid.value = uid;
-  chatShow.value = true;
+const toChat = (uid: string, index: number) => {
+  console.log("index", dataList.value[index]);
+  const _countMessage = imStore.countMessage;
+  clearMessageCount(uid).then(() => {
+    const chatCount = dataList.value[index].count;
+    _countMessage.chatCount -= chatCount;
+    dataList.value[index].count = 0;
+    imStore.setCountMessage(_countMessage);
+    acceptUid.value = uid;
+    chatShow.value = true;
+  });
 };
 
 const close = () => {

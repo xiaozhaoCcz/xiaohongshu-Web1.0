@@ -14,6 +14,16 @@ export const getChatUserList = () => {
   });
 };
 
+export const clearMessageCount = (sendUid:string) => {
+  return request<any>({
+    url: "/im/chat/clearMessageCount", // mock接口
+    method: "get",
+    params:{
+      sendUid
+    }
+  });
+};
+
 export const getAllChatRecord = (
   currentPage: number,
   pageSize: number,

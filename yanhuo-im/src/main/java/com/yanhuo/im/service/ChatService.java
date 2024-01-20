@@ -18,4 +18,6 @@ public interface ChatService extends IService<Chat> {
     List<ChatUserRelationVo> getChatUserList();
 
     Page<Chat> getAllChatRecord(long currentPage, long pageSize, String acceptUid);
+
+    void clearMessageCount(String sendUid);
 }

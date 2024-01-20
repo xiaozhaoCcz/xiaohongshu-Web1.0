@@ -62,8 +62,9 @@ public class ChatController {
         return null;
     }
 
-    @RequestMapping("clearNoViewCount")
-    public String clearNoViewCount(){
-        return null;
+    @RequestMapping("clearMessageCount")
+    public Result<?> clearMessageCount(String sendUid){
+        chatService.clearMessageCount(sendUid);
+        return Result.ok();
     }
 }

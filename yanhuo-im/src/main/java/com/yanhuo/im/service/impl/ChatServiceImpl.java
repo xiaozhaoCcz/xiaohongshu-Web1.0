@@ -103,4 +103,14 @@ public class ChatServiceImpl extends ServiceImpl<ChatDao, Chat> implements ChatS
                 .orderByDesc("timestamp");
         return this.page(new Page<>((int) currentPage, (int) pageSize), queryWrapper);
     }
+
+    @Override
+    public void clearMessageCount(String sendUid) {
+        String currentUid = AuthContextHolder.getUserId();
+        ChatUserRelation chatUserRelation = chatUserRelationService.getOne(new QueryWrapper<ChatUserRelation>().eq("send_uid", sendUid).eq("accept_uid", currentUid));
+        if(chatUserRelation!=null){
+            chatUserRelation.setCount(0);
+            chatUserRelationService.updateById(chatUserRelation);
+        }
+    }
 }
