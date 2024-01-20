@@ -183,10 +183,13 @@ import SujContainer from "@/components/SujContainer.vue";
 import SearchContainer from "@/components/SearchContainer.vue";
 import { getRecordByKeyWord } from "@/api/search";
 import { getRandomString } from "@/utils/util";
+import { getChatUserList, getCountMessage } from "@/api/im";
+import { useImStore } from "@/store/imStore";
 
 const router = useRouter();
 const userStore = useUserStore();
 const searchStore = useSearchStore();
+const imStore = useImStore();
 const loginShow = ref(true);
 const userInfo = ref<any>({});
 const showHistory = ref(false);
@@ -287,10 +290,37 @@ const connectWs = (uid: string) => {
   };
   ws.onclose = () => {
     console.log("连接断开");
+    if (userInfo.value != null) {
+      connectWs(userInfo.value.id);
+    }
   };
   ws.onmessage = (e) => {
-    console.log("收到消息", e);
+    const message = JSON.parse(e.data);
+    console.log("收到消息", message);
+    if (message.msgType === 1) {
+      imStore.setMessage(message);
+    }
+    if (message.msgType === 5) {
+      const userList = message.content;
+      imStore.setUserList(userList);
+      console.log(imStore.userList);
+    }
   };
+};
+
+const getChatUserListMethod = () => {
+  getChatUserList().then((res: any) => {
+    const data = res.data;
+    imStore.setUserList(data);
+    console.log("所有用户", data);
+  });
+};
+
+const getCountMessageMethod = () => {
+  getCountMessage().then((res: any) => {
+    console.log("aaa", res.data);
+    imStore.setCountMessage(res.data);
+  });
 };
 
 const initData = () => {
@@ -301,6 +331,8 @@ const initData = () => {
   if (userInfo.value != null) {
     loginShow.value = false;
     connectWs(userInfo.value.id);
+    getChatUserListMethod();
+    getCountMessageMethod();
   }
 };
 initData();

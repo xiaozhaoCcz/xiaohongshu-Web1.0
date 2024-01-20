@@ -1,11 +1,11 @@
-package com.yanhuo.im.entity;
+package com.yanhuo.common.im;
 
 import lombok.Data;
 
 import java.io.Serializable;
 
 @Data
-public class Message<T> implements Serializable {
+public class Message implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -13,9 +13,7 @@ public class Message<T> implements Serializable {
 
     private String acceptUid;
 
-    private T content;
-
-    private Long timestamp;
+    private Object content;
 
     private Integer msgType;
 

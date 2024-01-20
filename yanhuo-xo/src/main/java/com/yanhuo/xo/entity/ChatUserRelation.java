@@ -1,9 +1,12 @@
 package com.yanhuo.xo.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.Date;
 
 @Data
 @TableName("t_chat_user_relation")
@@ -27,4 +30,10 @@ public class ChatUserRelation implements Serializable {
     private Integer msgType;
 
     private long timestamp;
+
+    @TableField(fill = FieldFill.INSERT)
+    private String creator;
+
+    @TableField(fill = FieldFill.INSERT)
+    private Date createDate;
 }

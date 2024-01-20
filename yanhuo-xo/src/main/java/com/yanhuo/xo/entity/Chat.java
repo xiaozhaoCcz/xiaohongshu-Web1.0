@@ -20,7 +20,7 @@ public class Chat extends BaseEntity {
     // 0是私聊，1是群聊
     private Integer chatType;
 
-    // 0是文本消息，1是图片消息，2是语音消息，3是视频消息
+    // 0通知消息，1是文本消息，2是图片消息，3是语音消息，4是视频消息，5 自定义消息
     private Integer msgType;
 
     private long timestamp;

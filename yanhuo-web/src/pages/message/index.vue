@@ -3,15 +3,21 @@
     <div class style="height: 72px">
       <div class="reds-sticky">
         <div class="reds-tabs-list">
-          <div
-            :class="
-              type === 1 ? 'reds-tab-item active tab-item' : 'reds-tab-item tab-item'
-            "
+          <el-badge
+            :value="_countMessage.chatCount"
+            :max="99"
+            :hidden="_countMessage.chatCount == 0"
           >
-            <div class="badge-container" @click="toPage(1)">
-              <span>我的消息</span>
+            <div
+              :class="
+                type === 1 ? 'reds-tab-item active tab-item' : 'reds-tab-item tab-item'
+              "
+            >
+              <div class="badge-container" @click="toPage(1)">
+                <span>我的消息</span>
+              </div>
             </div>
-          </div>
+          </el-badge>
           <div
             :class="
               type === 2 ? 'reds-tab-item active tab-item' : 'reds-tab-item tab-item'
@@ -65,16 +71,35 @@
 </template>
 <script lang="ts" setup>
 import { Top } from "@element-plus/icons-vue";
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import Message from "@/pages/message/children/message.vue";
 import LikeCollection from "@/pages/message/children/like-collection.vue";
 import Follower from "@/pages/message/children/follower.vue";
 import Comment from "@/pages/message/children/comment.vue";
 import Main from "@/pages/main/main.vue";
+import { useImStore } from "@/store/imStore";
+const imStore = useImStore();
 
 const type = ref(1);
 const nid = ref("");
 const mainShow = ref(false);
+const _countMessage = ref({
+  chatCount: 0,
+  likeOrCollectionCount: 0,
+  commentCount: 0,
+  followCount: 0,
+});
+
+watch(
+  () => imStore.countMessage,
+  (newVal) => {
+    console.log("--------------", newVal);
+    _countMessage.value = newVal;
+  },
+  {
+    deep: true,
+  }
+);
 
 const toPage = (val: number) => {
   type.value = val;

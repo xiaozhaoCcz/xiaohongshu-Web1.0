@@ -1,14 +1,13 @@
 package com.yanhuo.im.websocket;
 
 import com.yanhuo.im.config.ServerEncoder;
-import com.yanhuo.im.entity.Message;
+import com.yanhuo.common.im.Message;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
-import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -24,7 +23,7 @@ public class WebSocketServer {
 
     private final Object lockObj = new Object();
     //发送消息
-    public void sendMessage(Session session, Message<?> message) {
+    public void sendMessage(Session session, Message message) {
         if(session != null){
             synchronized (lockObj) {
                 log.info("发送数据={}",message);
@@ -37,7 +36,7 @@ public class WebSocketServer {
         }
     }
     //给指定用户发送信息
-    public void sendInfo(Message<?> message){
+    public void sendInfo(Message message){
         Session session = sessionPools.get(message.getAcceptUid());
         try {
             sendMessage(session, message);
@@ -46,7 +45,7 @@ public class WebSocketServer {
         }
     }
     // 群发消息
-    public void broadcast(Message<?> message){
+    public void broadcast(Message message){
     	for (Session session: sessionPools.values()) {
             try {
                 sendMessage(session, message);

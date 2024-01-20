@@ -2,14 +2,13 @@ package com.yanhuo.im.config;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.json.JsonMapper;
-import com.yanhuo.im.entity.Message;
-import springfox.documentation.service.ResponseMessage;
+import com.yanhuo.common.im.Message;
 
 import javax.websocket.EncodeException;
 import javax.websocket.Encoder;
 import javax.websocket.EndpointConfig;
 
-public class ServerEncoder implements Encoder.Text<Message<?>> {
+public class ServerEncoder implements Encoder.Text<Message> {
 
     @Override
     public void destroy() {

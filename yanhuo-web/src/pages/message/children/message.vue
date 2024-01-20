@@ -1,204 +1,58 @@
 <template>
   <div>
     <ul class="message-container">
-      <li class="message-item">
+      <li class="message-item" v-for="(item, index) in dataList" :key="index">
         <a class="user-avatar">
           <!-- https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png -->
-          <img class="avatar-item" src="https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg" />
+          <img class="avatar-item" :src="item.avatar" />
         </a>
         <div class="main">
           <div class="info">
             <div class="user-info">
-              <a class>这是名词</a>
-              <div class="interaction-hint"><span>2021-10-9</span></div>
+              <a class>{{ item.username }}</a>
+              <div class="interaction-hint">
+                <span>{{ item.time }}</span>
+              </div>
             </div>
 
-            <div class="interaction-content" @click="toChat">
-              <span>这是具体内容</span>
-              <div class="msg-count">9</div>
-            </div>
-          </div>
-        </div>
-      </li>
-      <li class="message-item">
-        <a class="user-avatar">
-          <!-- https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png -->
-          <img class="avatar-item" src="https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg" />
-        </a>
-        <div class="main">
-          <div class="info">
-            <div class="user-info">
-              <a class>这是名词</a>
-              <div class="interaction-hint"><span>2021-10-9</span></div>
-            </div>
-
-            <div class="interaction-content">
-              <span>这是具体内容</span>
-              <div class="msg-count">9</div>
-            </div>
-          </div>
-        </div>
-      </li>
-      <li class="message-item">
-        <a class="user-avatar">
-          <!-- https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png -->
-          <img class="avatar-item" src="https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg" />
-        </a>
-        <div class="main">
-          <div class="info">
-            <div class="user-info">
-              <a class>这是名词</a>
-              <div class="interaction-hint"><span>2021-10-9</span></div>
-            </div>
-
-            <div class="interaction-content">
-              <span>这是具体内容</span>
-              <div class="msg-count">9</div>
-            </div>
-          </div>
-        </div>
-      </li>
-      <li class="message-item">
-        <a class="user-avatar">
-          <!-- https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png -->
-          <img class="avatar-item" src="https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg" />
-        </a>
-        <div class="main">
-          <div class="info">
-            <div class="user-info">
-              <a class>这是名词</a>
-              <div class="interaction-hint"><span>2021-10-9</span></div>
-            </div>
-
-            <div class="interaction-content">
-              <span>这是具体内容</span>
-              <div class="msg-count">9</div>
-            </div>
-          </div>
-        </div>
-      </li>
-      <li class="message-item">
-        <a class="user-avatar">
-          <!-- https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png -->
-          <img class="avatar-item" src="https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg" />
-        </a>
-        <div class="main">
-          <div class="info">
-            <div class="user-info">
-              <a class>这是名词</a>
-              <div class="interaction-hint"><span>2021-10-9</span></div>
-            </div>
-
-            <div class="interaction-content">
-              <span>这是具体内容</span>
-              <div class="msg-count">9</div>
-            </div>
-          </div>
-        </div>
-      </li>
-      <li class="message-item">
-        <a class="user-avatar">
-          <!-- https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png -->
-          <img class="avatar-item" src="https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg" />
-        </a>
-        <div class="main">
-          <div class="info">
-            <div class="user-info">
-              <a class>这是名词</a>
-              <div class="interaction-hint"><span>2021-10-9</span></div>
-            </div>
-
-            <div class="interaction-content">
-              <span>这是具体内容</span>
-              <div class="msg-count">9</div>
-            </div>
-          </div>
-        </div>
-      </li>
-      <li class="message-item">
-        <a class="user-avatar">
-          <!-- https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png -->
-          <img class="avatar-item" src="https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg" />
-        </a>
-        <div class="main">
-          <div class="info">
-            <div class="user-info">
-              <a class>这是名词</a>
-              <div class="interaction-hint"><span>2021-10-9</span></div>
-            </div>
-
-            <div class="interaction-content">
-              <span>这是具体内容</span>
-              <div class="msg-count">9</div>
-            </div>
-          </div>
-        </div>
-      </li>
-      <li class="message-item">
-        <a class="user-avatar">
-          <!-- https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png -->
-          <img class="avatar-item" src="https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg" />
-        </a>
-        <div class="main">
-          <div class="info">
-            <div class="user-info">
-              <a class>这是名词</a>
-              <div class="interaction-hint"><span>2021-10-9</span></div>
-            </div>
-
-            <div class="interaction-content">
-              <span>这是具体内容</span>
-              <div class="msg-count">9</div>
-            </div>
-          </div>
-        </div>
-      </li>
-      <li class="message-item">
-        <a class="user-avatar">
-          <!-- https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png -->
-          <img class="avatar-item" src="https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg" />
-        </a>
-        <div class="main">
-          <div class="info">
-            <div class="user-info">
-              <a class>这是名词</a>
-              <div class="interaction-hint"><span>2021-10-9</span></div>
-            </div>
-
-            <div class="interaction-content">
-              <span>这是具体内容</span>
-              <div class="msg-count">9</div>
-            </div>
-          </div>
-        </div>
-      </li>
-      <li class="message-item">
-        <a class="user-avatar">
-          <!-- https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png -->
-          <img class="avatar-item" src="https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg" />
-        </a>
-        <div class="main">
-          <div class="info">
-            <div class="user-info">
-              <a class>这是名词</a>
-              <div class="interaction-hint"><span>2021-10-9</span></div>
-            </div>
-
-            <div class="interaction-content">
-              <span>这是具体内容</span>
-              <div class="msg-count">9</div>
+            <div class="interaction-content" @click="toChat(item.uid)">
+              <span>{{ item.content }}</span>
+              <div class="msg-count" v-show="item.count > 0">{{ item.count }}</div>
             </div>
           </div>
         </div>
       </li>
     </ul>
+    <Chat v-if="chatShow" :acceptUid="acceptUid"></Chat>
   </div>
 </template>
 <script lang="ts" setup>
-import { useRouter } from "vue-router";
-const router = useRouter();
-const toChat = () => {
-  router.push({ path: "/chat" });
+import { useImStore } from "@/store/imStore";
+import { ref, watchEffect } from "vue";
+import { formateTime } from "@/utils/util";
+import Chat from "@/components/Chat.vue";
+const imStore = useImStore();
+const dataList = ref<Array<any>>([]);
+const chatShow = ref(false);
+const acceptUid = ref("");
+
+watchEffect(() => {
+  dataList.value = [];
+  const _countMessage = imStore.countMessage;
+  _countMessage.chatCount = 0;
+  imStore.userList.forEach((item) => {
+    console.log("-----", item);
+    item.time = formateTime(item.timestamp);
+    _countMessage.chatCount += item.count;
+    dataList.value.push(item);
+  });
+  imStore.setCountMessage(_countMessage);
+  console.log("_countMessage", _countMessage);
+});
+
+const toChat = (uid: string) => {
+  acceptUid.value = uid;
+  chatShow.value = true;
 };
 </script>
 <style lang="less" scoped>
