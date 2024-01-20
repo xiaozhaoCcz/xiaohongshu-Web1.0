@@ -65,7 +65,7 @@
 </template>
 <script lang="ts" setup>
 import { More, PieChart, Picture, Clock, Close } from "@element-plus/icons-vue";
-import { ref, onMounted, watch } from "vue";
+import { ref, onMounted, watch, nextTick } from "vue";
 import { getUserById } from "@/api/user";
 import { getAllChatRecord, sendMsg } from "@/api/im";
 import { useUserStore } from "@/store/userStore";
@@ -93,13 +93,22 @@ watch(
   (newVal) => {
     console.log("0---0", newVal);
     if (newVal.sendUid === acceptUser.value.id) {
-      dataList.value?.push(newVal);
+      insertMessage(newVal);
     }
   },
   {
     deep: true,
   }
 );
+
+const insertMessage = async (message: any) => {
+  dataList.value?.push(message);
+  await nextTick();
+  ChatRef.value.lastElementChild.scrollIntoView({
+    block: "start",
+    behavior: "smooth",
+  });
+};
 
 const emit = defineEmits(["clickChat"]);
 
@@ -108,7 +117,7 @@ const close = () => {
 };
 
 const submit = () => {
-  if (content.value.length <= 0) {
+  if (content.value.trim().length <= 0) {
     return;
   }
   const message = ref({}) as any;
@@ -120,15 +129,14 @@ const submit = () => {
   sendMsg(message).then(() => {
     content.value = "";
     console.log("发送成功", message);
-    dataList.value?.push(message);
+    insertMessage(message);
   });
 };
 
 const showScroll = () => {
   const topval = ChatRef.value.scrollTop;
-  console.log(ChatRef.value.scrollTop, ChatRef.value.clientHeight);
   if (topval === 0) {
-    console.log("到达顶部");
+    console.log("到达顶部", ChatRef.value.scrollTop, ChatRef.value.clientHeight);
     loadMoreData();
   }
 };
@@ -143,21 +151,36 @@ const getAllChatRecordMethod = () => {
     console.log("data", res.data);
     const { records, total } = res.data;
     messageTotal.value = total;
-    records.forEach((item) => {
+    records.forEach((item: any) => {
       dataList.value?.splice(0, 0, item);
     });
+    if (dataList.value.length >= total) {
+      ChatRef.value.scrollTop = 0;
+    } else {
+      ChatRef.value.scrollTop += ChatRef.value.clientHeight;
+    }
   });
 };
 
-onMounted(() => {
+onMounted(async () => {
   currentUser.value = userStore.getUserInfo();
-  ChatRef.value.scrollTop = ChatRef.value.scrollHeight;
-  console.log("页面高度", ChatRef.value.scrollHeight, ChatRef.value.clientHeight);
   getUserById(props.acceptUid).then((res) => {
     acceptUser.value = res.data;
   });
   dataList.value = [];
-  getAllChatRecordMethod();
+  getAllChatRecord(currentPage.value, pageSize, props.acceptUid).then(async (res) => {
+    console.log("data", res.data);
+    const { records, total } = res.data;
+    messageTotal.value = total;
+    records.forEach((item: any) => {
+      dataList.value?.splice(0, 0, item);
+    });
+    await nextTick();
+    ChatRef.value.lastElementChild.scrollIntoView({
+      block: "start",
+      behavior: "smooth",
+    });
+  });
 });
 </script>
 <style lang="less" scoped>
