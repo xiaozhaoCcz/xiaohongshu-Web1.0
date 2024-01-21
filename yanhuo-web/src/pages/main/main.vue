@@ -318,11 +318,13 @@ const loadMoreData = () => {
   currentPage.value += 1;
 };
 
-() => {
+const initData = () => {
   if (userStore.getUserInfo() !== null) {
     currentUid.value = userStore.getUserInfo().id;
   }
 };
+
+initData();
 </script>
 
 <style lang="less" scoped>

@@ -58,7 +58,7 @@ const getPageData = () => {
   getNoticeLikeOrCollection(currentPage.value, pageSize).then((res) => {
     const { records, total } = res.data;
     dataTotal.value = total;
-    records.forEach((item:any) => {
+    records.forEach((item: any) => {
       item.time = formateTime(item.time);
       dataList.value.push(item);
     });

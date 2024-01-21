@@ -61,7 +61,11 @@
 
         <div class="tool-btn" v-show="uid !== currentUid">
           <el-button :icon="ChatLineRound" circle @click="toChat" />
-          <el-button type="danger" round>关注</el-button>
+
+          <el-button type="info" round v-if="_isFollow" @click="follow(uid, 1)"
+            >已关注</el-button
+          >
+          <el-button type="danger" round v-else @click="follow(uid, 0)">关注</el-button>
         </div>
       </div>
     </div>
@@ -117,12 +121,14 @@ import { getUserById } from "@/api/user";
 import Note from "@/components/Note.vue";
 import { useUserStore } from "@/store/userStore";
 import Chat from "@/components/Chat.vue";
+import { followById, isFollow } from "@/api/follower";
 const userStore = useUserStore();
 const currentUid = userStore.getUserInfo().id;
 const userInfo = ref<any>({});
 const uid = history.state.uid;
 const type = ref(1);
 const chatShow = ref(false);
+const _isFollow = ref(false);
 
 const toPage = (val: number) => {
   type.value = val;
@@ -136,9 +142,18 @@ const toChat = () => {
   chatShow.value = true;
 };
 
+const follow = (fid: string, type: number) => {
+  followById(fid).then(() => {
+    _isFollow.value = type == 0;
+  });
+};
+
 const initData = () => {
   getUserById(uid).then((res) => {
     userInfo.value = res.data;
+  });
+  isFollow(uid).then((res) => {
+    _isFollow.value = res.data;
   });
 };
 

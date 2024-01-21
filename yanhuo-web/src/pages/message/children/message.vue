@@ -4,7 +4,7 @@
       <li class="message-item" v-for="(item, index) in dataList" :key="index">
         <a class="user-avatar">
           <!-- https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png -->
-          <img class="avatar-item" :src="item.avatar" />
+          <img class="avatar-item" :src="item.avatar" @click="toUser(item.uid)" />
         </a>
         <div class="main">
           <div class="info">
@@ -37,10 +37,17 @@ import { ref, watchEffect } from "vue";
 import { formateTime } from "@/utils/util";
 import Chat from "@/components/Chat.vue";
 import { clearMessageCount } from "@/api/im";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 const imStore = useImStore();
 const dataList = ref<Array<any>>([]);
 const chatShow = ref(false);
 const acceptUid = ref("");
+
+const toUser = (uid: string) => {
+  router.push({ name: "user", state: { uid: uid } });
+};
 
 watchEffect(() => {
   dataList.value = [];
