@@ -40,13 +40,6 @@
       >
         <template #item="{ item, url }">
           <div class="card">
-            <!-- <el-image @click="toMain(item.id)" :src="item.noteCover">
-              <template #error>
-                <div class="image-slot">
-                  <el-icon><icon-picture /></el-icon>
-                </div>
-              </template>
-            </el-image> -->
             <LazyImg :url="url" @click="toMain(item.id)" style="object-fit: cover" />
             <div class="footer">
               <a class="title">
@@ -83,7 +76,6 @@
 import { Refresh } from "@element-plus/icons-vue";
 import { Waterfall, LazyImg } from "vue-waterfall-plugin-next";
 import "vue-waterfall-plugin-next/dist/style.css";
-// import { useRouter } from "vue-router";
 import { ref, watch } from "vue";
 import { getRecommendNotePage, getNotePageByDTO, addRecord } from "@/api/search";
 import { getCategoryTreeData } from "@/api/category";
@@ -94,16 +86,12 @@ import FloatingBtn from "@/components/FloatingBtn.vue";
 import { options } from "@/constant/constant";
 import { useSearchStore } from "@/store/searchStore";
 const searchStore = useSearchStore();
-
-// const router = useRouter();
-
 const topLoading = ref(false);
 const noteList = ref<Array<NoteSearch>>([]);
 const categoryList = ref<Array<Category>>([]);
 const currentPage = ref(1);
 const pageSize = 20;
 const noteTotal = ref(0);
-// const topBtnShow = ref(false);
 const categoryClass = ref("0");
 const mainShow = ref(false);
 const nid = ref("");
@@ -191,7 +179,7 @@ const setData = (res: any) => {
   });
 };
 
-const getNoteList = () => {
+const getNoteList = async () => {
   categoryClass.value = "0";
   noteList.value = [] as Array<any>;
   currentPage.value = 1;

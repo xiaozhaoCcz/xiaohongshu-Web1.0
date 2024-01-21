@@ -33,6 +33,9 @@ const loadImgHandler = (e) => {
   e.currentTarget.src = data.list[data.num];
 };
 
+
+
+
 export const formatDate = (t: number):string => {
   t = t || Date.now();
   const time = new Date(t);

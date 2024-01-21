@@ -319,7 +319,8 @@ const loadMoreData = () => {
 };
 
 const initData = () => {
-  if (userStore.getUserInfo() !== null) {
+  console.log(userStore.getUserInfo());
+  if (userStore.getUserInfo() !== undefined && userStore.getUserInfo() !== null) {
     currentUid.value = userStore.getUserInfo().id;
   }
 };

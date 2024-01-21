@@ -47,11 +47,11 @@ service.interceptors.response.use(
     const config = response.config;
 
     const userStore = useUserStore();
-    if (code === 501 && !config.url.includes(loginUrl)) {
+    if (code === 501) {
       // 无感刷新Token
       if (!isRefreshing) {
         isRefreshing = true;
-        const refreshToken = storage.get("refreshToken");
+        const refreshToken = storage.get("refreshToken") as string;
         console.log("refreshToken", refreshToken);
         return userStore
           .getNewToken(refreshToken)

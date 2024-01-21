@@ -27,6 +27,7 @@
     "vue-router": "^4.2.5",
     "vue-stick": "^1.0.7",
     "vue-waterfall-plugin-next": "^2.2.4",
+    "vue3-lazy": "^1.0.0-alpha.1",
     "vue3-plock": "^0.0.2",
     "zego-zim-web": "^2.12.0"
   },

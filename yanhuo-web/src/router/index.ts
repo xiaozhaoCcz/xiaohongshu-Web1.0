@@ -21,27 +21,27 @@ export const routes = [
       {
         path: "/dashboard",
         component: Dashboard,
-        name: "dashboard", // 用于 keep-alive, 必须与SFC自动推导或者显示声明的组件name一致
+        name: "dashboard", 
       },
       {
         path: "/followTrend",
         component: () => import("@/pages/follow-trend/follow-trend.vue"),
-        name: "followTrend", // 用于 keep-alive, 必须与SFC自动推导或者显示声明的组件name一致
+        name: "followTrend", 
       },
       {
         path: "/notice",
         component: () => import("@/pages/message/index.vue"),
-        name: "notice", // 用于 keep-alive, 必须与SFC自动推导或者显示声明的组件name一致
+        name: "notice", 
       },
       {
         path: "/user",
         component: () => import("@/pages/user/index.vue"),
-        name: "user", // 用于 keep-alive, 必须与SFC自动推导或者显示声明的组件name一致
+        name: "user",
       },
       {
         path: "/push",
         component: () => import("@/pages/push/index.vue"),
-        name: "push", // 用于 keep-alive, 必须与SFC自动推导或者显示声明的组件name一致
+        name: "push", 
       },
     ],
   },

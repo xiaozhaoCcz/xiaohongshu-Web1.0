@@ -139,7 +139,7 @@
                       </div>
                     </div>
                     <div class="menu-item hover-effect" @click="logout">
-                      <span>退出登录</span>
+                      <a href="#"><span>退出登录</span></a>
                     </div>
                   </div>
                 </div>
@@ -177,7 +177,7 @@ import {
 } from "@element-plus/icons-vue";
 import { useRouter, useRoute } from "vue-router";
 import Login from "@/pages/login.vue";
-import { ref, watch, onMounted, computed, watchEffect } from "vue";
+import { ref, watch, onMounted, computed } from "vue";
 import { useUserStore } from "@/store/userStore";
 import { useSearchStore } from "@/store/searchStore";
 import SujContainer from "@/components/SujContainer.vue";
@@ -323,6 +323,7 @@ const connectWs = (uid: string) => {
   ws.value.onmessage = (e: any) => {
     const message = JSON.parse(e.data);
     console.log("收到消息", message);
+
     if (message.msgType === 0) {
       const content = message.content;
       const _countMessage = imStore.countMessage;
@@ -410,6 +411,10 @@ initData();
 </script>
 
 <style lang="less" scoped>
+a {
+  text-decoration: none;
+  color: rgba(51, 51, 51, 0.8);
+}
 .container {
   max-width: 1728px;
   background-color: #fff;
