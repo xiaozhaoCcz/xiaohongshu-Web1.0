@@ -89,7 +89,7 @@
 </template>
 <script lang="ts" setup>
 import { Top } from "@element-plus/icons-vue";
-import { ref, watch } from "vue";
+import { ref, watchEffect } from "vue";
 import Message from "@/pages/message/children/message.vue";
 import LikeCollection from "@/pages/message/children/like-collection.vue";
 import Follower from "@/pages/message/children/follower.vue";
@@ -112,16 +112,9 @@ const _countMessage = ref({
   followCount: 0,
 });
 
-watch(
-  () => imStore.countMessage,
-  (newVal) => {
-    console.log("countMessage", newVal);
-    _countMessage.value = newVal;
-  },
-  {
-    deep: true,
-  }
-);
+watchEffect(() => {
+  _countMessage.value = imStore.countMessage;
+});
 
 const toPage = (val: number) => {
   const _countMessage = imStore.countMessage;

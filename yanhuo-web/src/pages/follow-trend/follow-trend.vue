@@ -113,7 +113,9 @@ const toMain = (noteId: string) => {
   mainShow.value = true;
 };
 
-const close = () => {
+const close = (nid: string, isLike: boolean) => {
+  const index = trendData.value.findIndex((item) => item.nid === nid);
+  trendData.value[index].isLike = isLike;
   mainShow.value = false;
 };
 

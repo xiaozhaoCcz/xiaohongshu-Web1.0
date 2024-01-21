@@ -53,11 +53,11 @@
           </li>
           <li :class="activeLink == 2 ? 'active-channel' : ''" @click="toLink(2)">
             <Bell style="width: 1em; height: 1em; margin-right: 8px" />
-            <span class="channel"> 消息</span>
 
-            <div class="message-count" v-show="messageCount > 0 && userInfo != null">
-              {{ messageCount }}
-            </div>
+            <el-badge is-dot class="item" v-if="messageCount > 0 && userInfo != null">
+              <span class="channel"> 消息</span></el-badge
+            >
+            <span class="channel" v-else>消息</span>
           </li>
           <li :class="activeLink == 3 ? 'active-channel' : ''" @click="toLink(3)">
             <CirclePlus style="width: 1em; height: 1em; margin-right: 8px" /><span
@@ -177,7 +177,7 @@ import {
 } from "@element-plus/icons-vue";
 import { useRouter, useRoute } from "vue-router";
 import Login from "@/pages/login.vue";
-import { ref, watch, onMounted } from "vue";
+import { ref, watch, onMounted, computed, watchEffect } from "vue";
 import { useUserStore } from "@/store/userStore";
 import { useSearchStore } from "@/store/searchStore";
 import SujContainer from "@/components/SujContainer.vue";
@@ -187,6 +187,7 @@ import { getRandomString } from "@/utils/util";
 import { getChatUserList, getCountMessage } from "@/api/im";
 import { useImStore } from "@/store/imStore";
 import { loginOut } from "@/api/user";
+import { wsKey } from "@/constant/constant";
 
 const router = useRouter();
 const route = useRoute();
@@ -203,7 +204,7 @@ const SearchInput = ref();
 const recordList = ref<Array<string>>([]);
 const activeLink = ref(1);
 const padShow = ref(false);
-const messageCount = ref(0);
+const ws = ref();
 
 const routerList = ["/dashboard", "/followTrend", "/notice", "/push", "/user"];
 
@@ -248,6 +249,20 @@ watch(
     deep: true,
   }
 );
+
+const messageCount = computed({
+  get: () => {
+    return (
+      imStore.countMessage.chatCount +
+      imStore.countMessage.likeOrCollectionCount +
+      imStore.countMessage.commentCount +
+      imStore.countMessage.followCount
+    );
+  },
+  set: (val) => {
+    imStore.setCountMessage(val);
+  },
+});
 
 const changeInput = (e: any) => {
   const { value } = e.target;
@@ -295,17 +310,17 @@ const loadPad = () => {
 };
 
 const connectWs = (uid: string) => {
-  const ws = new WebSocket(`ws://127.0.0.1:8802/im/ws/${uid}`);
-  ws.onopen = () => {
+  ws.value = new WebSocket(wsKey + uid);
+  ws.value.onopen = () => {
     console.log("连接成功");
   };
-  ws.onclose = () => {
+  ws.value.onclose = () => {
     console.log("连接断开");
     if (userInfo.value != null) {
       connectWs(userInfo.value.id);
     }
   };
-  ws.onmessage = (e) => {
+  ws.value.onmessage = (e: any) => {
     const message = JSON.parse(e.data);
     console.log("收到消息", message);
     if (message.msgType === 0) {
@@ -327,22 +342,28 @@ const connectWs = (uid: string) => {
 };
 
 const getChatUserListMethod = () => {
-  getChatUserList().then((res: any) => {
-    const data = res.data;
-    const _countMessage = imStore.countMessage;
-    data.forEach((item) => {
-      _countMessage.chatCount += item.count;
+  return new Promise((resolve) => {
+    getChatUserList().then((res: any) => {
+      const data = res.data;
+      const _countMessage = imStore.countMessage;
+      data.forEach((item: any) => {
+        _countMessage.chatCount += item.count;
+      });
+      console.log(111, _countMessage);
+      imStore.setCountMessage(_countMessage);
+      imStore.setUserList(data);
+      resolve(_countMessage.chatCount);
     });
-    console.log(111, _countMessage);
-    imStore.setCountMessage(_countMessage);
-    imStore.setUserList(data);
   });
 };
 
 const getCountMessageMethod = () => {
-  getCountMessage().then((res: any) => {
-    const data = res.data;
-    imStore.setCountMessage(data);
+  return new Promise((resolve) => {
+    getCountMessage().then((res: any) => {
+      const data = res.data;
+      imStore.setCountMessage(data);
+      resolve(data);
+    });
   });
 };
 
@@ -355,16 +376,26 @@ const logout = () => {
     userStore.loginOut();
     userInfo.value = null;
     loginShow.value = true;
-    router.push({ path: "/dashboard" });
+    ws.value.onclose();
+    router.push({ path: "/" });
   });
 };
 
-const getWsMessage = () => {
+const getWsMessage = async () => {
   if (userInfo.value != null) {
     loginShow.value = false;
     connectWs(userInfo.value.id);
-    getChatUserListMethod();
-    getCountMessageMethod();
+    const p = await getChatUserListMethod();
+    const q = (await getCountMessageMethod()) as any;
+
+    // TODO: 需要修复显示数量bug
+    const _countMessage = {} as any;
+    _countMessage.chatCount = p;
+    _countMessage.likeOrCollectionCount = q.likeOrCollectionCount;
+    _countMessage.commentCount = q.commentCount;
+    _countMessage.followCount = q.followCount;
+
+    messageCount.value = _countMessage;
   }
 };
 
@@ -552,6 +583,7 @@ initData();
             width: 20px;
             height: 20px;
             font-size: 14px;
+            line-height: 20px;
             text-align: center;
             border-radius: 50%;
             color: #fff;

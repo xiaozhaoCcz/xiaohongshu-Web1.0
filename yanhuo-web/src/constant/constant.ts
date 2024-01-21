@@ -2,6 +2,8 @@ import loading from "@/assets/loading.png";
 import error from "@/assets/error.png";
 import { reactive } from "vue";
 
+export const wsKey = "ws://127.0.0.1:8802/im/ws/";
+
 // 图片必须保持在336和186之间
 
 export const options = reactive({

@@ -15,6 +15,7 @@ export const imStore = defineStore("imStore", () => {
     followCount: 0,
   });
 
+
   const setUserList = (data: Array<any>) => {
     userList.value = data;
   };

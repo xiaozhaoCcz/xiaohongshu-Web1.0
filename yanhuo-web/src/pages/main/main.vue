@@ -8,7 +8,12 @@
       <div class="media-container">
         <el-carousel height="90vh" :autoplay="false">
           <el-carousel-item v-for="(item, index) in noteInfo.imgList" :key="index">
-            <el-image style="width: 100%; height: 100%" :src="item" fit="contain" />
+            <el-image
+              style="width: 100%; height: 100%"
+              :src="item"
+              fit="contain"
+              class="animate__animated animate__zoomIn animate__delay-0.5s"
+            />
           </el-carousel-item>
         </el-carousel>
       </div>
@@ -231,7 +236,7 @@ const toUser = (uid: string) => {
 const close = () => {
   syncCommentByIds(commentIds.value).then(() => {
     commentIds.value = [];
-    emit("clickMain", false);
+    emit("clickMain", props.nid, noteInfo.value.isLike);
   });
 };
 
