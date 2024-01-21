@@ -6,7 +6,6 @@ import com.yanhuo.common.im.Message;
 import com.yanhuo.im.entity.CountMessage;
 import com.yanhuo.im.service.ChatService;
 import com.yanhuo.xo.entity.Chat;
-import com.yanhuo.xo.entity.ChatUserRelation;
 import com.yanhuo.xo.vo.ChatUserRelationVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,15 +22,8 @@ public class ChatController {
     @Autowired
     ChatService chatService;
 
-    @RequestMapping("test")
-    public void test(){
-        System.out.println("test11");
-    }
-
-
     @RequestMapping("sendMsg")
     public Result<?> sendMsg(@RequestBody Message message) {
-        System.out.println("---"+message);
         chatService.sendMsg(message);
         return Result.ok();
     }

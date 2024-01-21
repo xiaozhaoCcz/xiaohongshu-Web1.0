@@ -84,16 +84,19 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void syncCommentByIds(List<String> commentIds) {
-        if(!commentIds.isEmpty()){
+        String currentUid = AuthContextHolder.getUserId();
+        if (!commentIds.isEmpty()) {
             List<CommentSync> commentSyncs = commentSyncService.list(new QueryWrapper<CommentSync>().in("id", commentIds));
             List<Comment> comments = ConvertUtils.sourceToTarget(commentSyncs, Comment.class);
             this.saveBatch(comments);
 
             for (Comment comment : comments) {
-                if(!Objects.equals(comment.getReplyUid(), comment.getNoteUid())){
-                    chatUtils.sendMessage(comment.getNoteUid(),1);
+                if (!comment.getUid().equals(currentUid)) {
+                    if (!Objects.equals(comment.getReplyUid(), comment.getNoteUid())) {
+                        chatUtils.sendMessage(comment.getNoteUid(), 1);
+                    }
+                    chatUtils.sendMessage(comment.getReplyUid(), 1);
                 }
-                chatUtils.sendMessage(comment.getReplyUid(),1);
             }
         }
     }
@@ -103,29 +106,28 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
         Page<CommentVo> result = new Page<>();
         String currentUid = AuthContextHolder.getUserId();
 
-        Page<Comment> commentPage = this.page(new Page<>((int) currentPage, (int) pageSize), new QueryWrapper<Comment>().eq("reply_uid", currentUid).or(e->e.eq("note_uid",currentUid)).ne("uid", currentUid).orderByDesc("create_date"));
+        Page<Comment> commentPage = this.page(new Page<>((int) currentPage, (int) pageSize), new QueryWrapper<Comment>().or(e->e.eq("note_uid",currentUid).or().eq("reply_uid", currentUid)).ne("uid", currentUid).orderByDesc("create_date"));
 
         List<Comment> commentList = commentPage.getRecords();
         long total = commentPage.getTotal();
 
         List<CommentVo> commentVoList = new ArrayList<>();
-        if(!commentList.isEmpty()){
+        if(!commentList.isEmpty()) {
             Set<String> uids = commentList.stream().map(Comment::getUid).collect(Collectors.toSet());
             Map<String, User> userMap = userService.listByIds(uids).stream().collect(Collectors.toMap(User::getId, user -> user));
 
             Set<String> nids = commentList.stream().map(Comment::getNid).collect(Collectors.toSet());
-            Map<String, Note> noteMap  = noteService.listByIds(nids).stream().collect(Collectors.toMap(Note::getId, note -> note));
+            Map<String, Note> noteMap = noteService.listByIds(nids).stream().collect(Collectors.toMap(Note::getId, note -> note));
 
             // 得到所有回复的评论内容
             Set<String> cids = commentList.stream().filter(item -> !"0".equals(item.getPid())).map(Comment::getReplyId).collect(Collectors.toSet());
             Map<String, Comment> replyCommentMap = new HashMap<>(16);
-            if(!cids.isEmpty()){
-                replyCommentMap  = this.listByIds(cids).stream().collect(Collectors.toMap(Comment::getId, comment -> comment));
+            if (!cids.isEmpty()) {
+                replyCommentMap = this.listByIds(cids).stream().collect(Collectors.toMap(Comment::getId, comment -> comment));
             }
 
 
-
-            for (Comment comment:commentList){
+            for (Comment comment : commentList) {
                 CommentVo commentVo = ConvertUtils.sourceToTarget(comment, CommentVo.class);
                 User user = userMap.get(comment.getUid());
                 Note note = noteMap.get(comment.getNid());
@@ -134,11 +136,13 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
                         .setTime(comment.getCreateDate().getTime())
                         .setNoteCover(note.getNoteCover());
 
-                if(!"0".equals(comment.getPid())){
-                    User replyUser = userMap.get(comment.getReplyUid());
+                if (!"0".equals(comment.getPid())) {
                     Comment replyComment = replyCommentMap.get(comment.getReplyId());
-                    commentVo.setReplyContent(replyComment.getContent())
-                            .setReplyUsername(replyUser.getUsername());
+                    commentVo.setReplyContent(replyComment.getContent());
+                    if (!comment.getReplyUid().equals(currentUid)) {
+                        User replyUser = userMap.get(comment.getReplyUid());
+                        commentVo.setReplyUsername(replyUser.getUsername());
+                    }
                 }
                 commentVoList.add(commentVo);
             }

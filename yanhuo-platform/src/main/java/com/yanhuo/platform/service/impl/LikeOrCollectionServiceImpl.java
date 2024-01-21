@@ -73,8 +73,10 @@ public class LikeOrCollectionServiceImpl extends ServiceImpl<LikeOrCollectionDao
             likeOrCollection.setUid(currentUid);
             this.save(likeOrCollection);
             updateLikeCollectionCount(likeOrCollectionDTO,1);
-
-            chatUtils.sendMessage(likeOrCollectionDTO.getPublishUid(),0);
+            // 不是当前用户才进行通知
+            if(!likeOrCollectionDTO.getLikeOrCollectionId().equals(currentUid)){
+                chatUtils.sendMessage(likeOrCollectionDTO.getPublishUid(),0);
+            }
         }
     }
 
