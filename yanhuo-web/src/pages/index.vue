@@ -3,7 +3,8 @@
     <div class="top">
       <header class="mask-paper">
         <a style="display: flex">
-          <img src="@/assets/logo.png" />
+          <!--  -->
+          烟火
         </a>
         <div class="tool-box"></div>
         <div class="input-box" id="sujContainer">

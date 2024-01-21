@@ -125,14 +125,14 @@ npm run dev
 
 ## 项目截图
 
-|                                       |                                               |
-|:-------------------------------------:|:---------------------------------------------:|
-|    ![image text](./doc/img/7.png)     |        ![image text](./doc/img/9.png)         |
-|    ![image text](./doc/img/10.png)    |        ![image text](./doc/img/11.png)        |
-|    ![image text](./doc/img/12.png)    |        ![image text](./doc/img/13.png)        |
-|    ![image text](./doc/img/14.png)    |        ![image text](./doc/img/15.png)        |
-|    ![image text](./doc/img/16.png)    |        ![image text](./doc/img/17.png)        |
-|    ![image text](./doc/img/18.png)    |        ![image text](./doc/img/19.png)        |
+|                                 |                                 |
+|:-------------------------------:|:-------------------------------:|
+| ![image text](./doc/img/7.png)  | ![image text](./doc/img/9.png)  |
+| ![image text](./doc/img/10.png) | ![image text](./doc/img/11.png) |
+| ![image text](./doc/img/16.png) | ![image text](./doc/img/12.png) |
+| ![image text](./doc/img/13.png) | ![image text](./doc/img/14.png) |
+| ![image text](./doc/img/15.png) | ![image text](./doc/img/18.png) |
+| ![image text](./doc/img/17.png) |  |
 
 ## 视频演示
 https://www.bilibili.com/video/BV1kN4y1n7gz/?spm_id_from=333.1007.top_right_bar_window_history.content.click
