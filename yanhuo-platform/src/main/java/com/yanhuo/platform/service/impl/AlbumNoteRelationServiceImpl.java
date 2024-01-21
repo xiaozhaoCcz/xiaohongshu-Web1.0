@@ -13,7 +13,6 @@ import com.yanhuo.xo.entity.AlbumNoteRelation;
 import com.yanhuo.xo.entity.Note;
 import com.yanhuo.xo.entity.User;
 import com.yanhuo.xo.vo.NoteSearchVo;
-import com.yanhuo.xo.vo.NoteVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
