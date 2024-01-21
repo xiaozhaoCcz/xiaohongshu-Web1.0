@@ -298,6 +298,7 @@ const saveComment = () => {
   comment.content = commentValue.value;
   saveCommentByDTO(comment).then((res: any) => {
     replyComment.value = res.data;
+    replyComment.value.replyUsername = commentObject.value.username;
     commentValue.value = "";
     commentObject.value = {};
     commentPlaceVal.value = "请输入内容";

@@ -4,6 +4,7 @@ export interface CommentDTO {
   pid: string;
   replyId: string;
   replyUid: string;
+  replyUsername: string;
   level: number;
   content: string;
 }

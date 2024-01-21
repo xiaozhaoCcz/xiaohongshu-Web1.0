@@ -74,7 +74,11 @@
                       <a class="name">{{ twoComment.username }}</a>
                     </div>
                   </div>
-                  <div class="content">{{ twoComment.content }}</div>
+                  <div class="content">
+                    回复<span style="color: rgba(61, 61, 61, 0.8)"
+                      >{{ twoComment.replyUsername }}: </span
+                    >{{ twoComment.content }}
+                  </div>
 
                   <div class="info">
                     <div class="date">
@@ -217,6 +221,7 @@ const addComment = () => {
   //   if (props.replyComment.pid === undefined) return;
 
   let comment = props.replyComment;
+  console.log("comment", comment);
   comment.likeCount = 0;
   comment.twoCommentCount = 0;
   comment.time = formateTime(new Date().getTime());
@@ -275,10 +280,12 @@ const getCommentData = () => {
             element.time = formateTime(element.time);
             twoData.push(element);
           });
+
           item.children = twoData;
         }
         computedTotal.value += item.twoCommentCount + 1;
         dataList.value.push(item);
+        console.log("---所有评论", dataList.value);
       });
       commentTotal.value = total;
       if (pageSize * props.currentPage >= commentTotal.value) return;
@@ -299,7 +306,6 @@ watch(
     }
   }
 );
-
 </script>
 <style lang="less" scoped>
 .comments-container {
