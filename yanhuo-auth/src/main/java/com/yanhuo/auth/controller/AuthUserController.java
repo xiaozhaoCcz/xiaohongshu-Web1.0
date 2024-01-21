@@ -101,7 +101,7 @@ public class AuthUserController {
     /**
      * 退出登录
      *
-     * @param authUserDTO
+     * @param userId
      * @return
      */
     @RequestMapping("loginOut")
