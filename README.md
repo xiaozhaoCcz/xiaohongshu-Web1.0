@@ -135,4 +135,4 @@ npm run dev
 |    ![image text](./doc/img/18.png)    |        ![image text](./doc/img/19.png)        |
 
 ## 视频演示
-[video.mp4](doc%2Fimg%2Fvideo.mp4)
+https://www.bilibili.com/video/BV1kN4y1n7gz/?spm_id_from=333.1007.top_right_bar_window_history.content.click
