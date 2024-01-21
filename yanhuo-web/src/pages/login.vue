@@ -34,9 +34,33 @@
         <!---->
         <div class="input-container">
           <form onsubmit="return false">
-            <label class="phone"
-              ><span class="country-code">+86</span
+            <label class="phone">
+              <span class="country-code"></span>
+              <input
+                placeholder="输入账号"
+                type="text"
+                name="blur"
+                v-model="userLogin.username" /><svg
+                class="reds-icon clear"
+                width="24"
+                height="24"
+                fill="#xhs-pc-web-phone"
+                style="display: none"
+              >
+                <use xlink:href="#clear"></use></svg
+            ></label>
+            <div style="height: 16px"></div>
+            <label class="auth-code"
               ><input
+                type="password"
+                placeholder="输入密码"
+                autocomplete="false"
+                v-model="userLogin.password"
+            /></label>
+            <!-- <label class="phone"
+              >
+              <span class="country-code">+86</span>
+              <input
                 placeholder="输入手机号"
                 type="text"
                 name="blur"
@@ -57,9 +81,9 @@
                 autocomplete="false"
                 v-model="userLogin.code"
               /><span class="code-button">获取验证码</span></label
-            >
+            > -->
             <div class="err-msg"></div>
-            <button class="submit" @click="login">登录</button>
+            <button class="submit" @click="loginMethod">登录</button>
           </form>
         </div>
         <div class="agreements">
@@ -137,11 +161,12 @@
 <script lang="ts" setup>
 import { Close } from "@element-plus/icons-vue";
 import type { UserLogin } from "@/type/user";
-import { loginByCode } from "@/api/user";
+import { login } from "@/api/user";
 import { ref } from "vue";
 import { storage } from "@/utils/storage";
 import { useUserStore } from "@/store/userStore";
 import { useRouter } from "vue-router";
+import { ElMessage } from "element-plus";
 
 const userStore = useUserStore();
 const router = useRouter();
@@ -150,6 +175,8 @@ const userLogin = ref<UserLogin>({
   phone: "",
   email: "",
   code: "",
+  username: "",
+  password: "",
 });
 
 const emit = defineEmits(["clickChild"]);
@@ -158,16 +185,30 @@ const close = () => {
   emit("clickChild", false);
 };
 
-const login = () => {
-  loginByCode(userLogin.value).then((res: any) => {
-    const { data } = res;
-    const currentUser = data.userInfo;
-    storage.set("accessToken", data.accessToken);
-    storage.set("refreshToken", data.refreshToken);
-    userStore.setUserInfo(currentUser);
-    router.push({ path: "/", query: { date: Date.now() } });
-    emit("clickChild", false);
-  });
+const loginMethod = () => {
+  login(userLogin.value)
+    .then((res: any) => {
+      const { data } = res;
+      const currentUser = data.userInfo;
+      storage.set("accessToken", data.accessToken);
+      storage.set("refreshToken", data.refreshToken);
+      userStore.setUserInfo(currentUser);
+      router.push({ path: "/", query: { date: Date.now() } });
+      emit("clickChild", false);
+    })
+    .catch((error: any) => {
+      console.log(error);
+      ElMessage.error("登陆失败");
+    });
+  // loginByCode(userLogin.value).then((res: any) => {
+  //   const { data } = res;
+  //   const currentUser = data.userInfo;
+  //   storage.set("accessToken", data.accessToken);
+  //   storage.set("refreshToken", data.refreshToken);
+  //   userStore.setUserInfo(currentUser);
+  //   router.push({ path: "/", query: { date: Date.now() } });
+  //   emit("clickChild", false);
+  // });
 };
 </script>
 

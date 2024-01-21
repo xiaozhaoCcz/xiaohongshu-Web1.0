@@ -2,7 +2,9 @@
   <div class="container" id="container">
     <div class="top">
       <header class="mask-paper">
-        <a style="display: flex">烟火</a>
+        <a style="display: flex">
+          <img src="@/assets/logo.png" />
+        </a>
         <div class="tool-box"></div>
         <div class="input-box" id="sujContainer">
           <input

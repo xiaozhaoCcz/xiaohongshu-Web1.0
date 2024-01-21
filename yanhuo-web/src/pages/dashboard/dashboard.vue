@@ -40,7 +40,11 @@
       >
         <template #item="{ item, url }">
           <div class="card">
-            <LazyImg :url="url" @click="toMain(item.id)" style="object-fit: cover" />
+            <LazyImg
+              :url="url"
+              @click="toMain(item.id)"
+              style="object-fit: cover; border-radius: 10px"
+            />
             <div class="footer">
               <a class="title">
                 <span>{{ item.title }}</span>

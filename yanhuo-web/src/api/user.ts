@@ -1,7 +1,7 @@
 import request from "@/utils/request";
 import type { UserLogin } from "@/type/user";
 
-export const postData = (data: any) => {
+export const login = (data: any) => {
   return request<any>({
     url: "/auth/auth/login", // mock接口
     method: "post",

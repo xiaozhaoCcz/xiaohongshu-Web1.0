@@ -37,13 +37,14 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   (response: AxiosResponse) => {
     const { code } = response.data;
+    
     if (code === 200) {
       return response.data;
     }
     // 响应数据为二进制流处理(Excel导出)
-    if (response.data instanceof ArrayBuffer) {
-      return response;
-    }
+    // if (response.data instanceof ArrayBuffer) {
+    //   return response;
+    // }
     const config = response.config;
 
     const userStore = useUserStore();
@@ -73,7 +74,7 @@ service.interceptors.response.use(
           })
           .catch((rftErr) => {
             // 参数依据接口返回状态码字段
-            console.log(rftErr.data);
+            console.log('123',rftErr.data);
 
             // 如果refreshtoken过期则跳转到登录页面
             if (rftErr.data.code == 401) {
@@ -98,14 +99,13 @@ service.interceptors.response.use(
         });
       }
     }
-
     return Promise.reject(response);
   },
   (error: any) => {
     console.log("错误请求", error);
     return Promise.reject(error);
   }
-);
+)
 
 // 导出 axios 实例
 export default service;
