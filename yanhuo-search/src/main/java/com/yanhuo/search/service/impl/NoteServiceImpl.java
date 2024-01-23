@@ -16,6 +16,8 @@ import com.yanhuo.common.exception.YanHuoException;
 import com.yanhuo.search.common.NoteConstant;
 import com.yanhuo.search.dto.NoteDTO;
 import com.yanhuo.search.service.NoteService;
+import com.yanhuo.search.utils.EsUtils;
+import com.yanhuo.search.utils.model.SearchParam;
 import com.yanhuo.xo.dao.NoteDao;
 import com.yanhuo.xo.entity.Note;
 import com.yanhuo.xo.vo.NoteSearchVo;
@@ -33,6 +35,9 @@ public class NoteServiceImpl extends ServiceImpl<NoteDao, Note> implements NoteS
 
     @Autowired
     ElasticsearchClient elasticsearchClient;
+
+    @Autowired
+    EsUtils esUtils;
 
     @Override
     public Page<NoteSearchVo> getNotePageByDTO(long currentPage, long pageSize, NoteDTO noteDTO) {
@@ -81,6 +86,12 @@ public class NoteServiceImpl extends ServiceImpl<NoteDao, Note> implements NoteS
         page.setRecords(noteSearchVoList);
         return page;
     }
+
+    @Override
+    public Page<NoteSearchVo> getNoteBySearchParam(SearchParam searchParam) {
+        return esUtils.getDocumentByCondition(searchParam, NoteSearchVo.class);
+    }
+
 
     @Override
     public Page<NoteSearchVo> getRecommendNotePage(long currentPage, long pageSize) {
