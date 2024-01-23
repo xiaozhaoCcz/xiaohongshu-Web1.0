@@ -25,6 +25,7 @@ import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -37,6 +38,9 @@ public class EsUtils {
 
     @Autowired
     ElasticsearchClient elasticsearchClient;
+
+
+    private static final String ID = "id";
 
     /**
      * 判断索引是否存在
@@ -86,12 +90,19 @@ public class EsUtils {
         return false;
     }
 
+    /**
+     * 查询文档
+     * @param index 索引
+     * @param id 文档id
+     * @param t 实体
+     * @return 文档实体
+     * @param <T>
+     */
     public <T> T queryDocument(String index,String id,Class<T> t) {
         GetResponse<T> getResponse = null;
         try {
             // 构建请求
             getResponse  = elasticsearchClient.get(e -> e.index(index).id(id), t);
-
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -100,9 +111,9 @@ public class EsUtils {
 
     /**
      * 增加文档
-     *
-     * @param
-     * @return
+     * @param index 索引
+     * @param t 实体
+     * @param <T>
      */
     public <T> void addDocument(String index, T t) {
         try {
@@ -111,7 +122,7 @@ public class EsUtils {
             for (Field field : fields) {
                 field.setAccessible(true);
                 String name = field.getName();
-                if (name.equals("id")) {
+                if (name.equals(ID)) {
                     String id = (String) field.get(t);
                     elasticsearchClient.create(e -> e.index(index).id(id).document(t));
                     break;
@@ -123,7 +134,7 @@ public class EsUtils {
     }
 
     /**
-     * 删除文档
+     * 更新文档
      *
      * @param index
      * @param t
@@ -136,7 +147,7 @@ public class EsUtils {
             for (Field field : fields) {
                 field.setAccessible(true);
                 String name = field.getName();
-                if (name.equals("id")) {
+                if (name.equals(ID)) {
                     String id = (String) field.get(t);
                     elasticsearchClient.update(e -> e.index(index).id(id).doc(t), aClass);
                     break;
@@ -147,6 +158,12 @@ public class EsUtils {
         }
     }
 
+
+    /**
+     * 删除文档
+     * @param index
+     * @param id
+     */
     public void deleteDocument(String index, String id) {
         try {
             elasticsearchClient.delete(e -> e.index(index).id(id));
@@ -165,7 +182,7 @@ public class EsUtils {
                 for (Field field : fields) {
                     field.setAccessible(true);
                     String name = field.getName();
-                    if (name.equals("id")) {
+                    if (name.equals(ID)) {
                         String id = (String) field.get(t);
                         bulkOperations.add(new BulkOperation.Builder().create(
                                 d -> d.document(t).id(id).index(index)).build());
@@ -183,10 +200,8 @@ public class EsUtils {
         // 构建一个批量数据集合
         List<BulkOperation> list = new ArrayList<>();
         try {
-            ids.forEach(item -> {
-                list.add(new BulkOperation.Builder().delete(
-                        d -> d.id(item).index(index)).build());
-            });
+            ids.forEach(item -> list.add(new BulkOperation.Builder().delete(
+                    d -> d.id(item).index(index)).build()));
             // 调用bulk方法执行批量插入操作
             elasticsearchClient.bulk(e -> e.index(index).operations(list));
         } catch (Exception e) {
@@ -205,7 +220,6 @@ public class EsUtils {
         }catch (Exception e) {e.printStackTrace();}
         return result;
     }
-
 
     /**
      * 根据条件查询数据
