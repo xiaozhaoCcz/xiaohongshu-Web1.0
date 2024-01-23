@@ -3,10 +3,10 @@ package com.yanhuo.search.service.impl;
 import cn.hutool.core.util.RandomUtil;
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch._types.SortOrder;
-import co.elastic.clients.elasticsearch.core.SearchRequest;
-import co.elastic.clients.elasticsearch.core.SearchResponse;
-import co.elastic.clients.elasticsearch.core.UpdateResponse;
+import co.elastic.clients.elasticsearch._types.query_dsl.ExistsQuery;
+import co.elastic.clients.elasticsearch.core.*;
 import co.elastic.clients.elasticsearch.core.search.Hit;
+import co.elastic.clients.transport.endpoints.BooleanResponse;
 import com.yanhuo.search.common.NoteConstant;
 import com.yanhuo.search.service.RecordService;
 import com.yanhuo.xo.vo.RecordSearchVo;
@@ -85,6 +85,14 @@ public class RecordServiceImpl implements RecordService {
     @Override
     public void addRecord(String keyword) {
         try {
+            // 查询索引是否存在
+
+            BooleanResponse exists = elasticsearchClient.indices().exists(e -> e
+                    .index(NoteConstant.RECOED_INDEX));
+            if(!exists.value()){
+                elasticsearchClient.indices().create(c -> c.index(NoteConstant.RECOED_INDEX));
+            }
+
             SearchRequest.Builder builder = new SearchRequest.Builder().index(NoteConstant.RECOED_INDEX);
             if (StringUtils.isNotBlank(keyword)) {
                 builder.query(q->q.match(f->f.field("content").query(keyword.trim())));
