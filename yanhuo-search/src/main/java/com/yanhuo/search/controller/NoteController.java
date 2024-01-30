@@ -30,13 +30,6 @@ public class NoteController {
         return Result.ok(page);
     }
 
-    @RequestMapping("getNoteBySearchParam")
-    public Result<?> getNoteBySearchParam(@RequestBody SearchParam searchParam){
-        Page<NoteSearchVo> page = noteService.getNoteBySearchParam(searchParam);
-        return Result.ok(page);
-    }
-
-
     @RequestMapping("getRecommendNotePage/{currentPage}/{pageSize}")
     public Result<?> getRecommendNotePage(@PathVariable long currentPage, @PathVariable long pageSize){
         Page<NoteSearchVo> page = noteService.getRecommendNotePage(currentPage,pageSize);

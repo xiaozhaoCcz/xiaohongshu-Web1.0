@@ -1,28 +1,17 @@
 package com.yanhuo.search;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
-import co.elastic.clients.elasticsearch._types.SortOrder;
-import co.elastic.clients.elasticsearch._types.aggregations.Buckets;
-import co.elastic.clients.elasticsearch._types.aggregations.LongTermsBucket;
-import co.elastic.clients.elasticsearch.core.*;
-import co.elastic.clients.elasticsearch.core.bulk.BulkOperation;
-import co.elastic.clients.elasticsearch.core.search.Hit;
-import co.elastic.clients.elasticsearch.core.search.HitsMetadata;
 import co.elastic.clients.elasticsearch.indices.CreateIndexResponse;
 import co.elastic.clients.elasticsearch.indices.DeleteIndexResponse;
 import co.elastic.clients.elasticsearch.indices.GetIndexResponse;
-import co.elastic.clients.json.JsonData;
-import co.elastic.clients.util.ObjectBuilder;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.yanhuo.search.common.NoteConstant;
 import com.yanhuo.search.config.ESConfig;
 
-import com.yanhuo.search.utils.EsUtils;
 import com.yanhuo.search.utils.model.ConditionParam;
 import com.yanhuo.search.utils.model.FieldParam;
 import com.yanhuo.search.utils.model.SearchParam;
 import com.yanhuo.xo.vo.NoteSearchVo;
-import com.yanhuo.xo.vo.RecordSearchVo;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,7 +19,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 
 
 @SpringBootTest(classes = SearchApplication.class)
