@@ -16,7 +16,6 @@ import com.yanhuo.common.exception.YanHuoException;
 import com.yanhuo.search.common.NoteConstant;
 import com.yanhuo.search.dto.NoteDTO;
 import com.yanhuo.search.service.NoteService;
-import com.yanhuo.search.utils.model.SearchParam;
 import com.yanhuo.xo.dao.NoteDao;
 import com.yanhuo.xo.entity.Note;
 import com.yanhuo.xo.vo.NoteSearchVo;

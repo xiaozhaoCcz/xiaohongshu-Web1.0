@@ -4,13 +4,10 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.yanhuo.common.result.Result;
 import com.yanhuo.search.dto.NoteDTO;
 import com.yanhuo.search.service.NoteService;
-import com.yanhuo.search.utils.model.SearchParam;
 import com.yanhuo.xo.vo.NoteSearchVo;
-import com.yanhuo.xo.vo.NoteVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.List;
 
 /**
