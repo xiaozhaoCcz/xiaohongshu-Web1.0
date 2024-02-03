@@ -35,6 +35,11 @@ public class AlbumController {
         return Result.ok(page);
     }
 
+    /**
+     * 保存专辑
+     * @param albumDTO 专辑实体
+     * @return success
+     */
     @RequestMapping("saveAlbumByDTO")
     public Result<?> saveAlbumByDTO(@RequestBody AlbumDTO albumDTO) {
         ValidatorUtils.validateEntity(albumDTO, AddGroup.class);
@@ -43,19 +48,33 @@ public class AlbumController {
     }
 
 
+    /**
+     * 根据专辑id获取专辑
+     * @param albumId 专辑id
+     * @return 专辑实体
+     */
     @RequestMapping("getAlbumById")
     public Result<?> getAlbumById(String albumId) {
         AlbumVo albumVo = albumService.getAlbumById(albumId);
         return Result.ok(albumVo);
     }
 
-
+    /**
+     * 根据专辑id删除专辑
+     * @param albumId 专辑id
+     * @return success
+     */
     @RequestMapping("deleteAlbumById")
     public Result<?> deleteAlbumById(String albumId) {
         albumService.deleteAlbumById(albumId);
         return Result.ok();
     }
 
+    /**
+     * 更新专辑
+     * @param albumDTO 专辑实体
+     * @return success
+     */
     @RequestMapping("updateAlbumByDTO")
     public Result<?> updateAlbumByDTO(@RequestBody AlbumDTO albumDTO) {
         ValidatorUtils.validateEntity(albumDTO, UpdateGroup.class);

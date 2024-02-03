@@ -7,5 +7,14 @@ import com.yanhuo.xo.vo.NoteSearchVo;
 import com.yanhuo.xo.vo.NoteVo;
 
 public interface AlbumNoteRelationService extends IService<AlbumNoteRelation> {
+    /**
+     * 得到当前专辑下的所有笔记
+     *
+     * @param currentPage 当前页
+     * @param pageSize    分页数
+     * @param albumId     专辑id
+     * @param userId      用户id
+     * @return 查询的笔记
+     */
     Page<NoteSearchVo> getNotePageByAlbumId(long currentPage, long pageSize, String albumId, String userId);
 }

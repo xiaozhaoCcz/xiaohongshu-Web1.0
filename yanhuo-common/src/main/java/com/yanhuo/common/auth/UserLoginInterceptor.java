@@ -17,6 +17,13 @@ import javax.servlet.http.HttpServletResponse;
 @Slf4j
 public class UserLoginInterceptor implements HandlerInterceptor {
 
+    /**
+     * token拦截验证
+     * @param request current HTTP request
+     * @param response current HTTP response
+     * @param handler chosen handler to execute, for type and/or instance evaluation
+     * @return
+     */
     @Override
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response,

@@ -48,11 +48,6 @@ public class NoteServiceImpl extends ServiceImpl<NoteDao, Note> implements NoteS
     LikeOrCollectionService likeOrCollectionService;
 
     @Override
-    public Page<NoteVo> getNotePage(long currentPage, long pageSize) {
-        return null;
-    }
-
-    @Override
     public NoteVo getNoteById(String noteId) {
         Note note = this.getById(noteId);
         note.setViewCount(note.getViewCount() + 1);

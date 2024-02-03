@@ -4,7 +4,14 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.yanhuo.common.im.Message;
 import com.yanhuo.xo.entity.ChatUserRelation;
 
-public interface ChatUserRelationService extends IService<ChatUserRelation>{
-
-     void  sendMessage(Message message);
+/**
+ * @author xiaozhao
+ */
+public interface ChatUserRelationService extends IService<ChatUserRelation> {
+     /**
+      * 发送消息
+      *
+      * @param message 消息实体
+      */
+     void sendMessage(Message message);
 }

@@ -12,16 +12,24 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class LoginMvcConfigurerAdapter extends WebMvcConfigurationSupport{
 
+    private static final String[] EXCLUDE_PATHS = {"/**/auth/**", "/**/util/**", "/**/search/**","/**/oss/**","/**/category/getCategoryTreeData"};
+    /**
+     * 拦截器
+     * @param registry
+     */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new UserLoginInterceptor())
-                .excludePathPatterns("/**/auth/**", "/**/util/**", "/**/search/**","/**/oss/**","/**/category/getCategoryTreeData")
+                .excludePathPatterns(EXCLUDE_PATHS)
                 .addPathPatterns("/**");
 
         super.addInterceptors(registry);
     }
 
-    // 添加静态资源访问
+    /**
+     * 静态资源访问
+     * @param registry
+     */
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler(UploadFileConstant.OSS+"/**") //虚拟url路径

@@ -192,16 +192,6 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
     }
 
     @Override
-    public List<CommentVo> getTwoCommentListByOneCommentId(String oneCommentId) {
-        return null;
-    }
-
-    @Override
-    public Page<CommentVo> getReplyCommentPageByUserId(long currentPage, long pageSize) {
-        return null;
-    }
-
-    @Override
     public Page<CommentVo> getCommentPageWithCommentByNoteId(long currentPage, long pageSize, String noteId) {
         //先得到所有的一级评论
         Page<CommentVo> result = new Page<>();

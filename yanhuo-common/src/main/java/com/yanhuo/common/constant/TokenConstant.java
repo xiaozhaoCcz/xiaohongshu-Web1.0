@@ -1,6 +1,7 @@
 package com.yanhuo.common.constant;
 
 /**
+ * token常量
  * @author xiaozhao
  */
 public interface TokenConstant {

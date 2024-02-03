@@ -11,6 +11,9 @@ import javax.websocket.server.ServerEndpoint;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * @author xiaozhao
+ */
 @ServerEndpoint(value = "/im/ws/{uid}",encoders = { ServerEncoder.class })
 @Component
 @Slf4j

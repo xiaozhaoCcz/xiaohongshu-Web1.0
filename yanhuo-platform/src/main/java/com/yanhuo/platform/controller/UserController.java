@@ -22,9 +22,18 @@ public class UserController {
     @Autowired
     UserService userService;
 
+    /**
+     * 得到当前用户的动态
+     *
+     * @param currentPage 当前页
+     * @param pageSize    分页数
+     * @param userId      用户id
+     * @param type        类型
+     * @return Page<NoteSearchVo>
+     */
     @RequestMapping("getTrendPageByUser/{currentPage}/{pageSize}")
-    public Result<?> getTrendPageByUser(@PathVariable long currentPage, @PathVariable long pageSize, String userId,Integer type) {
-        Page<NoteSearchVo> pageInfo = userService.getTrendPageByUser(currentPage, pageSize,userId,type);
+    public Result<?> getTrendPageByUser(@PathVariable long currentPage, @PathVariable long pageSize, String userId, Integer type) {
+        Page<NoteSearchVo> pageInfo = userService.getTrendPageByUser(currentPage, pageSize, userId, type);
         return Result.ok(pageInfo);
     }
 
@@ -32,8 +41,8 @@ public class UserController {
     /**
      * 获取用户信息
      *
-     * @param uid
-     * @return
+     * @param userId 用户id
+     * @return user
      */
     @RequestMapping("getUserById")
     public Result<?> getUserById(String userId) {
@@ -44,8 +53,8 @@ public class UserController {
     /**
      * 更新用户信息
      *
-     * @param user
-     * @return
+     * @param user 用户实体
+     * @return user
      */
     @RequestMapping("updateUser")
     public Result<?> updateUser(@RequestBody User user) {
@@ -57,8 +66,8 @@ public class UserController {
     /**
      * 查找用户信息
      *
-     * @param keyword
-     * @return
+     * @param keyword 关键词
+     * @return FollowerVo
      */
     @RequestMapping("getUserPageByKeyword/{currentPage}/{pageSize}")
     public Result<?> getUserPageByKeyword(@PathVariable long currentPage, @PathVariable long pageSize, String keyword) {
@@ -66,11 +75,15 @@ public class UserController {
         return Result.ok(pageInfo);
     }
 
-
+    /**
+     * 保存用户的搜索记录
+     *
+     * @param keyword 关键词
+     * @return success
+     */
     @RequestMapping("saveUserSearchRecord")
-    public  Result<?> saveUserSearchRecord(String keyword){
+    public Result<?> saveUserSearchRecord(String keyword) {
         userService.saveUserSearchRecord(keyword);
         return Result.ok();
     }
-
 }

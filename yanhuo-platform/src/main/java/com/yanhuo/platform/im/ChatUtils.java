@@ -9,6 +9,9 @@ import com.yanhuo.platform.client.ChatClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+/**
+ * @author xiaozhao
+ */
 @Component
 public class ChatUtils {
 
