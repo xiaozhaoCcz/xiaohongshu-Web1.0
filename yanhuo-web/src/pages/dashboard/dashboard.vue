@@ -45,6 +45,7 @@
                   width: '240px',
                   maxHeight: '300px',
                   height: item.noteCoverHeight + 'px',
+                  borderRadius: '8px',
                 }"
                 @load="handleLoad(item)"
               ></el-image>
@@ -75,6 +76,7 @@
                     width: '240px',
                     maxHeight: '300px',
                     height: item.noteCoverHeight + 'px',
+                    borderRadius: '8px',
                   }"
                   fit="cover"
                   @click="toMain(item.id)"
@@ -165,7 +167,6 @@ const close = () => {
 };
 
 const handleLoad = (item: any) => {
-  console.log("---item", item);
   item.isLoading = true;
 };
 

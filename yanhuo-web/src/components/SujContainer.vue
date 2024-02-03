@@ -81,6 +81,13 @@ const hotList = ref<Array<any>>([]);
 const showTagState = ref(false);
 const recommendRecords = ["壁纸", "风景", "情侣", "头像", "动漫", "动物"];
 
+const props = defineProps({
+  closeHistoryRecord: {
+    type: Boolean,
+    default: false,
+  },
+});
+
 const showDeleteTag = () => {
   showTagState.value = !showTagState.value;
 };
@@ -92,8 +99,9 @@ const deleteRecord = (index: number) => {
 };
 
 watch(
-  () => [searchStore.seed],
+  () => [searchStore.seed, props.closeHistoryRecord],
   () => {
+    showTagState.value = false;
     historyRecordList.value = searchStore.getRecords();
     getHotRecord().then((res) => {
       hotList.value = res.data;

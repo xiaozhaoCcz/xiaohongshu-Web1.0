@@ -89,7 +89,6 @@
         </button>
       </div>
     </div>
-    <!-- <Crop></Crop> -->
   </div>
 </template>
 <script lang="ts" setup>
@@ -136,6 +135,7 @@ const selectTagList = ref<Array<any>>([]);
 const currentPage = ref(1);
 const pageSize = 10;
 const tagTotal = ref(0);
+import { baseURL } from "@/constant/constant";
 
 // 监听外部点击
 onMounted(() => {
@@ -220,7 +220,7 @@ const pubslish = () => {
       //that.$message.warning("当前没有合适图片可以上传");
     }
     axios({
-      url: "http://localhost:88/api/util/oss/saveBatch/0",
+      url: baseURL + "/util/oss/saveBatch/0",
       method: "post",
       data: params,
       headers: {

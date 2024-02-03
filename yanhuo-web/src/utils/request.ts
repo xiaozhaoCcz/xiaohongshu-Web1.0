@@ -1,9 +1,8 @@
 import axios, { InternalAxiosRequestConfig, AxiosResponse } from "axios";
 import { useUserStore } from "@/store/userStore";
 import { storage } from "./storage";
-
-const loginUrl = "/";
-
+import { ElMessage } from 'element-plus'
+import { baseURL } from "@/constant/constant"
 // 刷新 token 后, 将缓存的接口重新请求一次
 // 是否正在刷新 token
 let isRefreshing: boolean = false;
@@ -14,7 +13,7 @@ let requestsQueue: ((token: string) => any)[] = [];
 // 创建 axios 实例
 const service = axios.create({
   // baseURL: import.meta.env.VITE_APP_BASE_API,
-  baseURL: "http://localhost:88/api",
+  baseURL: baseURL,
   timeout: 50000,
   headers: { "Content-Type": "application/json;charset=utf-8" },
 });
@@ -37,7 +36,7 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   (response: AxiosResponse) => {
     const { code } = response.data;
-    
+    console.log(code)
     if (code === 200) {
       return response.data;
     }
@@ -67,7 +66,7 @@ service.interceptors.response.use(
             // 重新请求一下第一个 501 的接口
             const firstReqRes = await service.request(config);
             // token 刷新后将数组的方法重新执行
-            requestsQueue.forEach((cb: any) => cb(access_token));
+            requestsQueue.forEach((cb: any) => cb(accessToken));
             // 队列中的请求执行完毕后，清空数组
             requestsQueue = [];
             return firstReqRes;
@@ -78,7 +77,8 @@ service.interceptors.response.use(
 
             // 如果refreshtoken过期则跳转到登录页面
             if (rftErr.data.code == 401) {
-              window.location.href = loginUrl;
+              window.localStorage.clear();
+              ElMessage.error("登录过期，请重新登陆")
             }
             return Promise.reject(rftErr);
           })

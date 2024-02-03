@@ -3,7 +3,6 @@ package com.yanhuo.search.service.impl;
 import cn.hutool.core.util.RandomUtil;
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch._types.SortOrder;
-import co.elastic.clients.elasticsearch._types.query_dsl.ExistsQuery;
 import co.elastic.clients.elasticsearch.core.*;
 import co.elastic.clients.elasticsearch.core.search.Hit;
 import co.elastic.clients.transport.endpoints.BooleanResponse;
@@ -64,6 +63,11 @@ public class RecordServiceImpl implements RecordService {
     public List<RecordSearchVo> getHotRecord() {
         List<RecordSearchVo> records = new ArrayList<>();
         try {
+            BooleanResponse exists = elasticsearchClient.indices().exists(e -> e
+                    .index(NoteConstant.RECOED_INDEX));
+            if(!exists.value()){
+               return records;
+            }
             SearchRequest.Builder builder = new SearchRequest.Builder().index(NoteConstant.RECOED_INDEX);
             builder.sort(o -> o.field(f -> f.field("searchCount").order(SortOrder.Desc)));
             builder.size(10);

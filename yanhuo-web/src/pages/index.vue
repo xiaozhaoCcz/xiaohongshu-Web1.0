@@ -31,7 +31,10 @@
             </div>
           </div>
           <SearchContainer v-show="showSearch" :recordList="recordList"></SearchContainer>
-          <SujContainer v-show="showHistory"></SujContainer>
+          <SujContainer
+            v-show="showHistory"
+            :closeHistoryRecord="showHistory"
+          ></SujContainer>
         </div>
         <div class="right"></div>
       </header>
