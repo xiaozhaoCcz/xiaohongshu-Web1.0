@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @SpringBootTest(classes = PlatformApplication.class)
 public class PlatformApplicationTests {
@@ -66,5 +67,13 @@ public class PlatformApplicationTests {
             note.setTitle(note.getContent());
             noteService.updateById(note);
         }
+    }
+
+    @Test
+    public void test4(){
+        List<Note> list = noteService.list(new QueryWrapper<Note>().like("note_cover", "https://"));
+        List<String> collect = list.stream().map(Note::getId).collect(Collectors.toList());
+        noteService.removeBatchByIds(collect);
+
     }
 }

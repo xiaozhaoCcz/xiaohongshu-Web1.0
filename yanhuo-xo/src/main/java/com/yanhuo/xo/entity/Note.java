@@ -14,6 +14,8 @@ public class Note extends BaseEntity {
 
     private String noteCover;
 
+    private Integer noteCoverHeight;
+
     private String uid;
 
     private String cid;
@@ -42,4 +44,5 @@ public class Note extends BaseEntity {
     private Long commentCount;
 
     private Long viewCount;
+
 }

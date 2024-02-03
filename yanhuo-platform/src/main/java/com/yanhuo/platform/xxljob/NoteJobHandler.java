@@ -72,7 +72,8 @@ public class NoteJobHandler{
                     .setAvatar(user.getAvatar())
                     .setCategoryName(category.getTitle())
                     .setCategoryParentName(parentCategory.getTitle())
-                    .setTime(note.getUpdateDate().getTime());
+                    .setTime(note.getUpdateDate().getTime())
+                            .setIsLoading(false);
             noteSearchVoList.add(noteSearchVo);
         }
         esClient.addNoteBulkData(noteSearchVoList);

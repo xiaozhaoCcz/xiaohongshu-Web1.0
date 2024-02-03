@@ -13,7 +13,10 @@ import "element-plus/dist/index.css";
 import 'animate.css';
 import "@/assets/font_4394635_lwuldvb474/iconfont.css";
 
+import { VueMasonryPlugin } from 'vue-masonry';
+ 
 app.use(router);
 app.use(ElementPlus);
+app.use(VueMasonryPlugin);
 app.mount("#app");
 

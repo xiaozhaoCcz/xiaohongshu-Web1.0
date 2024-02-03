@@ -3,37 +3,69 @@
     <Waterfall
       :list="noteList"
       :width="options.width"
+      :gutter="options.gutter"
       :hasAroundGutter="options.hasAroundGutter"
       :animation-effect="options.animationEffect"
       :animation-duration="options.animationDuration"
       :animation-delay="options.animationDelay"
-      :load-props="options.loadProps"
-      :lazyload="options.lazyload"
       style="max-width: 1260px"
     >
-      <template #item="{ item, url }">
-        <div class="card" style="width: 240px">
-          <LazyImg
-            :url="url"
-            @click="toMain(item.id)"
-            style="object-fit: cover; border-radius: 10px"
-          />
-          <div class="footer">
-            <a class="title">
-              <span>{{ item.title }}</span>
-            </a>
-            <div class="author-wrapper">
-              <a class="author">
-                <img class="author-avatar" :src="item.avatar" />
-                <span class="name">{{ item.username }}</span>
-              </a>
-              <span class="like-wrapper like-active">
-                <i class="iconfont icon-follow" style="width: 1em; height: 1em"></i>
-                <span class="count">{{ item.likeCount }}</span>
-              </span>
+      <template #item="{ item }">
+        <el-skeleton style="width: 240px" :loading="!item.isLoading" animated>
+          <template #template>
+            <el-image
+              :src="item.noteCover"
+              :style="{
+                width: '240px',
+                maxHeight: '300px',
+                height: item.noteCoverHeight + 'px',
+              }"
+              @load="handleLoad(item)"
+            ></el-image>
+            <div style="padding: 14px">
+              <el-skeleton-item variant="h3" style="width: 100%" />
+              <div
+                style="display: flex; align-items: center; margin-top: 2px; height: 16px"
+              >
+                <el-skeleton style="--el-skeleton-circle-size: 20px">
+                  <template #template>
+                    <el-skeleton-item variant="circle" />
+                  </template>
+                </el-skeleton>
+                <el-skeleton-item variant="text" style="margin-left: 10px" />
+              </div>
             </div>
-          </div>
-        </div>
+          </template>
+          <template #default>
+            <div class="card">
+              <el-image
+                :src="item.noteCover"
+                :style="{
+                  width: '240px',
+                  maxHeight: '300px',
+                  height: item.noteCoverHeight + 'px',
+                }"
+                fit="cover"
+                @click="toMain(item.id)"
+              ></el-image>
+              <div class="footer">
+                <a class="title">
+                  <span>{{ item.title }}</span>
+                </a>
+                <div class="author-wrapper">
+                  <a class="author">
+                    <img class="author-avatar" :src="item.avatar" />
+                    <span class="name">{{ item.username }}</span>
+                  </a>
+                  <span class="like-wrapper like-active">
+                    <i class="iconfont icon-follow" style="width: 1em; height: 1em"></i>
+                    <span class="count">{{ item.likeCount }}</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </template>
+        </el-skeleton>
       </template>
     </Waterfall>
   </div>
@@ -46,7 +78,7 @@
   ></Main>
 </template>
 <script lang="ts" setup>
-import { Waterfall, LazyImg } from "vue-waterfall-plugin-next";
+import { Waterfall } from "vue-waterfall-plugin-next";
 import "vue-waterfall-plugin-next/dist/style.css";
 import { ref, watch } from "vue";
 import { getTrendPageByUser } from "@/api/user";
@@ -77,6 +109,10 @@ const pageSize = 10;
 const nid = ref("");
 const mainShow = ref(false);
 
+const handleLoad = (item: any) => {
+  item.isLoading = true;
+};
+
 const close = () => {
   mainShow.value = false;
 };
@@ -90,12 +126,9 @@ const toMain = (noteId: string) => {
 
 const setData = (res: any) => {
   const { records, total } = res.data;
+  console.log(records, total);
   noteTotal.value = total;
-  records.forEach((element: any) => {
-    const dataObj = Object.assign(element, {});
-    dataObj.src = element.noteCover;
-    noteList.value.push(dataObj);
-  });
+  noteList.value.push(...records);
 };
 
 const getNoteList = (type: number) => {

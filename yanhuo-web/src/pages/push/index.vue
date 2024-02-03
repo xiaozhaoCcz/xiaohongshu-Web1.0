@@ -245,19 +245,24 @@ const pubslish = () => {
     note.value.cpid = categoryList.value[0];
     note.value.cid = categoryList.value[1];
     note.value.tagList = tagList.value;
-
-    saveNoteByDTO(note.value).then(() => {
-      note.value = {};
-      title.value = "";
-      content.value = "";
-      categoryList.value = [];
-      fileList.value = [];
-      tagList.value = [];
-      ElMessage({
-        message: "发布成功",
-        type: "success",
+    const coverImage = new Image();
+    coverImage.src = data[0];
+    coverImage.onload = () => {
+      const size = coverImage.width / coverImage.height;
+      note.value.noteCoverHeight = size >= 1.3 ? 200 : 300;
+      saveNoteByDTO(note.value).then(() => {
+        note.value = {};
+        title.value = "";
+        content.value = "";
+        categoryList.value = [];
+        fileList.value = [];
+        tagList.value = [];
+        ElMessage({
+          message: "发布成功",
+          type: "success",
+        });
       });
-    });
+    };
   });
 };
 
