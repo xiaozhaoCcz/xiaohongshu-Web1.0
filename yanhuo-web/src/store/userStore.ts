@@ -34,9 +34,7 @@ export const userStore = defineStore("userStore", () => {
   };
 
   const loginOut = ()=>{
-    storage.remove("accessToken");
-    storage.remove("refreshToken");
-    storage.remove("userInfo");
+    window.localStorage.clear();
   }
 
   return { token, getToken, getNewToken, getUserInfo, setUserInfo,loginOut };
