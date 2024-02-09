@@ -30,6 +30,7 @@ public class RecordServiceImpl implements RecordService {
     public List<RecordSearchVo> getRecordByKeyWord(String keyword) {
         List<RecordSearchVo> records = new ArrayList<>();
         try {
+
             SearchRequest.Builder builder = new SearchRequest.Builder().index(NoteConstant.RECOED_INDEX);
             if (StringUtils.isNotBlank(keyword)) {
                 builder.query(q -> q.bool(b -> b
@@ -64,6 +65,11 @@ public class RecordServiceImpl implements RecordService {
     public List<RecordSearchVo> getHotRecord() {
         List<RecordSearchVo> records = new ArrayList<>();
         try {
+            BooleanResponse exists = elasticsearchClient.indices().exists(e -> e
+                    .index(NoteConstant.RECOED_INDEX));
+            if(!exists.value()){
+                return records;
+            }
             SearchRequest.Builder builder = new SearchRequest.Builder().index(NoteConstant.RECOED_INDEX);
             builder.sort(o -> o.field(f -> f.field("searchCount").order(SortOrder.Desc)));
             builder.size(10);
@@ -86,7 +92,6 @@ public class RecordServiceImpl implements RecordService {
     public void addRecord(String keyword) {
         try {
             // 查询索引是否存在
-
             BooleanResponse exists = elasticsearchClient.indices().exists(e -> e
                     .index(NoteConstant.RECOED_INDEX));
             if(!exists.value()){
