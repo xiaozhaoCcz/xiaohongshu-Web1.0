@@ -23,12 +23,10 @@ public class OssController {
 
     @RequestMapping("saveBatch/{type}")
     public Result<?> saveBatch(@RequestParam("uploadFiles") MultipartFile[] files, @PathVariable Integer type) {
-        System.out.println(files.length);
         if (files.length == 0) {
             return Result.fail(null);
         }
         List<String> stringList = ossService.saveBatch(files, type);
-        System.out.println(stringList);
         return Result.ok(stringList);
     }
 

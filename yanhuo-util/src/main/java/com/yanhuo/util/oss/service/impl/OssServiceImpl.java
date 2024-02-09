@@ -34,6 +34,7 @@ public class OssServiceImpl implements OssService {
     @Override
     public List<String> saveBatch(MultipartFile[] files, Integer type) {
         List<String> result = new ArrayList<>();
+        // 需要进行加锁，不然会出现多次添加
         for (MultipartFile file : files){
             result.add(save(file,type));
         }

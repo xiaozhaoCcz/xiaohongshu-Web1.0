@@ -220,7 +220,7 @@ const pubslish = () => {
       //that.$message.warning("当前没有合适图片可以上传");
     }
     axios({
-      url: baseURL + "/util/oss/saveBatch/0",
+      url: baseURL + "/util/oss/saveBatch/1",
       method: "post",
       data: params,
       headers: {
