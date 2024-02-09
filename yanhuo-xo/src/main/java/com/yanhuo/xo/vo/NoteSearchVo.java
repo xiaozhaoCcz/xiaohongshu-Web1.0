@@ -17,6 +17,8 @@ public class NoteSearchVo  implements Serializable {
 
     private String noteCover;
 
+    private Integer noteCoverHeight;
+
     private String cid;
 
     private String categoryName;
@@ -48,6 +50,6 @@ public class NoteSearchVo  implements Serializable {
 
     private Boolean isLoading;
 
-    private Integer noteCoverHeight;
+
 
 }

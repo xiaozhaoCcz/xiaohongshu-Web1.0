@@ -3,7 +3,6 @@ package com.yanhuo.util.msm.service.impl;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.extra.expression.ExpressionException;
 import cn.hutool.json.JSONUtil;
-import com.yanhuo.util.constant.OssConstant;
 import com.yanhuo.util.msm.service.MsmService;
 import org.springframework.stereotype.Service;
 
@@ -21,9 +20,9 @@ public class MsmServiceImpl implements MsmService {
         com.aliyun.teaopenapi.models.Config config = new com.aliyun.teaopenapi.models.Config()
                 .setEndpoint("dysmsapi.aliyuncs.com")
                 // 必填，您的 AccessKey ID
-                .setAccessKeyId(OssConstant.KEY_ID)
+                .setAccessKeyId("keyId")
                 // 必填，您的 AccessKey Secret
-                .setAccessKeySecret(OssConstant.KEY_SECRET);
+                .setAccessKeySecret("keySecret");
         com.aliyun.dysmsapi20170525.Client client = new com.aliyun.dysmsapi20170525.Client(config);
         com.aliyun.dysmsapi20170525.models.SendSmsRequest sendSmsRequest = new com.aliyun.dysmsapi20170525.models.SendSmsRequest()
                 .setPhoneNumbers(phone)
