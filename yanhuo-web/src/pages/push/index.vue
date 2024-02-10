@@ -70,7 +70,8 @@
       </div>
 
       <div class="submit">
-        <button class="publishBtn" @click="pubslish()">
+        <el-button type="danger" loading :disabled="true" v-if="pushLoading">发布</el-button>
+        <button class="publishBtn" @click="pubslish()" v-else>
           <span class="btn-content">发布</span>
         </button>
         <button class="clearBtn">
@@ -86,7 +87,6 @@ import { Plus } from "@element-plus/icons-vue";
 import type { UploadUserFile, CascaderProps } from "element-plus";
 import { ElMessage } from "element-plus";
 import { useUserStore } from "@/store/userStore";
-import axios from "axios";
 import { getCategoryTreeData } from "@/api/category";
 import { saveNoteByDTO } from "@/api/note";
 import { getPageTagByKeyword } from "@/api/tag";
@@ -124,7 +124,7 @@ const selectTagList = ref<Array<any>>([]);
 const currentPage = ref(1);
 const pageSize = 10;
 const tagTotal = ref(0);
-import { baseURL } from "@/constant/constant";
+const pushLoading = ref(false);
 
 // 监听外部点击
 onMounted(() => {
@@ -198,13 +198,14 @@ const pubslish = () => {
     return;
   }
 
+  pushLoading.value = true;
+
   let params = new FormData();
   //注意此处对文件数组进行了参数循环添加
-  if (fileList.value.length > 0) {
-    fileList.value.forEach((file: any) => {
-      params.append("uploadFiles", file.raw);
-    });
-  }
+
+  fileList.value.forEach((file: any) => {
+    params.append("uploadFiles", file.raw);
+  });
 
   note.value.count = fileList.value.length;
   note.value.type = 1;
@@ -219,7 +220,7 @@ const pubslish = () => {
     const size = coverImage.width / coverImage.height;
     note.value.noteCoverHeight = size >= 1.3 ? 200 : 300;
     const noteData = JSON.stringify(note.value);
-    params.append("noteData",noteData);
+    params.append("noteData", noteData);
     saveNoteByDTO(params).then(() => {
       note.value = {};
       title.value = "";
@@ -231,63 +232,9 @@ const pubslish = () => {
         message: "发布成功",
         type: "success",
       });
+      pushLoading.value = false;
     });
   };
-
-  // const p = new Promise((resolve, reject) => {
-  //   let params = new FormData();
-  //   // 注意此处对文件数组进行了参数循环添加
-  //   if (fileList.value.length > 0) {
-  //     fileList.value.forEach((file: any) => {
-  //       params.append("uploadFiles", file.raw);
-  //     });
-  //   }
-
-  //   axios({
-  //     url: baseURL + "/util/oss/saveBatch/1",
-  //     method: "post",
-  //     data: params,
-  //     headers: {
-  //       "Content-Type": "multipart/form-data",
-  //     },
-  //   })
-  //     .then((res: any) => {
-  //       resolve(res.data.data);
-  //     })
-  //     .catch((err: any) => {
-  //       reject(err);
-  //     });
-  // });
-
-  // p.then((data: any) => {
-  //   note.value.urls = data;
-  //   note.value.noteCover = data[0];
-  //   note.value.count = data.length;
-  //   note.value.type = 1;
-  //   note.value.title = title.value;
-  //   note.value.content = content.value.split("#")[0];
-  //   note.value.cpid = categoryList.value[0];
-  //   note.value.cid = categoryList.value[1];
-  //   note.value.tagList = tagList.value;
-  //   const coverImage = new Image();
-  //   coverImage.src = data[0];
-  //   coverImage.onload = () => {
-  //     const size = coverImage.width / coverImage.height;
-  //     note.value.noteCoverHeight = size >= 1.3 ? 200 : 300;
-  //     saveNoteByDTO(note.value).then(() => {
-  //       note.value = {};
-  //       title.value = "";
-  //       content.value = "";
-  //       categoryList.value = [];
-  //       fileList.value = [];
-  //       tagList.value = [];
-  //       ElMessage({
-  //         message: "发布成功",
-  //         type: "success",
-  //       });
-  //     });
-  //   };
-  // });
 };
 
 const initData = () => {
