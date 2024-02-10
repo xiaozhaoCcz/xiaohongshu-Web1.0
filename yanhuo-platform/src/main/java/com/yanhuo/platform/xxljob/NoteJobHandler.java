@@ -1,7 +1,6 @@
 package com.yanhuo.platform.xxljob;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.xxl.job.core.handler.IJobHandler;
 import com.xxl.job.core.handler.annotation.XxlJob;
 import com.yanhuo.common.utils.ConvertUtils;
 import com.yanhuo.platform.client.EsClient;

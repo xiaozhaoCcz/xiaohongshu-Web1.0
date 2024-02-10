@@ -41,6 +41,6 @@ public class TagServiceImpl extends ServiceImpl<TagDao, Tag> implements TagServi
             queryWrapper.like("title",keyword);
         }
         queryWrapper.orderByDesc("like_count");
-        return this.page(new Page((int) currentPage, (int) pageSize), queryWrapper);
+        return this.page(new Page<Tag>((int) currentPage, (int) pageSize), queryWrapper);
     }
 }
