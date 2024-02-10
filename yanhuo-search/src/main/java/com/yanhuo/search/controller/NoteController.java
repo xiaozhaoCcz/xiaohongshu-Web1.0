@@ -4,13 +4,10 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.yanhuo.common.result.Result;
 import com.yanhuo.search.dto.NoteDTO;
 import com.yanhuo.search.service.NoteService;
-import com.yanhuo.search.utils.model.SearchParam;
 import com.yanhuo.xo.vo.NoteSearchVo;
-import com.yanhuo.xo.vo.NoteVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -34,18 +31,6 @@ public class NoteController {
     @RequestMapping("getNotePageByDTO/{currentPage}/{pageSize}")
     public Result<?> getNotePageByDTO(@PathVariable long currentPage, @PathVariable long pageSize, @RequestBody NoteDTO noteDTO) {
         Page<NoteSearchVo> page = noteService.getNotePageByDTO(currentPage, pageSize, noteDTO);
-        return Result.ok(page);
-    }
-
-    /**
-     * 通过参数获取笔记集合
-     *
-     * @param searchParam 查询参数
-     * @return Page<NoteSearchVo>
-     */
-    @RequestMapping("getNoteBySearchParam")
-    public Result<?> getNoteBySearchParam(@RequestBody SearchParam searchParam) {
-        Page<NoteSearchVo> page = noteService.getNoteBySearchParam(searchParam);
         return Result.ok(page);
     }
 
