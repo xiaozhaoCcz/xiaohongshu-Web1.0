@@ -3,12 +3,7 @@
     <div class="channel-container">
       <div class="scroll-container channel-scroll-container">
         <div class="content-container">
-          <div
-            :class="categoryClass == '0' ? 'channel active' : 'channel'"
-            @click="getNoteList"
-          >
-            推荐
-          </div>
+          <div :class="categoryClass == '0' ? 'channel active' : 'channel'" @click="getNoteList">推荐</div>
           <div
             :class="categoryClass == item.id ? 'channel active' : 'channel'"
             v-for="item in categoryList"
@@ -34,7 +29,8 @@
         :animation-effect="options.animationEffect"
         :animation-duration="options.animationDuration"
         :animation-delay="options.animationDelay"
-        style="max-width: 1260px"
+        :breakpoints="options.breakpoints"
+        style="min-width: 740px"
       >
         <template #item="{ item }">
           <el-skeleton style="width: 240px" :loading="!item.isLoading" animated>
@@ -51,14 +47,7 @@
               ></el-image>
               <div style="padding: 14px">
                 <el-skeleton-item variant="h3" style="width: 100%" />
-                <div
-                  style="
-                    display: flex;
-                    align-items: center;
-                    margin-top: 2px;
-                    height: 16px;
-                  "
-                >
+                <div style="display: flex; align-items: center; margin-top: 2px; height: 16px">
                   <el-skeleton style="--el-skeleton-circle-size: 20px">
                     <template #template>
                       <el-skeleton-item variant="circle" />
@@ -69,7 +58,7 @@
               </div>
             </template>
             <template #default>
-              <div class="card">
+              <div class="card" style="max-width: 240px">
                 <el-image
                   :src="item.noteCover"
                   :style="{
@@ -171,11 +160,9 @@ const handleLoad = (item: any) => {
 };
 
 const refresh = () => {
-  let scrollTop =
-    window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
+  let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
   const clientHeight =
-    window.innerHeight ||
-    Math.min(document.documentElement.clientHeight, document.body.clientHeight);
+    window.innerHeight || Math.min(document.documentElement.clientHeight, document.body.clientHeight);
 
   if (scrollTop <= clientHeight * 2) {
     const timeTop = setInterval(() => {
@@ -452,7 +439,9 @@ initData();
       height: 40px;
       background: #fff;
       border: 1px solid rgba(0, 0, 0, 0.08);
-      box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.02);
+      box-shadow:
+        0 2px 8px 0 rgba(0, 0, 0, 0.1),
+        0 1px 2px 0 rgba(0, 0, 0, 0.02);
       border-radius: 100px;
       color: rgba(51, 51, 51, 0.8);
       display: flex;

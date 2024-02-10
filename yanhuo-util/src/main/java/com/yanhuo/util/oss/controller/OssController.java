@@ -3,6 +3,7 @@ package com.yanhuo.util.oss.controller;
 import com.yanhuo.common.result.Result;
 import com.yanhuo.util.oss.service.OssService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,9 +21,8 @@ public class OssController {
         String path = ossService.save(file, type);
         return Result.ok(path);
     }
-
-    @RequestMapping("saveBatch/{type}")
-    public Result<?> saveBatch(@RequestParam("uploadFiles") MultipartFile[] files, @PathVariable Integer type) {
+    @RequestMapping(value = "saveBatch/{type}")
+    public Result<List<String>> saveBatch(@RequestParam("uploadFiles") MultipartFile[] files, @PathVariable Integer type) {
         if (files.length == 0) {
             return Result.fail(null);
         }

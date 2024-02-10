@@ -8,7 +8,8 @@
       :animation-effect="options.animationEffect"
       :animation-duration="options.animationDuration"
       :animation-delay="options.animationDelay"
-      style="max-width: 1260px"
+      :breakpoints="options.breakpoints"
+      style="min-width: 740px"
     >
       <template #item="{ item }">
         <el-skeleton style="width: 240px" :loading="!item.isLoading" animated>
@@ -25,9 +26,7 @@
             ></el-image>
             <div style="padding: 14px">
               <el-skeleton-item variant="h3" style="width: 100%" />
-              <div
-                style="display: flex; align-items: center; margin-top: 2px; height: 16px"
-              >
+              <div style="display: flex; align-items: center; margin-top: 2px; height: 16px">
                 <el-skeleton style="--el-skeleton-circle-size: 20px">
                   <template #template>
                     <el-skeleton-item variant="circle" />
@@ -38,7 +37,7 @@
             </div>
           </template>
           <template #default>
-            <div class="card">
+            <div class="card" style="max-width: 240px">
               <el-image
                 :src="item.noteCover"
                 :style="{

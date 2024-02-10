@@ -1,9 +1,7 @@
 <template>
   <div class="container" id="container">
     <div class="push-container" id="tagContainer">
-      <div class="header">
-        <span class="header-icon"></span><span class="header-title">发布图文</span>
-      </div>
+      <div class="header"><span class="header-icon"></span><span class="header-title">发布图文</span></div>
       <div class="img-list">
         <el-upload
           v-model:file-list="fileList"
@@ -42,17 +40,8 @@
           id="inputContent"
         />
 
-        <div
-          v-infinite-scroll="loadMoreData"
-          class="scroll-tag-container"
-          v-show="showTagState"
-        >
-          <p
-            v-for="(item, index) in selectTagList"
-            :key="index"
-            class="scrollbar-tag-item"
-            @click="selectTag(item)"
-          >
+        <div v-infinite-scroll="loadMoreData" class="scroll-tag-container" v-show="showTagState">
+          <p v-for="(item, index) in selectTagList" :key="index" class="scrollbar-tag-item" @click="selectTag(item)">
             {{ item.title }}
           </p>
         </div>
@@ -209,61 +198,96 @@ const pubslish = () => {
     return;
   }
 
-  const p = new Promise((resolve, reject) => {
-    let params = new FormData();
-    // 注意此处对文件数组进行了参数循环添加
-    if (fileList.value.length > 0) {
-      fileList.value.forEach((file: any) => {
-        params.append("uploadFiles", file.raw);
-      });
-    } else {
-      //that.$message.warning("当前没有合适图片可以上传");
-    }
-    axios({
-      url: baseURL + "/util/oss/saveBatch/1",
-      method: "post",
-      data: params,
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    })
-      .then((res: any) => {
-        resolve(res.data.data);
-      })
-      .catch((err: any) => {
-        reject(err);
-      });
-  });
+  let params = new FormData();
+  //注意此处对文件数组进行了参数循环添加
+  if (fileList.value.length > 0) {
+    fileList.value.forEach((file: any) => {
+      params.append("uploadFiles", file.raw);
+    });
+  }
 
-  p.then((data: any) => {
-    note.value.urls = data;
-    note.value.noteCover = data[0];
-    note.value.count = data.length;
-    note.value.type = 1;
-    note.value.title = title.value;
-    note.value.content = content.value.split("#")[0];
-    note.value.cpid = categoryList.value[0];
-    note.value.cid = categoryList.value[1];
-    note.value.tagList = tagList.value;
-    const coverImage = new Image();
-    coverImage.src = data[0];
-    coverImage.onload = () => {
-      const size = coverImage.width / coverImage.height;
-      note.value.noteCoverHeight = size >= 1.3 ? 200 : 300;
-      saveNoteByDTO(note.value).then(() => {
-        note.value = {};
-        title.value = "";
-        content.value = "";
-        categoryList.value = [];
-        fileList.value = [];
-        tagList.value = [];
-        ElMessage({
-          message: "发布成功",
-          type: "success",
-        });
+  note.value.count = fileList.value.length;
+  note.value.type = 1;
+  note.value.title = title.value;
+  note.value.content = content.value.split("#")[0];
+  note.value.cpid = categoryList.value[0];
+  note.value.cid = categoryList.value[1];
+  note.value.tagList = tagList.value;
+  const coverImage = new Image();
+  coverImage.src = fileList.value[0].url!;
+  coverImage.onload = () => {
+    const size = coverImage.width / coverImage.height;
+    note.value.noteCoverHeight = size >= 1.3 ? 200 : 300;
+    const noteData = JSON.stringify(note.value);
+    params.append("noteData",noteData);
+    saveNoteByDTO(params).then(() => {
+      note.value = {};
+      title.value = "";
+      content.value = "";
+      categoryList.value = [];
+      fileList.value = [];
+      tagList.value = [];
+      ElMessage({
+        message: "发布成功",
+        type: "success",
       });
-    };
-  });
+    });
+  };
+
+  // const p = new Promise((resolve, reject) => {
+  //   let params = new FormData();
+  //   // 注意此处对文件数组进行了参数循环添加
+  //   if (fileList.value.length > 0) {
+  //     fileList.value.forEach((file: any) => {
+  //       params.append("uploadFiles", file.raw);
+  //     });
+  //   }
+
+  //   axios({
+  //     url: baseURL + "/util/oss/saveBatch/1",
+  //     method: "post",
+  //     data: params,
+  //     headers: {
+  //       "Content-Type": "multipart/form-data",
+  //     },
+  //   })
+  //     .then((res: any) => {
+  //       resolve(res.data.data);
+  //     })
+  //     .catch((err: any) => {
+  //       reject(err);
+  //     });
+  // });
+
+  // p.then((data: any) => {
+  //   note.value.urls = data;
+  //   note.value.noteCover = data[0];
+  //   note.value.count = data.length;
+  //   note.value.type = 1;
+  //   note.value.title = title.value;
+  //   note.value.content = content.value.split("#")[0];
+  //   note.value.cpid = categoryList.value[0];
+  //   note.value.cid = categoryList.value[1];
+  //   note.value.tagList = tagList.value;
+  //   const coverImage = new Image();
+  //   coverImage.src = data[0];
+  //   coverImage.onload = () => {
+  //     const size = coverImage.width / coverImage.height;
+  //     note.value.noteCoverHeight = size >= 1.3 ? 200 : 300;
+  //     saveNoteByDTO(note.value).then(() => {
+  //       note.value = {};
+  //       title.value = "";
+  //       content.value = "";
+  //       categoryList.value = [];
+  //       fileList.value = [];
+  //       tagList.value = [];
+  //       ElMessage({
+  //         message: "发布成功",
+  //         type: "success",
+  //       });
+  //     });
+  //   };
+  // });
 };
 
 const initData = () => {
@@ -372,7 +396,11 @@ initData();
       .css-fm44j {
         -webkit-font-smoothing: antialiased;
         appearance: none;
-        font-family: RedNum, RedZh, RedEn, -apple-system;
+        font-family:
+          RedNum,
+          RedZh,
+          RedEn,
+          -apple-system;
         vertical-align: middle;
         text-decoration: none;
         border: 1px solid rgb(217, 217, 217);

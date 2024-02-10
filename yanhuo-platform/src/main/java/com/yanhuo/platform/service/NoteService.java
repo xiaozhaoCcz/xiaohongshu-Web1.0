@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.yanhuo.xo.dto.NoteDTO;
 import com.yanhuo.xo.entity.Note;
 import com.yanhuo.xo.vo.NoteVo;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -21,13 +22,7 @@ public interface NoteService extends IService<Note> {
      */
     NoteVo getNoteById(String noteId);
 
-    /**
-     * 保存笔记
-     *
-     * @param noteDTO 笔记实体
-     * @return 笔记id
-     */
-    String saveNoteByDTO(NoteDTO noteDTO);
+    String saveNoteByDTO(String noteData, MultipartFile[] files);
 
     /**
      * 删除笔记

@@ -5,8 +5,11 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yanhuo.common.auth.AuthContextHolder;
+import com.yanhuo.common.exception.YanHuoException;
+import com.yanhuo.common.result.Result;
 import com.yanhuo.common.utils.ConvertUtils;
 import com.yanhuo.platform.client.EsClient;
+import com.yanhuo.platform.client.OssClient;
 import com.yanhuo.platform.service.*;
 import com.yanhuo.xo.dao.NoteDao;
 import com.yanhuo.xo.dto.LikeOrCollectionDTO;
@@ -17,6 +20,7 @@ import com.yanhuo.xo.vo.NoteVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,6 +50,9 @@ public class NoteServiceImpl extends ServiceImpl<NoteDao, Note> implements NoteS
 
     @Autowired
     LikeOrCollectionService likeOrCollectionService;
+
+    @Autowired
+    OssClient ossClient;
 
     @Override
     public NoteVo getNoteById(String noteId) {
@@ -83,39 +90,52 @@ public class NoteServiceImpl extends ServiceImpl<NoteDao, Note> implements NoteS
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public String saveNoteByDTO(NoteDTO noteDTO) {
+    public String saveNoteByDTO(String noteData, MultipartFile[] files) {
         String currentUid = AuthContextHolder.getUserId();
+        NoteDTO noteDTO = JSONUtil.toBean(noteData, NoteDTO.class);
         Note note = ConvertUtils.sourceToTarget(noteDTO, Note.class);
         note.setUid(currentUid);
-        String urls = JSONUtil.toJsonStr(noteDTO.getUrls());
-        note.setUrls(urls);
-        this.save(note);
 
-        //TODO 专辑中需要添加
+        boolean save = this.save(note);
+        if(!save){
+            return null;
+        }
+
+        // TODO 需要往专辑中添加
 
         User user = userService.getById(currentUid);
         user.setTrendCount(user.getTrendCount() + 1);
         userService.updateById(user);
 
-
-        // 添加标签关系
         List<String> tids = noteDTO.getTagList();
         List<TagNoteRelation> tagNoteRelationList = new ArrayList<>();
 
-        for (String tid : tids) {
-            TagNoteRelation tagNoteRelation = new TagNoteRelation();
-            tagNoteRelation.setTid(tid);
-            tagNoteRelation.setNid(note.getId());
-            tagNoteRelationList.add(tagNoteRelation);
+        String tags="";
+        if(!tids.isEmpty()){
+            for (String tid : tids) {
+                TagNoteRelation tagNoteRelation = new TagNoteRelation();
+                tagNoteRelation.setTid(tid);
+                tagNoteRelation.setNid(note.getId());
+                tagNoteRelationList.add(tagNoteRelation);
+            }
+            tagNoteRelationService.saveBatch(tagNoteRelationList);
+            tags  = tagService.listByIds(tids).stream().map(Tag::getTitle).collect(Collectors.joining(","));
         }
-        tagNoteRelationService.saveBatch(tagNoteRelationList);
-
-
         Category category = categoryService.getById(note.getCid());
         Category parentCategory = categoryService.getById(note.getCpid());
 
-        String tags = tagService.listByIds(tids).stream().map(Tag::getTitle).collect(Collectors.joining(","));
-
+        List<String> dataList;
+        try {
+            Result<List<String>> result = ossClient.saveBatch(files, 1);
+            dataList = result.getData();
+        }catch (Exception e){
+           throw new YanHuoException("添加图片失败");
+        }
+        String[] urlArr = dataList.toArray(new String[dataList.size()]);
+        String urls = JSONUtil.toJsonStr(urlArr);
+        note.setUrls(urls);
+        note.setNoteCover(urlArr[0]);
+        this.updateById(note);
 
         // 往es中添加数据
         NoteSearchVo noteSearchVo = ConvertUtils.sourceToTarget(note, NoteSearchVo.class);

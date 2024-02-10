@@ -12,7 +12,6 @@ import com.qiniu.storage.model.DefaultPutRet;
 import com.qiniu.util.Auth;
 import com.yanhuo.common.utils.SpringContextUtils;
 import com.yanhuo.util.oss.factory.OssFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.web.multipart.MultipartFile;
 

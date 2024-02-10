@@ -20,11 +20,11 @@ export const getNoteById = (noteId: string) => {
  * @param data 笔记实体
  * @returns 笔记id
  */
-export const saveNoteByDTO = (data:any) => {
+export const saveNoteByDTO = (data: any) => {
   return request<any>({
     url: "/platform/note/saveNoteByDTO", // mock接口
     method: "post",
-    data:data
+    data: data,
+    headers: { "Content-Type": "multipart/form-data;boundary=----WebKitFormBoundaryk4ZvuPo6pkphe7Pl" },
   });
 };
-

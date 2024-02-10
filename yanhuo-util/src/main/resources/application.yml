@@ -23,7 +23,7 @@ spring:
         min-idle: 5       # 连接池中的最小空闲连接
 
 qiNiuYun:
-    domain:
-    accessKey:
-    secretKey:
-    bucketName:
+  domain: img.ccimgvideo.top
+  accessKey: NRVi6-zeRGNwy2fMjixqKODpauN7WjH2fH1oAomp
+  secretKey: RHB-qhKKgWxerAkeXMLJLGYELhWs3RbCbyGEF7V1
+  bucketName: ccimgoss
