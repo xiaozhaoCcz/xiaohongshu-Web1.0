@@ -12,18 +12,17 @@ import com.yanhuo.platform.client.EsClient;
 import com.yanhuo.platform.client.OssClient;
 import com.yanhuo.platform.service.*;
 import com.yanhuo.xo.dao.NoteDao;
-import com.yanhuo.xo.dto.LikeOrCollectionDTO;
 import com.yanhuo.xo.dto.NoteDTO;
 import com.yanhuo.xo.entity.*;
 import com.yanhuo.xo.vo.NoteSearchVo;
 import com.yanhuo.xo.vo.NoteVo;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -53,6 +52,9 @@ public class NoteServiceImpl extends ServiceImpl<NoteDao, Note> implements NoteS
 
     @Autowired
     OssClient ossClient;
+
+    @Autowired
+    private RedissonClient redissonClient;
 
     @Override
     public NoteVo getNoteById(String noteId) {
@@ -88,19 +90,18 @@ public class NoteServiceImpl extends ServiceImpl<NoteDao, Note> implements NoteS
         return noteVo;
     }
 
+
     @Transactional(rollbackFor = Exception.class)
     @Override
     public String saveNoteByDTO(String noteData, MultipartFile[] files) {
         String currentUid = AuthContextHolder.getUserId();
         NoteDTO noteDTO = JSONUtil.toBean(noteData, NoteDTO.class);
-        Note note = ConvertUtils.sourceToTarget(noteDTO, Note.class);
+        Note note =ConvertUtils.sourceToTarget(noteDTO, Note.class);
         note.setUid(currentUid);
-
-        boolean save = this.save(note);
+        boolean  save = this.save(note);
         if(!save){
             return null;
         }
-
         // TODO 需要往专辑中添加
 
         User user = userService.getById(currentUid);
