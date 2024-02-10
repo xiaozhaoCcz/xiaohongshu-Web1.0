@@ -48,7 +48,8 @@ public class QiNiuYunUploadFile implements OssFactory {
         UploadManager uploadManager = new UploadManager(cfg);
 
         String filePath = "";
-        String fileName = file.getOriginalFilename();
+        String originalFilename = file.getOriginalFilename();
+        String fileName = originalFilename.substring (originalFilename.lastIndexOf ("."));;
 
         //1 在文件名称里面添加随机唯一的值
         String uuid = UUID.randomUUID().toString().replaceAll("-", "");

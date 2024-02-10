@@ -16,7 +16,6 @@ import com.yanhuo.xo.dto.NoteDTO;
 import com.yanhuo.xo.entity.*;
 import com.yanhuo.xo.vo.NoteSearchVo;
 import com.yanhuo.xo.vo.NoteVo;
-import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -53,8 +52,6 @@ public class NoteServiceImpl extends ServiceImpl<NoteDao, Note> implements NoteS
     @Autowired
     OssClient ossClient;
 
-    @Autowired
-    private RedissonClient redissonClient;
 
     @Override
     public NoteVo getNoteById(String noteId) {
