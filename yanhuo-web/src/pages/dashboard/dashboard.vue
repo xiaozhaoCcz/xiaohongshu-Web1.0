@@ -3,12 +3,7 @@
     <div class="channel-container">
       <div class="scroll-container channel-scroll-container">
         <div class="content-container">
-          <div
-            :class="categoryClass == '0' ? 'channel active' : 'channel'"
-            @click="getNoteList"
-          >
-            推荐
-          </div>
+          <div :class="categoryClass == '0' ? 'channel active' : 'channel'" @click="getNoteList">推荐</div>
           <div
             :class="categoryClass == item.id ? 'channel active' : 'channel'"
             v-for="item in categoryList"
@@ -34,35 +29,68 @@
         :animation-effect="options.animationEffect"
         :animation-duration="options.animationDuration"
         :animation-delay="options.animationDelay"
-        :load-props="options.loadProps"
-        :lazyload="options.lazyload"
-        style="max-width: 1260px"
+        :breakpoints="options.breakpoints"
+        style="min-width: 740px"
       >
-        <template #item="{ item, url }">
-          <div class="card">
-            <LazyImg
-              :url="url"
-              @click="toMain(item.id)"
-              style="object-fit: cover; border-radius: 10px"
-            />
-            <div class="footer">
-              <a class="title">
-                <span>{{ item.title }}</span>
-              </a>
-              <div class="author-wrapper">
-                <a class="author">
-                  <img class="author-avatar" :src="item.avatar" />
-                  <span class="name">{{ item.username }}</span>
-                </a>
-                <span class="like-wrapper like-active">
-                  <i class="iconfont icon-follow" style="width: 1em; height: 1em"></i>
-                  <span class="count">{{ item.likeCount }}</span>
-                </span>
+        <template #item="{ item }">
+          <el-skeleton style="width: 240px" :loading="!item.isLoading" animated>
+            <template #template>
+              <el-image
+                :src="item.noteCover"
+                :style="{
+                  width: '240px',
+                  maxHeight: '300px',
+                  height: item.noteCoverHeight + 'px',
+                  borderRadius: '8px',
+                }"
+                @load="handleLoad(item)"
+              ></el-image>
+              <div style="padding: 14px">
+                <el-skeleton-item variant="h3" style="width: 100%" />
+                <div style="display: flex; align-items: center; margin-top: 2px; height: 16px">
+                  <el-skeleton style="--el-skeleton-circle-size: 20px">
+                    <template #template>
+                      <el-skeleton-item variant="circle" />
+                    </template>
+                  </el-skeleton>
+                  <el-skeleton-item variant="text" style="margin-left: 10px" />
+                </div>
               </div>
-            </div>
-          </div>
+            </template>
+            <template #default>
+              <div class="card" style="max-width: 240px">
+                <el-image
+                  :src="item.noteCover"
+                  :style="{
+                    width: '240px',
+                    maxHeight: '300px',
+                    height: item.noteCoverHeight + 'px',
+                    borderRadius: '8px',
+                  }"
+                  fit="cover"
+                  @click="toMain(item.id)"
+                ></el-image>
+                <div class="footer">
+                  <a class="title">
+                    <span>{{ item.title }}</span>
+                  </a>
+                  <div class="author-wrapper">
+                    <a class="author">
+                      <img class="author-avatar" :src="item.avatar" />
+                      <span class="name">{{ item.username }}</span>
+                    </a>
+                    <span class="like-wrapper like-active">
+                      <i class="iconfont icon-follow" style="width: 1em; height: 1em"></i>
+                      <span class="count">{{ item.likeCount }}</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </template>
+          </el-skeleton>
         </template>
       </Waterfall>
+
       <div class="feeds-loading">
         <Refresh style="width: 1.2em; height: 1.2em" color="rgba(51, 51, 51, 0.8)" />
       </div>
@@ -78,7 +106,7 @@
 </template>
 <script lang="ts" setup>
 import { Refresh } from "@element-plus/icons-vue";
-import { Waterfall, LazyImg } from "vue-waterfall-plugin-next";
+import { Waterfall } from "vue-waterfall-plugin-next";
 import "vue-waterfall-plugin-next/dist/style.css";
 import { ref, watch } from "vue";
 import { getRecommendNotePage, getNotePageByDTO, addRecord } from "@/api/search";
@@ -127,12 +155,14 @@ const close = () => {
   mainShow.value = false;
 };
 
+const handleLoad = (item: any) => {
+  item.isLoading = true;
+};
+
 const refresh = () => {
-  let scrollTop =
-    window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
+  let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
   const clientHeight =
-    window.innerHeight ||
-    Math.min(document.documentElement.clientHeight, document.body.clientHeight);
+    window.innerHeight || Math.min(document.documentElement.clientHeight, document.body.clientHeight);
 
   if (scrollTop <= clientHeight * 2) {
     const timeTop = setInterval(() => {
@@ -175,12 +205,9 @@ const loadMoreData = () => {
 
 const setData = (res: any) => {
   const { records, total } = res.data;
+  console.log(records, total);
   noteTotal.value = total;
-  records.forEach((element: any) => {
-    const dataObj = Object.assign(element, {});
-    dataObj.src = element.noteCover;
-    noteList.value.push(dataObj);
-  });
+  noteList.value.push(...records);
 };
 
 const getNoteList = async () => {
@@ -412,7 +439,9 @@ initData();
       height: 40px;
       background: #fff;
       border: 1px solid rgba(0, 0, 0, 0.08);
-      box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.02);
+      box-shadow:
+        0 2px 8px 0 rgba(0, 0, 0, 0.1),
+        0 1px 2px 0 rgba(0, 0, 0, 0.02);
       border-radius: 100px;
       color: rgba(51, 51, 51, 0.8);
       display: flex;

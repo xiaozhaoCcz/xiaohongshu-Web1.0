@@ -11,7 +11,6 @@
     "lint:prettier": "prettier --write \"**/*.{js,ts,json,css,less,scss,vue,html,md}\""
   },
   "dependencies": {
-    "@kangc/v-md-editor": "^2.3.18",
     "@lhlyu/vue-virtual-waterfall": "^1.0.2",
     "@opentiny/vue": "3",
     "animate.css": "^4.1.1",
@@ -23,6 +22,7 @@
     "pinia": "^2.1.7",
     "pinia-plugin-persistedstate": "^3.2.0",
     "vue": "^3.3.4",
+    "vue-masonry": "^0.16.0",
     "vue-picture-cropper": "^0.7.0",
     "vue-router": "^4.2.5",
     "vue-stick": "^1.0.7",

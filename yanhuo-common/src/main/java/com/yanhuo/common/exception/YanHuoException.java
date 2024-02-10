@@ -4,6 +4,9 @@ import com.yanhuo.common.result.ResultCodeEnum;
 import com.yanhuo.common.utils.MessageUtils;
 import lombok.Data;
 
+/**
+ * @author xiaozhao
+ */
 @Data
 public class YanHuoException extends RuntimeException{
 

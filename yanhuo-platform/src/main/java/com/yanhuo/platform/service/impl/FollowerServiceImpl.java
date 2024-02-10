@@ -71,7 +71,8 @@ public class FollowerServiceImpl extends ServiceImpl<FollowerDao, Follower> impl
                         .setContent(note.getContent())
                         .setCommentCount(note.getCommentCount())
                         .setLikeCount(note.getLikeCount())
-                        .setIsLike(likeOrCollectionIds.contains(note.getId()));
+                        .setIsLike(likeOrCollectionIds.contains(note.getId()))
+                        .setIsLoading(false);
                 String urls = note.getUrls();
                 List<String> imgList = JSONUtil.toList(urls, String.class);
                 if(imgList.size()>4){

@@ -1,6 +1,13 @@
 import request from "@/utils/request";
 import type { CommentDTO } from "@/type/comment";
 
+/**
+ * 得到所有的一级评论并携带二级评论
+ * @param currentPage 当前页
+ * @param pageSize 分页数
+ * @param noteId 笔记id
+ * @returns 评论结果集
+ */
 export const getCommentPageWithCommentByNoteId = (
   currentPage: number,
   pageSize: number,
@@ -15,6 +22,11 @@ export const getCommentPageWithCommentByNoteId = (
   });
 };
 
+/**
+ * 保存评论
+ * @param data 评论实体
+ * @returns 增加后的评论实体
+ */
 export const saveCommentByDTO = (data: CommentDTO) => {
   return request<any>({
     url: `/platform/comment/saveCommentByDTO`, 
@@ -23,6 +35,11 @@ export const saveCommentByDTO = (data: CommentDTO) => {
   });
 };
 
+/**
+ * 根据评论id同步评论集
+ * @param data 评论id数据集
+ * @returns 
+ */
 export const syncCommentByIds = (data: Array<string>) => {
   return request<any>({
     url: `/platform/comment/syncCommentByIds`,
@@ -31,7 +48,13 @@ export const syncCommentByIds = (data: Array<string>) => {
   });
 };
 
-
+/**
+ * 根据一级评论id获取所有的二级评论
+ * @param currentPage 当前页
+ * @param pageSize 分页数
+ * @param oneCommentId 一级评论id
+ * @returns 评论结果集
+ */
 export const getTwoCommentPageByOneCommentId = (
   currentPage: number,
   pageSize: number,
@@ -46,6 +69,12 @@ export const getTwoCommentPageByOneCommentId = (
   });
 };
 
+/**
+ * 获取当前用户通知的评论集
+ * @param currentPage 当前页
+ * @param pageSize 分页数
+ * @returns 评论结果集
+ */
 export const getNoticeComment = (
   currentPage: number,
   pageSize: number,

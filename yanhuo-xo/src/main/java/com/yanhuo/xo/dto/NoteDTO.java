@@ -19,6 +19,8 @@ public class NoteDTO implements Serializable {
 
     private String noteCover;
 
+    private Integer noteCoverHeight;
+
     @NotBlank(message = "一级不能为空", groups = AddGroup.class)
     private String cid;
 
@@ -32,5 +34,7 @@ public class NoteDTO implements Serializable {
     private Integer count;
 
     private Integer type;
+
+
 
 }

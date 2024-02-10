@@ -18,10 +18,19 @@
             </div>
             <div class="interaction-imgs" @click="toMain(item.nid)">
               <div class="details-box" v-for="(url, index) in item.imgUrls" :key="index">
-                <img
+                <el-image
+                  v-if="!item.isLoading"
                   :src="url"
-                  class="animate__animated animate__fadeIn animate__delay-0.5s"
-                />
+                  @load="handleLoad(item)"
+                  style="height: 230px; width: 100%"
+                >
+                </el-image>
+                <el-image
+                  v-else
+                  :src="url"
+                  class="note-img animate__animated animate__fadeIn animate__delay-0.5s"
+                  fit="cover"
+                ></el-image>
               </div>
             </div>
             <div class="interaction-footer">
@@ -88,6 +97,10 @@ const likeOrCollectionDTO = ref<LikeOrCollectionDTO>({
   type: 0,
 });
 
+const handleLoad = (item: any) => {
+  item.isLoading = true;
+};
+
 const toUser = (uid: string) => {
   router.push({ name: "user", state: { uid: uid } });
 };
@@ -95,6 +108,7 @@ const toUser = (uid: string) => {
 const getFollowTrends = () => {
   getFollowTrendPage(currentPage.value, pageSize.value).then((res) => {
     const { records, total } = res.data;
+    console.log(records, total);
     records.forEach((item: any) => {
       item.time = formateTime(item.time);
       trendData.value.push(item);
@@ -252,7 +266,7 @@ initData();
               margin: 8px 12px 0 0;
               cursor: pointer;
 
-              img {
+              .note-img {
                 width: 100%;
                 height: 230px;
                 display: flex;
@@ -260,7 +274,6 @@ initData();
                 align-items: center;
                 justify-content: center;
                 cursor: pointer;
-                border: 1px solid rgba(0, 0, 0, 0.08);
                 object-fit: cover;
               }
             }

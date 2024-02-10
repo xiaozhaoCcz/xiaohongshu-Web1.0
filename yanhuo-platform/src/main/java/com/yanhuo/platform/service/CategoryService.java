@@ -8,7 +8,15 @@ import com.yanhuo.xo.vo.NoteVo;
 
 import java.util.List;
 
+/**
+ * @author xiaozhao
+ */
 public interface CategoryService extends IService<Category> {
+    /**
+     * 获取树形分类数据
+     *
+     * @return 分类数据
+     */
     List<CategoryVo> getCategoryTreeData();
 
 }

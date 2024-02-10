@@ -17,22 +17,35 @@ import javax.servlet.http.HttpServletResponse;
 @Slf4j
 public class UserLoginInterceptor implements HandlerInterceptor {
 
+    /**
+     * token拦截验证
+     * @param request current HTTP request
+     * @param response current HTTP response
+     * @param handler chosen handler to execute, for type and/or instance evaluation
+     * @return
+     */
     @Override
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response,
-                             Object handler){
+                             Object handler) {
         String accessToken = request.getHeader(TokenConstant.ACCESS_TOKEN);
-        log.info("accessToken:{}",accessToken);
+        log.info("accessToken:{}", accessToken);
         //判断token不为空
-        if(!StringUtils.isEmpty(accessToken)) {
+        if (!StringUtils.isEmpty(accessToken)) {
             boolean flag = JwtUtils.checkToken(accessToken);
-            if(!flag){
-                throw new YanHuoException(ResultCodeEnum.TOKEN_EXIST.getMessage(),ResultCodeEnum.TOKEN_EXIST.getCode());
+            if (!flag) {
+                throw new YanHuoException(ResultCodeEnum.TOKEN_EXIST.getMessage(), ResultCodeEnum.TOKEN_EXIST.getCode());
             }
             String userId = JwtUtils.getUserId(accessToken);
             AuthContextHolder.setUserId(userId);
             return true;
         }
-        throw new YanHuoException(ResultCodeEnum.TOKEN_FAIL.getMessage(),ResultCodeEnum.TOKEN_FAIL.getCode());
+        throw new YanHuoException(ResultCodeEnum.TOKEN_FAIL.getMessage(), ResultCodeEnum.TOKEN_FAIL.getCode());
+    }
+
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception e) {
+        log.info("清除UserID");
+        AuthContextHolder.removeUserId();
     }
 }

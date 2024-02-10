@@ -20,18 +20,14 @@
           />
           <div class="input-button">
             <div class="close-icon" v-show="showClose" @click="clearInput">
-              <Close
-                style="width: 1.2em; height: 1.2em; margin-right: 20px; margin-top: 5px"
-              />
+              <Close style="width: 1.2em; height: 1.2em; margin-right: 20px; margin-top: 5px" />
             </div>
             <div class="search-icon" @click="searchPage">
-              <Search
-                style="width: 1.2em; height: 1.2em; margin-right: 20px; margin-top: 5px"
-              />
+              <Search style="width: 1.2em; height: 1.2em; margin-right: 20px; margin-top: 5px" />
             </div>
           </div>
           <SearchContainer v-show="showSearch" :recordList="recordList"></SearchContainer>
-          <SujContainer v-show="showHistory"></SujContainer>
+          <SujContainer v-show="showHistory" :closeHistoryRecord="showHistory"></SujContainer>
         </div>
         <div class="right"></div>
       </header>
@@ -41,18 +37,11 @@
         <ul class="channel-list">
           <li :class="activeLink == 0 ? 'active-channel' : ''" @click="toLink(0)">
             <a class="link-wrapper">
-              <House style="width: 1em; height: 1em; margin-right: 8px" /><span
-                class="channel"
-                >发现</span
-              ></a
+              <House style="width: 1em; height: 1em; margin-right: 8px" /><span class="channel">发现</span></a
             >
           </li>
           <li :class="activeLink == 1 ? 'active-channel' : ''" @click="toLink(1)">
-            <Star style="width: 1em; height: 1em; margin-right: 8px" /><span
-              class="channel"
-            >
-              动态</span
-            >
+            <Star style="width: 1em; height: 1em; margin-right: 8px" /><span class="channel"> 动态</span>
           </li>
           <li :class="activeLink == 2 ? 'active-channel' : ''" @click="toLink(2)">
             <Bell style="width: 1em; height: 1em; margin-right: 8px" />
@@ -63,11 +52,7 @@
             <span class="channel" v-else>消息</span>
           </li>
           <li :class="activeLink == 3 ? 'active-channel' : ''" @click="toLink(3)">
-            <CirclePlus style="width: 1em; height: 1em; margin-right: 8px" /><span
-              class="channel"
-            >
-              发布</span
-            >
+            <CirclePlus style="width: 1em; height: 1em; margin-right: 8px" /><span class="channel"> 发布</span>
           </li>
           <li v-if="userInfo == null">
             <el-button type="danger" round @click="login">登录</el-button>
@@ -166,18 +151,7 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  Search,
-  Sunny,
-  Moon,
-  Close,
-  House,
-  Star,
-  Bell,
-  ArrowRight,
-  More,
-  CirclePlus,
-} from "@element-plus/icons-vue";
+import { Search, Sunny, Moon, Close, House, Star, Bell, ArrowRight, More, CirclePlus } from "@element-plus/icons-vue";
 import { useRouter, useRoute } from "vue-router";
 import Login from "@/pages/login.vue";
 import { ref, watch, onMounted, computed } from "vue";
@@ -622,7 +596,9 @@ a {
           .container {
             width: 100%;
             background: #fff;
-            box-shadow: 0 4px 32px 0 rgba(0, 0, 0, 0.08), 0 1px 4px 0 rgba(0, 0, 0, 0.04);
+            box-shadow:
+              0 4px 32px 0 rgba(0, 0, 0, 0.08),
+              0 1px 4px 0 rgba(0, 0, 0, 0.04);
             border-radius: 12px;
 
             .divider {
@@ -675,7 +651,8 @@ a {
 
                   .active {
                     background: #fff;
-                    box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.04),
+                    box-shadow:
+                      0 2px 8px 0 rgba(0, 0, 0, 0.04),
                       0 1px 2px 0 rgba(0, 0, 0, 0.02);
                     color: #333;
                   }

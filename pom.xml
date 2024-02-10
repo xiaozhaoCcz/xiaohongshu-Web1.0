@@ -45,6 +45,7 @@
         <knife4j.version>2.0.9</knife4j.version>
         <lombok.version>1.18.24</lombok.version>
         <docker.plugin.version>1.1.1</docker.plugin.version>
+        <redisson.version>3.6.1</redisson.version>
     </properties>
 
 
@@ -138,6 +139,11 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>${lombok.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.redisson</groupId>
+            <artifactId>redisson</artifactId>
+            <version>${redisson.version}</version>
         </dependency>
     </dependencies>
 

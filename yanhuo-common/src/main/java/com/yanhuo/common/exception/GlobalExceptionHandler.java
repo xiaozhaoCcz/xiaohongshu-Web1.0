@@ -6,7 +6,9 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-//AOP 面向切面
+/**
+ * @author xiaozhao
+ */ //AOP 面向切面
 @ControllerAdvice
 public class GlobalExceptionHandler {
 

@@ -1,6 +1,7 @@
 package com.yanhuo.common.constant;
 
 /**
+ * 全局配置
  * @author xiaozhao
  */
 public interface GlobalConstant {

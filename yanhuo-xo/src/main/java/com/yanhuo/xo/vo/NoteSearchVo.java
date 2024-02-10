@@ -1,5 +1,6 @@
 package com.yanhuo.xo.vo;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import java.io.Serializable;
@@ -15,6 +16,8 @@ public class NoteSearchVo  implements Serializable {
     private String content;
 
     private String noteCover;
+
+    private Integer noteCoverHeight;
 
     private String cid;
 
@@ -44,5 +47,9 @@ public class NoteSearchVo  implements Serializable {
     private Long viewCount;
 
     private Long time;
+
+    private Boolean isLoading;
+
+
 
 }

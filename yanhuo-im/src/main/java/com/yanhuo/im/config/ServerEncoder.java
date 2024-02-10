@@ -8,6 +8,10 @@ import javax.websocket.EncodeException;
 import javax.websocket.Encoder;
 import javax.websocket.EndpointConfig;
 
+/**
+ * websocket配置
+ * @author xiaozhao
+ */
 public class ServerEncoder implements Encoder.Text<Message> {
 
     @Override

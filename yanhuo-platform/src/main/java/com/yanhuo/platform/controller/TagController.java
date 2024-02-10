@@ -24,22 +24,36 @@ public class TagController {
     @Autowired
     TagService tagService;
 
+    /**
+     * 获取热门标签
+     *
+     * @return List<TagVo>
+     */
     @RequestMapping("getHotTagList")
     public Result<?> getHotTagList() {
         List<TagVo> voList = tagService.getHotTagList();
         return Result.ok(voList);
     }
 
+    /**
+     * 根据关键词获取标签
+     *
+     * @param currentPage 当前页
+     * @param pageSize    分页数
+     * @param keyword     关键词
+     * @return 标签集
+     */
     @RequestMapping("getPageTagByKeyword/{currentPage}/{pageSize}")
     public Result<?> getPageTagByKeyword(@PathVariable long currentPage, @PathVariable long pageSize, String keyword) {
-        Page<Tag> page = tagService.getPageTagByKeyword(currentPage, pageSize,keyword);
+        Page<Tag> page = tagService.getPageTagByKeyword(currentPage, pageSize, keyword);
         return Result.ok(page);
     }
+
     /**
      * 得到当前标签信息
      *
-     * @param id
-     * @return
+     * @param tagId
+     * @return tag
      */
     @RequestMapping("getTagById")
     public Result<?> getTagById(String tagId) {
@@ -50,9 +64,11 @@ public class TagController {
     /**
      * 根据标签id获取图片信息
      *
-     * @param id
-     * @param type
-     * @return
+     * @param currentPage 当前页
+     * @param pageSize    分页数
+     * @param tagId       标签id
+     * @param type        类型
+     * @return Page<NoteVo>
      */
     @RequestMapping("getNotePageByTagId/{currentPage}/{pageSize}")
     public Result<?> getNotePageByTagId(@PathVariable long currentPage, @PathVariable long pageSize, String tagId, Integer type) {
@@ -63,8 +79,8 @@ public class TagController {
     /**
      * 添加标签
      *
-     * @param tagDTO
-     * @return
+     * @param tagDTO tagDTO
+     * @return success
      */
     @RequestMapping("saveTagByDTO")
     public Result<?> saveTagByDTO(@RequestBody TagDTO tagDTO) {
@@ -72,5 +88,4 @@ public class TagController {
         tagService.saveTagByDTO(tagDTO);
         return Result.ok();
     }
-
 }

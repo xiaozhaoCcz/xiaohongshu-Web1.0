@@ -3,10 +3,13 @@ package com.yanhuo.util.oss.service.impl;
 import com.yanhuo.common.constant.UploadFileConstant;
 import com.yanhuo.common.exception.YanHuoException;
 import com.yanhuo.util.oss.factory.OssFactory;
+import com.yanhuo.util.utils.ImageTools;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -16,6 +19,8 @@ import java.util.Date;
 
 @Slf4j
 public class UploadFileToLoacl implements OssFactory {
+
+    private static final float size = 0.75f;
 
     @Override
     public String save(MultipartFile file) {

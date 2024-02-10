@@ -1,7 +1,6 @@
 package com.yanhuo.util.msm.service.impl;
 
 import com.aliyun.tea.TeaException;
-import com.yanhuo.util.constant.OssConstant;
 import com.yanhuo.util.msm.service.DmService;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +22,7 @@ public class DmServiceImpl implements DmService {
     @Override
     public void sendDm(String toAddress, String content) throws Exception {
 
-        com.aliyun.dm20151123.Client client = createClient(OssConstant.KEY_ID, OssConstant.KEY_SECRET);
+        com.aliyun.dm20151123.Client client = createClient("keyId","keySecret");
         // 初始化 Client，采用 AK&SK 鉴权访问的方式，此方式可能会存在泄漏风险，建议使用 STS 方式。鉴权访问方式请参考：https://help.aliyun.com/document_detail/378657.html
         // 获取 AK 链接：https://usercenter.console.aliyun.com
         com.aliyun.dm20151123.models.SingleSendMailRequest singleSendMailRequest = new com.aliyun.dm20151123.models.SingleSendMailRequest()

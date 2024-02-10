@@ -17,6 +17,10 @@ public class CategoryController {
     @Autowired
     private CategoryService categoryService;
 
+    /**
+     * 获取树形分类数据
+     * @return 分类数据
+     */
     @GetMapping("getCategoryTreeData")
     public Result<?> getCategoryTreeData() {
         List<CategoryVo> categoryList = categoryService.getCategoryTreeData();
