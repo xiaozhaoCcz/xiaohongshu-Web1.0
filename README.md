@@ -39,8 +39,10 @@ npm run dev
 
 - 首先需要把`redis`，`elasticsearch`，`mysql` 安装好启动。
 
-- 需要修改图片保存地址，不然上传图片会失败
+- 如果是本地上传，需要修改图片保存地址，不然上传图片会失败
   ![image text](./doc/img/admin1.png)
+- 如果是使用七牛云存储图片，需要配置七牛云的oss地址(默认使用七牛云存储，因此可以也可以不用修改本地文件地址)
+  ![image text](./doc/img/19.png)
 - 修改每个项目下的数据库账号密码，如果有es账号密码需要修改 `yanhuo-search`下的配置文件
   ![image text](./doc/img/admin2.png)
   ![image text](./doc/img/admin3.png)
@@ -80,7 +82,7 @@ npm run dev
 
 - 使用springboot+mybatis_plus+vue3+ts+websocket技术
 - 使用gateway做网关过滤，对发送的请求做过滤。（部分请求放行，比如登录请求，首页数据请求）
-- 支持本地图片存储。
+- 支持本地图片存储，七牛云存储。
 - 使用ElasticSearch做内容搜索
 - 使用websocket做私信聊天和实时通知
 - 使用redis做对象缓存
