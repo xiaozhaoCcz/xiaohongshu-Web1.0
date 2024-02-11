@@ -1,6 +1,8 @@
 package com.yanhuo.common.handler;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
+import com.yanhuo.common.constant.UserConstant;
+import com.yanhuo.common.utils.WebUtils;
 import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.stereotype.Component;
 
@@ -20,25 +22,25 @@ public class FieldMetaObjectHandler implements MetaObjectHandler {
 
     @Override
     public void insertFill(MetaObject metaObject) {
-
         Date date = new Date();
-
         //创建者
-        strictInsertFill(metaObject, CREATOR, String.class, "aaa");
+        String userId = WebUtils.getRequestHeader(UserConstant.USER_ID);
+        strictInsertFill(metaObject, CREATOR, String.class, userId);
         //创建时间
         strictInsertFill(metaObject, CREATE_DATE, Date.class, date);
 
 
         //更新者
-        strictInsertFill(metaObject, UPDATER, String.class, "aaa");
+        strictInsertFill(metaObject, UPDATER, String.class, userId);
         //更新时间
         strictInsertFill(metaObject, UPDATE_DATE, Date.class, date);
     }
 
     @Override
     public void updateFill(MetaObject metaObject) {
+        String userId = WebUtils.getRequestHeader(UserConstant.USER_ID);
         //更新者
-        strictUpdateFill(metaObject, UPDATER, String.class, "aaa");
+        strictUpdateFill(metaObject, UPDATER, String.class, userId);
         //更新时间
         strictUpdateFill(metaObject, UPDATE_DATE, Date.class, new Date());
     }

@@ -30,17 +30,13 @@
         </div>
       </div>
       <div class="right">
-        <div class="title">手机号登录</div>
+        <div class="title">账号登录</div>
         <!---->
         <div class="input-container">
           <form onsubmit="return false">
             <label class="phone">
               <span class="country-code"></span>
-              <input
-                placeholder="输入账号"
-                type="text"
-                name="blur"
-                v-model="userLogin.username" /><svg
+              <input placeholder="输入账号" type="text" name="blur" v-model="userLogin.username" /><svg
                 class="reds-icon clear"
                 width="24"
                 height="24"
@@ -51,11 +47,7 @@
             ></label>
             <div style="height: 16px"></div>
             <label class="auth-code"
-              ><input
-                type="password"
-                placeholder="输入密码"
-                autocomplete="false"
-                v-model="userLogin.password"
+              ><input type="password" placeholder="输入密码" autocomplete="false" v-model="userLogin.password"
             /></label>
             <!-- <label class="phone"
               >
@@ -89,15 +81,9 @@
         <div class="agreements">
           <span class="agree-icon"></span>
           <label> 我已阅读并同意</label
-          ><a
-            class="links"
-            target="_blank"
-            href="https://agree.xiaohongshu.com/h5/terms/ZXXY20220331001/-1"
+          ><a class="links" target="_blank" href="https://agree.xiaohongshu.com/h5/terms/ZXXY20220331001/-1"
             >《用户协议》</a
-          ><a
-            class="links"
-            target="_blank"
-            href="https://agree.xiaohongshu.com/h5/terms/ZXXY20220509001/-1"
+          ><a class="links" target="_blank" href="https://agree.xiaohongshu.com/h5/terms/ZXXY20220509001/-1"
             >《隐私政策》</a
           ><br /><a
             class="links"
@@ -127,15 +113,9 @@
         <div class="reds-alert-content">
           <!----><!----><label data-v-44ecdae0-s="" class="alert-content"
             ><div data-v-44ecdae0-s="" class="alert-text">
-              <a
-                data-v-44ecdae0-s=""
-                target="_blank"
-                href="https://agree.xiaohongshu.com/h5/terms/ZXXY20220331001/-1"
+              <a data-v-44ecdae0-s="" target="_blank" href="https://agree.xiaohongshu.com/h5/terms/ZXXY20220331001/-1"
                 >《用户协议》</a
-              ><a
-                data-v-44ecdae0-s=""
-                target="_blank"
-                href="https://agree.xiaohongshu.com/h5/terms/ZXXY20220509001/-1"
+              ><a data-v-44ecdae0-s="" target="_blank" href="https://agree.xiaohongshu.com/h5/terms/ZXXY20220509001/-1"
                 >《隐私政策》</a
               ><br data-v-44ecdae0-s="" /><a
                 data-v-44ecdae0-s=""
@@ -235,7 +215,9 @@ a {
   box-sizing: border-box;
   visibility: visible;
   opacity: 1;
-  transition: opacity 0.2s, visibility 0.2s;
+  transition:
+    opacity 0.2s,
+    visibility 0.2s;
 
   .reds-mask {
     position: absolute;
@@ -254,7 +236,9 @@ a {
     height: 480px;
     background: #fff;
     border-radius: 16px;
-    box-shadow: 0 4px 32px 0 rgba(0, 0, 0, 0.08), 0 1px 4px 0 rgba(0, 0, 0, 0.04);
+    box-shadow:
+      0 4px 32px 0 rgba(0, 0, 0, 0.08),
+      0 1px 4px 0 rgba(0, 0, 0, 0.04);
     transition: all 0.2s;
 
     .close-button {

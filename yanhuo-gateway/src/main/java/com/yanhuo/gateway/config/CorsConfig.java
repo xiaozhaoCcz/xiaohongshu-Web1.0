@@ -22,9 +22,6 @@ import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
  * @author wangpeng
  * @date 2019/01/02
  */
-/*
-主要来解决跨域问题
- */
 @Configuration
 public class CorsConfig  {
     @Bean

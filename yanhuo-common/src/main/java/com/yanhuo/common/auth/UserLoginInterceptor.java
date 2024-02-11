@@ -1,9 +1,11 @@
 package com.yanhuo.common.auth;
 
 import com.yanhuo.common.constant.TokenConstant;
+import com.yanhuo.common.constant.UserConstant;
 import com.yanhuo.common.exception.YanHuoException;
 import com.yanhuo.common.result.ResultCodeEnum;
 import com.yanhuo.common.utils.JwtUtils;
+import com.yanhuo.common.utils.WebUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -29,7 +31,7 @@ public class UserLoginInterceptor implements HandlerInterceptor {
                              HttpServletResponse response,
                              Object handler) {
         String accessToken = request.getHeader(TokenConstant.ACCESS_TOKEN);
-        log.info("accessToken:{}", accessToken);
+        log.info("accessToken:{},{}", accessToken,WebUtils.getRequestHeader(UserConstant.USER_ID));
         //判断token不为空
         if (!StringUtils.isEmpty(accessToken)) {
             boolean flag = JwtUtils.checkToken(accessToken);

@@ -16,7 +16,7 @@
       </div>
     </div>
     <div class="loading-container"></div>
-    <div class="feeds-container" v-infinite-scroll="loadMoreData">
+    <div class="feeds-container" v-infinite-scroll="loadMoreData" :infinite-scroll-distance="50">
       <div class="feeds-loading-top" v-show="topLoading">
         <Refresh style="width: 1.2em; height: 1.2em" color="rgba(51, 51, 51, 0.8)" />
       </div>
@@ -191,7 +191,7 @@ const refresh = () => {
 };
 
 const loadMoreData = () => {
-  console.log("-----loadmore")
+  console.log("-----loadmore");
   currentPage.value += 1;
   if (noteDTO.value.cpid === "" && noteDTO.value.keyword == "") {
     getRecommendNotePage(currentPage.value, pageSize).then((res: any) => {

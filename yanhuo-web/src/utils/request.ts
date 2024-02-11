@@ -1,8 +1,8 @@
 import axios, { InternalAxiosRequestConfig, AxiosResponse } from "axios";
 import { useUserStore } from "@/store/userStore";
 import { storage } from "./storage";
-import { ElMessage } from 'element-plus'
-import { baseURL } from "@/constant/constant"
+import { ElMessage } from "element-plus";
+import { baseURL } from "@/constant/constant";
 // 刷新 token 后, 将缓存的接口重新请求一次
 // 是否正在刷新 token
 let isRefreshing: boolean = false;
@@ -24,6 +24,7 @@ service.interceptors.request.use(
     const userStore = useUserStore();
     if (userStore.getToken()) {
       config.headers.accessToken = userStore.getToken();
+      config.headers.userId = userStore.getUserInfo().id;
     }
     return config;
   },
@@ -36,7 +37,7 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   (response: AxiosResponse) => {
     const { code } = response.data;
-    console.log(code)
+    console.log(code);
     if (code === 200) {
       return response.data;
     }
@@ -73,12 +74,12 @@ service.interceptors.response.use(
           })
           .catch((rftErr) => {
             // 参数依据接口返回状态码字段
-            console.log('123',rftErr.data);
+            console.log("123", rftErr.data);
 
             // 如果refreshtoken过期则跳转到登录页面
             if (rftErr.data.code == 401) {
               window.localStorage.clear();
-              ElMessage.error("登录过期，请重新登陆")
+              ElMessage.error("登录过期，请重新登陆");
             }
             return Promise.reject(rftErr);
           })
@@ -105,7 +106,7 @@ service.interceptors.response.use(
     console.log("错误请求", error);
     return Promise.reject(error);
   }
-)
+);
 
 // 导出 axios 实例
 export default service;
