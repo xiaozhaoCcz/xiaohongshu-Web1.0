@@ -100,51 +100,14 @@ public class PlatformApplicationTests {
 
 
     String basePathUrl = "C:\\Users\\48423\\Desktop\\imgs\\";
-    String[] paths = new String[]{"animal\\", "dessert\\", "flower\\", "landscape\\", "wallpaper\\"};
+    String[] paths = new String[]{"Anime\\", "head\\", "movies\\"};
     @Test
     public void test5() {
         String baseUrl = basePathUrl + paths[0];
         List<String> list = getF(baseUrl);
         list.forEach(item -> {
-            this.saveNote(baseUrl, item, "1599618448034959361", "动物壁纸", "动物", "1662101974444470273", "1594985167723864067");
+            this.saveNote(baseUrl, item, "1655460777328205825", "动漫", "动漫动画", "1594985167723864410", "1594985167723864066");
         });
-//        new Thread(() -> {
-//            String baseUrl = basePathUrl + paths[0];
-//            List<String> list = getF(baseUrl);
-//            list.forEach(item -> {
-//                this.saveNote(baseUrl, item, "1599618448034959361", "动物壁纸", "动物", "1662101974444470273", "1594985167723864067");
-//            });
-//        }).start();
-//        new Thread(() -> {
-//            String baseUrl = basePathUrl + paths[1];
-//            List<String> list = getF(baseUrl);
-//            list.forEach(item -> {
-//                this.saveNote(baseUrl, item, "1601126546037874691", "甜点", "美食甜点", "1664193783028858882", "1594985167723864069");
-//            });
-//        }).start();
-//        new Thread(() -> {
-//            String baseUrl = basePathUrl + paths[2];
-//            List<String> list = getF(baseUrl);
-//            list.forEach(item -> {
-//                this.saveNote(baseUrl, item, "1601126546037874692", "花", "花花壁纸", "1661907545024700418", "1594985167723864064");
-//            });
-//        }).start();
-//        new Thread(() -> {
-//            String baseUrl = basePathUrl + paths[3];
-//            List<String> list = getF(baseUrl);
-//            list.forEach(item -> {
-//                this.saveNote(baseUrl, item, "1601126546037874693", "风景", "风景，景物", "1594985167723864510", "1594985167723864064");
-//            });
-//        }).start();
-//        new Thread(() -> {
-//            String baseUrl = basePathUrl + paths[4];
-//            List<String> list = getF(baseUrl);
-//            list.forEach(item -> {
-//                this.saveNote(baseUrl, item, "1601126546037874690", "壁纸", "壁纸分享", "1594985167723864210", "1594985167723864062");
-//            });
-//        }).start();
-
-
     }
 
     //批量插入图片
@@ -153,7 +116,7 @@ public class PlatformApplicationTests {
         String baseUrl = basePathUrl + paths[1];
         List<String> list = getF(baseUrl);
         list.forEach(item -> {
-            this.saveNote(baseUrl, item, "1601126546037874691", "甜点", "美食甜点", "1664193783028858882", "1594985167723864069");
+            this.saveNote(baseUrl, item, "1656857358946361346", "头像", "头像", "1594985167723864111", "1594985167723864061");
         });
     }
 
@@ -162,7 +125,7 @@ public class PlatformApplicationTests {
             String baseUrl = basePathUrl + paths[2];
             List<String> list = getF(baseUrl);
             list.forEach(item -> {
-                this.saveNote(baseUrl, item, "1601126546037874692", "花", "花花壁纸", "1661907545024700418", "1594985167723864064");
+                this.saveNote(baseUrl, item, "1665003680654012418", "影视", "影视", "1594985167723421069", "1594985167723864065");
             });
     }
 
