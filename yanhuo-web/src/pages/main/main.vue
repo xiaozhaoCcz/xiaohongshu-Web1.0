@@ -22,44 +22,23 @@
         <div class="author-container">
           <div class="author-me">
             <div class="info" @click="toUser(noteInfo.uid)">
-              <img
-                class="avatar-item"
-                style="width: 40px; height: 40px"
-                :src="noteInfo.avatar"
-              />
+              <img class="avatar-item" style="width: 40px; height: 40px" :src="noteInfo.avatar" />
               <span class="name">{{ noteInfo.username }}</span>
             </div>
             <div class="follow-btn" v-show="currentUid !== noteInfo.uid">
-              <el-button
-                type="info"
-                size="large"
-                round
-                v-if="noteInfo.isFollow"
-                @click="follow(noteInfo.uid, 1)"
+              <el-button type="info" size="large" round v-if="noteInfo.isFollow" @click="follow(noteInfo.uid, 1)"
                 >已关注</el-button
               >
-              <el-button
-                type="danger"
-                size="large"
-                round
-                v-else
-                @click="follow(noteInfo.uid, 0)"
-                >关注</el-button
-              >
+              <el-button type="danger" size="large" round v-else @click="follow(noteInfo.uid, 0)">关注</el-button>
             </div>
           </div>
 
-          <div class="note-scroller">
+          <div class="note-scroller" ref="noteScroller" @scroll="loadMoreData">
             <div class="note-content">
               <div class="title">{{ noteInfo.title }}</div>
               <div class="desc">
                 <span>{{ noteInfo.content }} <br /></span>
-                <a
-                  class="tag tag-search"
-                  v-for="(item, index) in noteInfo.tagList"
-                  :key="index"
-                  >#{{ item.title }}</a
-                >
+                <a class="tag tag-search" v-for="(item, index) in noteInfo.tagList" :key="index">#{{ item.title }}</a>
               </div>
               <div class="bottom-container">
                 <span class="date">{{ noteInfo.time }}</span>
@@ -68,7 +47,7 @@
             <div class="divider interaction-divider"></div>
 
             <!-- 评论 -->
-            <div class="comments-el" v-infinite-scroll="loadMoreData">
+            <div class="comments-el">
               <Comment
                 :nid="props.nid"
                 :currentPage="currentPage"
@@ -84,11 +63,7 @@
             <div class="buttons">
               <div class="left">
                 <span class="like-wrapper"
-                  ><span
-                    class="like-lottie"
-                    v-if="noteInfo.isCollection"
-                    @click="likeOrCollection(3, -1)"
-                  >
+                  ><span class="like-lottie" v-if="noteInfo.isCollection" @click="likeOrCollection(3, -1)">
                     <StarFilled style="width: 0.9em; height: 0.9em; color: #333" />
                   </span>
                   <span class="like-lottie" v-else @click="likeOrCollection(3, 1)">
@@ -97,39 +72,22 @@
                   <span class="count">{{ noteInfo.collectionCount }}</span></span
                 >
                 <span class="collect-wrapper">
-                  <span
-                    class="like-lottie"
-                    v-if="noteInfo.isLike"
-                    @click="likeOrCollection(1, -1)"
-                  >
-                    <i
-                      class="iconfont icon-follow-fill"
-                      style="width: 0.8em; height: 0.8em; color: #333"
-                    ></i>
+                  <span class="like-lottie" v-if="noteInfo.isLike" @click="likeOrCollection(1, -1)">
+                    <i class="iconfont icon-follow-fill" style="width: 0.8em; height: 0.8em; color: #333"></i>
                   </span>
                   <span class="like-lottie" v-else @click="likeOrCollection(1, 1)">
-                    <i
-                      class="iconfont icon-follow"
-                      style="width: 0.8em; height: 0.8em; color: #333"
-                    ></i>
+                    <i class="iconfont icon-follow" style="width: 0.8em; height: 0.8em; color: #333"></i>
                   </span>
                   <span class="count">{{ noteInfo.likeCount }}</span></span
                 >
                 <span class="chat-wrapper">
-                  <span class="like-lottie">
-                    <ChatRound style="width: 0.8em; height: 0.8em; color: #333" /> </span
+                  <span class="like-lottie"> <ChatRound style="width: 0.8em; height: 0.8em; color: #333" /> </span
                   ><span class="count">{{ noteInfo.commentCount }}</span></span
                 >
               </div>
               <div class="share-wrapper"></div>
             </div>
-            <div
-              :class="
-                showSaveBtn
-                  ? 'comment-wrapper active comment-comp '
-                  : 'comment-wrapper comment-comp '
-              "
-            >
+            <div :class="showSaveBtn ? 'comment-wrapper active comment-comp ' : 'comment-wrapper comment-comp '">
               <div class="input-wrapper">
                 <input
                   class="comment-input"
@@ -188,18 +146,6 @@ const props = defineProps({
   },
 });
 
-watch(
-  () => [props.nid],
-  () => {
-    currentPage.value = 1;
-    getNoteById(props.nid).then((res: any) => {
-      noteInfo.value = res.data;
-      noteInfo.value.imgList = JSON.parse(res.data.urls);
-      noteInfo.value.time = formateTime(res.data.time);
-    });
-  }
-);
-
 const currentUid = ref("");
 const noteInfo = ref<NoteInfo>({
   id: "",
@@ -228,6 +174,20 @@ const showSaveBtn = ref(false);
 const currentPage = ref(1);
 const seed = ref("");
 const commentIds = ref<Array<string>>([]);
+const noteScroller = ref(null);
+
+watch(
+  () => [props.nid],
+  () => {
+    currentPage.value = 1;
+    getNoteById(props.nid).then((res: any) => {
+      console.log(111);
+      noteInfo.value = res.data;
+      noteInfo.value.imgList = JSON.parse(res.data.urls);
+      noteInfo.value.time = formateTime(res.data.time);
+    });
+  }
+);
 
 const toUser = (uid: string) => {
   router.push({ name: "user", state: { uid: uid } });
@@ -270,8 +230,7 @@ const clickComment = (comment: any) => {
 const commenInput = (e: any) => {
   const { value } = e.target;
   commentValue.value = value;
-  showSaveBtn.value =
-    commentValue.value.length > 0 || commentObject.value.pid !== undefined;
+  showSaveBtn.value = commentValue.value.length > 0 || commentObject.value.pid !== undefined;
 };
 
 const saveComment = () => {
@@ -316,7 +275,12 @@ const clearCommeent = () => {
 };
 
 const loadMoreData = () => {
-  currentPage.value += 1;
+  console.log("main加载更多");
+  const container = noteScroller.value as any;
+  if (container.scrollTop + container.clientHeight >= container.scrollHeight) {
+    currentPage.value += 1;
+    console.log("到底了");
+  }
 };
 
 const initData = () => {
@@ -358,7 +322,9 @@ initData();
     cursor: pointer;
 
     .close-mask-white {
-      box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.04), 0 1px 2px 0 rgba(0, 0, 0, 0.02);
+      box-shadow:
+        0 2px 8px 0 rgba(0, 0, 0, 0.04),
+        0 1px 2px 0 rgba(0, 0, 0, 0.02);
       border: 1px solid rgba(0, 0, 0, 0.08);
     }
 
@@ -378,14 +344,17 @@ initData();
 
   .note-container {
     width: 86%;
-
     height: 90%;
-    transition: transform 0.4s ease 0s, width 0.4s ease 0s;
+    transition:
+      transform 0.4s ease 0s,
+      width 0.4s ease 0s;
     transform: translate(104px, 32px) scale(1);
     overflow: visible;
 
     display: flex;
-    box-shadow: 0 8px 64px 0 rgba(0, 0, 0, 0.04), 0 1px 4px 0 rgba(0, 0, 0, 0.02);
+    box-shadow:
+      0 8px 64px 0 rgba(0, 0, 0, 0.04),
+      0 1px 4px 0 rgba(0, 0, 0, 0.02);
     border-radius: 20px;
     background: #f8f8f8;
     transform-origin: left top;
@@ -522,137 +491,6 @@ initData();
 
         .comments-el {
           position: relative;
-
-          // .comments-container {
-          //   padding: 16px;
-
-          //   .total {
-          //     font-size: 14px;
-          //     color: rgba(51, 51, 51, 0.6);
-          //     margin-left: 8px;
-          //     margin-bottom: 12px;
-          //   }
-
-          //   .list-container {
-          //     position: relative;
-
-          //     .parent-comment {
-          //       margin-bottom: 16px;
-
-          //       .comment-item {
-          //         position: relative;
-          //         display: flex;
-          //         padding: 8px;
-
-          //         .comment-inner-container {
-          //           position: relative;
-          //           display: flex;
-          //           z-index: 1;
-          //           width: 100%;
-          //           flex-shrink: 0;
-
-          //           .avatar {
-          //             flex: 0 0 auto;
-
-          //             .avatar-item {
-          //               display: flex;
-          //               align-items: center;
-          //               justify-content: center;
-          //               cursor: pointer;
-          //               border-radius: 100%;
-          //               border: 1px solid rgba(0, 0, 0, 0.08);
-          //               object-fit: cover;
-          //               width: 40px;
-          //               height: 40px;
-          //             }
-          //           }
-
-          //           .right {
-          //             margin-left: 12px;
-          //             display: flex;
-          //             flex-direction: column;
-          //             font-size: 14px;
-          //             flex-grow: 1;
-
-          //             .author-wrapper {
-          //               display: flex;
-          //               justify-content: space-between;
-          //               align-items: center;
-
-          //               .author {
-          //                 display: flex;
-          //                 align-items: center;
-          //                 .name {
-          //                   color: rgba(51, 51, 51, 0.6);
-          //                   line-height: 18px;
-          //                 }
-          //               }
-          //             }
-
-          //             .content {
-          //               margin-top: 4px;
-          //               line-height: 140%;
-          //               color: #333;
-          //             }
-
-          //             .info {
-          //               display: flex;
-          //               flex-direction: column;
-          //               justify-content: space-between;
-          //               font-size: 12px;
-          //               line-height: 16px;
-          //               color: rgba(51, 51, 51, 0.6);
-
-          //               .date {
-          //                 margin: 8px 0;
-          //               }
-          //               .interactions {
-          //                 display: flex;
-          //                 margin-left: -2px;
-
-          //                 .like-wrapper {
-          //                   padding: 0 4px;
-          //                   color: rgba(51, 51, 51, 0.8);
-          //                   font-weight: 500;
-
-          //                   position: relative;
-          //                   cursor: pointer;
-          //                   display: flex;
-          //                   align-items: center;
-
-          //                   .like-lottie {
-          //                     width: 16px;
-          //                     height: 16px;
-          //                     left: 4px;
-          //                   }
-
-          //                   .count {
-          //                     margin-left: 2px;
-          //                     font-weight: 500;
-          //                   }
-          //                 }
-          //               }
-          //             }
-          //           }
-          //         }
-          //       }
-
-          //       .reply-container {
-          //         margin-left: 52px;
-
-          //         .show-more {
-          //           margin-left: 44px;
-          //           height: 32px;
-          //           line-height: 32px;
-          //           color: #13386c;
-          //           cursor: pointer;
-          //           font-weight: 500;
-          //           font-size: 14px;
-          //         }
-          //       }
-          //     }
-          //   }
-          // }
         }
       }
 

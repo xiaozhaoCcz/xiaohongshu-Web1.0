@@ -191,6 +191,7 @@ const refresh = () => {
 };
 
 const loadMoreData = () => {
+  console.log("-----loadmore")
   currentPage.value += 1;
   if (noteDTO.value.cpid === "" && noteDTO.value.keyword == "") {
     getRecommendNotePage(currentPage.value, pageSize).then((res: any) => {

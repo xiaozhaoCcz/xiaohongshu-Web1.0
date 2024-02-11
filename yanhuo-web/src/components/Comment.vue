@@ -2,11 +2,7 @@
   <div class="comments-container">
     <div class="total">共{{ computedTotal }}条评论</div>
     <div class="list-container">
-      <div
-        class="parent-comment"
-        v-for="(oneComment, oneIndex) in dataList"
-        :key="oneIndex"
-      >
+      <div class="parent-comment" v-for="(oneComment, oneIndex) in dataList" :key="oneIndex">
         <div class="comment-item">
           <div class="comment-inner-container">
             <div class="avatar">
@@ -31,17 +27,10 @@
                       v-if="oneComment.isLike"
                       @click="likeComment(oneComment, -1, oneIndex, -1)"
                     >
-                      <i
-                        class="iconfont icon-follow-fill"
-                        style="width: 1em; height: 1em"
-                      ></i>
+                      <i class="iconfont icon-follow-fill" style="width: 1em; height: 1em"></i>
                       <span class="count">{{ oneComment.likeCount }}</span>
                     </span>
-                    <span
-                      class="like-wrapper"
-                      v-else
-                      @click="likeComment(oneComment, 1, oneIndex, -1)"
-                    >
+                    <span class="like-wrapper" v-else @click="likeComment(oneComment, 1, oneIndex, -1)">
                       <i class="iconfont icon-follow" style="width: 1em; height: 1em"></i>
                       <span class="count">{{ oneComment.likeCount }}</span>
                     </span>
@@ -59,11 +48,7 @@
         </div>
         <div class="reply-container">
           <div class="list-container">
-            <div
-              class="comment-item"
-              v-for="(twoComment, twoIndex) in oneComment.children"
-              :key="twoIndex"
-            >
+            <div class="comment-item" v-for="(twoComment, twoIndex) in oneComment.children" :key="twoIndex">
               <div class="comment-inner-container">
                 <div class="avatar">
                   <img class="avatar-item" :src="twoComment.avatar" />
@@ -75,8 +60,7 @@
                     </div>
                   </div>
                   <div class="content">
-                    回复<span style="color: rgba(61, 61, 61, 0.8)"
-                      >{{ twoComment.replyUsername }}: </span
+                    回复<span style="color: rgba(61, 61, 61, 0.8)">{{ twoComment.replyUsername }}: </span
                     >{{ twoComment.content }}
                   </div>
 
@@ -91,28 +75,15 @@
                           v-if="twoComment.isLike"
                           @click="likeComment(twoComment, -1, oneIndex, twoIndex)"
                         >
-                          <i
-                            class="iconfont icon-follow-fill"
-                            style="width: 1em; height: 1em"
-                          ></i>
+                          <i class="iconfont icon-follow-fill" style="width: 1em; height: 1em"></i>
                           <span class="count">{{ twoComment.likeCount }}</span>
                         </span>
-                        <span
-                          class="like-wrapper"
-                          @click="likeComment(twoComment, 1, oneIndex, twoIndex)"
-                          v-else
-                        >
-                          <i
-                            class="iconfont icon-follow"
-                            style="width: 1em; height: 1em"
-                          ></i>
+                        <span class="like-wrapper" @click="likeComment(twoComment, 1, oneIndex, twoIndex)" v-else>
+                          <i class="iconfont icon-follow" style="width: 1em; height: 1em"></i>
                           <span class="count">{{ twoComment.likeCount }}</span>
                         </span>
                       </div>
-                      <div
-                        class="reply"
-                        @click="saveComment(twoComment, oneIndex, twoIndex)"
-                      >
+                      <div class="reply" @click="saveComment(twoComment, oneIndex, twoIndex)">
                         <span class="like-wrapper">
                           <ChatRound style="width: 1.2em; height: 1.2em" />
                           <span class="count">回复</span>
@@ -153,10 +124,7 @@
 <script lang="ts" setup>
 import { ChatRound } from "@element-plus/icons-vue";
 import { ref, watch } from "vue";
-import {
-  getCommentPageWithCommentByNoteId,
-  getTwoCommentPageByOneCommentId,
-} from "@/api/comment";
+import { getCommentPageWithCommentByNoteId, getTwoCommentPageByOneCommentId } from "@/api/comment";
 import { likeOrCollectionByDTO } from "@/api/likeOrCollection";
 import type { LikeOrCollectionDTO } from "@/type/likeOrCollection";
 import { formateTime } from "@/utils/util";
@@ -189,7 +157,7 @@ const computedTotal = ref(0);
 const oneIndex = ref(-1);
 const twoIndex = ref(-1);
 
-const pageSize = 5;
+const pageSize = 7;
 const twoPageSize = 10;
 const showTwoCommentCount = 3;
 const commentMap = new Map();
@@ -265,41 +233,40 @@ const reback = (oneCommentId: string, index: number) => {
 };
 
 const getCommentData = () => {
-  getCommentPageWithCommentByNoteId(props.currentPage, pageSize, props.nid).then(
-    (res: any) => {
-      const { records, total } = res.data;
-      records.forEach((item: any) => {
-        item.time = formateTime(item.time);
-        const twoComments = item.children;
-        // 设置每一个一级评论的集合
-        commentMap.set(item.id, 0);
-        commentTotalMap.set(item.id, 0);
-        if (twoComments != null) {
-          const twoData = [] as Array<any>;
-          twoComments.forEach((element: any) => {
-            element.time = formateTime(element.time);
-            twoData.push(element);
-          });
+  getCommentPageWithCommentByNoteId(props.currentPage, pageSize, props.nid).then((res: any) => {
+    const { records, total } = res.data;
+    records.forEach((item: any) => {
+      item.time = formateTime(item.time);
+      const twoComments = item.children;
+      // 设置每一个一级评论的集合
+      commentMap.set(item.id, 0);
+      commentTotalMap.set(item.id, 0);
+      if (twoComments != null) {
+        const twoData = [] as Array<any>;
+        twoComments.forEach((element: any) => {
+          element.time = formateTime(element.time);
+          twoData.push(element);
+        });
 
-          item.children = twoData;
-        }
-        computedTotal.value += item.twoCommentCount + 1;
-        dataList.value.push(item);
-        console.log("---所有评论", dataList.value);
-      });
-      commentTotal.value = total;
-      if (pageSize * props.currentPage >= commentTotal.value) return;
-    }
-  );
+        item.children = twoData;
+      }
+      computedTotal.value += item.twoCommentCount + 1;
+      dataList.value.push(item);
+    });
+    console.log("---所有评论", dataList.value);
+    commentTotal.value = total;
+    if (pageSize * props.currentPage >= commentTotal.value) return;
+  });
 };
 
 watch(
   () => [props.nid, props.seed, props.currentPage],
   ([newNid, newSeed], [oldNid, oldSeed]) => {
+    console.log("评论功能", newNid, oldNid, props.currentPage);
     if (newNid !== oldNid) {
       dataList.value = [];
-      getCommentData();
     }
+    getCommentData();
 
     if (newSeed !== oldSeed) {
       addComment();

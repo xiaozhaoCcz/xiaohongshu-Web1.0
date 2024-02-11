@@ -164,25 +164,27 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
             Set<String> uids = twoCommentList.stream().map(Comment::getUid).collect(Collectors.toSet());
             List<User> users = userService.listByIds(uids);
             Map<String, User> userMap = users.stream().collect(Collectors.toMap(User::getId, user -> user));
-
             Set<String> replyUids = twoCommentList.stream().map(Comment::getReplyUid).collect(Collectors.toSet());
-            List<User> replyUsers = userService.listByIds(replyUids);
-            Map<String, User> replyUserMap = replyUsers.stream().collect(Collectors.toMap(User::getId, user -> user));
+            Map<String, User> replyUserMap=new HashMap<>(16);
+            if(!replyUids.isEmpty()){
+                List<User> replyUsers = userService.listByIds(replyUids);
+                replyUserMap= replyUsers.stream().collect(Collectors.toMap(User::getId, user -> user));
+            }
 
             List<CommentVo> commentVos = new ArrayList<>();
-
             List<LikeOrCollection> likeOrCollections = likeOrCollectionService.list(new QueryWrapper<LikeOrCollection>().eq("uid", currentUid).eq("type", 2));
             List<String> likeComments = likeOrCollections.stream().map(LikeOrCollection::getLikeOrCollectionId).collect(Collectors.toList());
-
             for (Comment comment:twoCommentList) {
                 CommentVo commentVo = ConvertUtils.sourceToTarget(comment, CommentVo.class);
                 User user = userMap.get(comment.getUid());
-                User replyUser = replyUserMap.get(comment.getReplyUid());
                 commentVo.setUsername(user.getUsername())
                         .setAvatar(user.getAvatar())
-                        .setReplyUsername(replyUser.getUsername())
                         .setTime(comment.getCreateDate().getTime())
                         .setIsLike(likeComments.contains(comment.getId()));
+                User replyUser = replyUserMap.get(comment.getReplyUid());
+                if(replyUser!=null){
+                    commentVo.setReplyUsername(replyUser.getUsername());
+                }
                 commentVos.add(commentVo);
             }
             result.setRecords(commentVos);
@@ -215,19 +217,25 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
             List<String> likeComments = likeOrCollections.stream().map(LikeOrCollection::getLikeOrCollectionId).collect(Collectors.toList());
 
             Set<String> replyUids = twoCommentList.stream().map(Comment::getReplyUid).collect(Collectors.toSet());
-            List<User> replyUsers = userService.listByIds(replyUids);
-            Map<String, User> replyUserMap = replyUsers.stream().collect(Collectors.toMap(User::getId, user -> user));
+            Map<String, User> replyUserMap=new HashMap<>(16);
+            if(!replyUids.isEmpty()){
+                List<User> replyUsers = userService.listByIds(replyUids);
+                replyUserMap= replyUsers.stream().collect(Collectors.toMap(User::getId, user -> user));
+            }
+
 
             List<CommentVo> twoCommentVos = new ArrayList<>();
             for (Comment twoComment:twoCommentList) {
                 CommentVo commentVo = ConvertUtils.sourceToTarget(twoComment, CommentVo.class);
                 User user = userMap.get(twoComment.getUid());
-                User replyUser = replyUserMap.get(twoComment.getReplyUid());
                 commentVo.setUsername(user.getUsername())
                         .setAvatar(user.getAvatar())
-                        .setReplyUsername(replyUser.getUsername())
                         .setTime(twoComment.getCreateDate().getTime())
                         .setIsLike(likeComments.contains(twoComment.getId()));
+                User replyUser = replyUserMap.get(twoComment.getReplyUid());
+                if(replyUser!=null){
+                    commentVo.setReplyUsername(replyUser.getUsername());
+                }
                 twoCommentVos.add(commentVo);
             }
 
