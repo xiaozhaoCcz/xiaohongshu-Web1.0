@@ -218,8 +218,7 @@ watch(
       showHistory.value = false;
     }
     if (newVal[1] != oldVal[1]) {
-      activeLink.value = 0;
-      getWsMessage();
+      initData();
     }
   },
   {
@@ -380,10 +379,18 @@ const getWsMessage = async () => {
 const initData = () => {
   userInfo.value = userStore.getUserInfo();
   const url = window.location.href;
-  const path = url.substring(url.lastIndexOf("/"), url.length);
+  console.log("url", url);
+  let path = "";
+  if (url.indexOf("?") != -1) {
+    const index = url.indexOf("?");
+    path = url.substring(url.lastIndexOf("/"), index);
+  } else {
+    path = url.substring(url.lastIndexOf("/"), url.length);
+  }
   activeLink.value = routerList.findIndex((item) => item === path);
   getWsMessage();
 };
+
 initData();
 </script>
 
