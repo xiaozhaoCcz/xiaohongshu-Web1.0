@@ -326,7 +326,6 @@ const getChatUserListMethod = () => {
       data.forEach((item: any) => {
         _countMessage.chatCount += item.count;
       });
-      console.log(111, _countMessage);
       imStore.setCountMessage(_countMessage);
       imStore.setUserList(data);
       resolve(_countMessage.chatCount);
@@ -379,7 +378,6 @@ const getWsMessage = async () => {
 const initData = () => {
   userInfo.value = userStore.getUserInfo();
   const url = window.location.href;
-  console.log("url", url);
   let path = "";
   if (url.indexOf("?") != -1) {
     const index = url.indexOf("?");
