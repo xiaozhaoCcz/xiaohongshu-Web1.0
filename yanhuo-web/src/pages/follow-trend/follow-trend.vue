@@ -18,12 +18,7 @@
             </div>
             <div class="interaction-imgs" @click="toMain(item.nid)">
               <div class="details-box" v-for="(url, index) in item.imgUrls" :key="index">
-                <el-image
-                  v-if="!item.isLoading"
-                  :src="url"
-                  @load="handleLoad(item)"
-                  style="height: 230px; width: 100%"
-                >
+                <el-image v-if="!item.isLoading" :src="url" @load="handleLoad(item)" style="height: 230px; width: 100%">
                 </el-image>
                 <el-image
                   v-else
@@ -50,9 +45,7 @@
                 ><span class="count">{{ item.likeCount }}</span>
               </div>
               <div class="icon-item">
-                <ChatRound style="width: 0.9em; height: 0.9em" /><span class="count">{{
-                  item.commentCount
-                }}</span>
+                <ChatRound style="width: 0.9em; height: 0.9em" /><span class="count">{{ item.commentCount }}</span>
               </div>
               <div class="icon-item"><More style="width: 1em; height: 1em" /></div>
             </div>
@@ -134,11 +127,9 @@ const close = (nid: string, isLike: boolean) => {
 };
 
 const refresh = () => {
-  let scrollTop =
-    window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
+  let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
   const clientHeight =
-    window.innerHeight ||
-    Math.min(document.documentElement.clientHeight, document.body.clientHeight);
+    window.innerHeight || Math.min(document.documentElement.clientHeight, document.body.clientHeight);
   if (scrollTop <= clientHeight * 2) {
     const timeTop = setInterval(() => {
       document.documentElement.scrollTop = document.body.scrollTop = scrollTop -= 100;
@@ -170,6 +161,9 @@ const like = (nid: string, uid: string, index: number, val: number) => {
   likeOrCollectionDTO.value.publishUid = uid;
   likeOrCollectionDTO.value.type = 1;
   likeOrCollectionByDTO(likeOrCollectionDTO.value).then(() => {
+    if (val < 0 && trendData.value[index].likeCount == 0) {
+      return;
+    }
     trendData.value[index].isLike = val == 1;
     trendData.value[index].likeCount += val;
   });
