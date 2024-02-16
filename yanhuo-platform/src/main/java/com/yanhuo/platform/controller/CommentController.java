@@ -10,10 +10,7 @@ import com.yanhuo.platform.service.CommentService;
 import com.yanhuo.xo.dto.CommentDTO;
 import com.yanhuo.xo.vo.CommentVo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -36,7 +33,7 @@ public class CommentController {
      * @param noteId      笔记id
      * @return 评论结果集
      */
-    @RequestMapping("getOneCommentPageByNoteId/{currentPage}/{pageSize}")
+    @GetMapping("getOneCommentPageByNoteId/{currentPage}/{pageSize}")
     public Result<?> getOneCommentPageByNoteId(@PathVariable long currentPage, @PathVariable long pageSize, String noteId) {
         Page<CommentVo> pageInfo = commentService.getOneCommentPageByNoteId(currentPage, pageSize, noteId);
         return Result.ok(pageInfo);
@@ -48,7 +45,7 @@ public class CommentController {
      * @param commentId 评论id
      * @return 评论实体
      */
-    @RequestMapping("getCommentById")
+    @GetMapping("getCommentById")
     public Result<?> getCommentById(String commentId) {
         return Result.ok(commentService.getCommentById(commentId));
     }
@@ -59,7 +56,7 @@ public class CommentController {
      * @param commentDTO 评论实体
      * @return 增加后的评论实体
      */
-    @RequestMapping("saveCommentByDTO")
+    @PostMapping("saveCommentByDTO")
     public Result<?> saveCommentByDTO(@RequestBody CommentDTO commentDTO) {
 //        ValidatorUtils.validateEntity(commentDTO, AddGroup.class);
         CommentVo commentVo = commentService.saveCommentByDTO(commentDTO);
@@ -72,7 +69,7 @@ public class CommentController {
      * @param commentIds 评论id数据集
      * @return success
      */
-    @RequestMapping("syncCommentByIds")
+    @PostMapping("syncCommentByIds")
     public Result<?> syncCommentByIds(@RequestBody List<String> commentIds) {
         commentService.syncCommentByIds(commentIds);
         return Result.ok();
@@ -86,7 +83,7 @@ public class CommentController {
      * @param oneCommentId 一级评论id
      * @return 评论结果集
      */
-    @RequestMapping("getTwoCommentPageByOneCommentId/{currentPage}/{pageSize}")
+    @GetMapping("getTwoCommentPageByOneCommentId/{currentPage}/{pageSize}")
     public Result<?> getTwoCommentPageByOneCommentId(@PathVariable long currentPage, @PathVariable long pageSize, String oneCommentId) {
         IPage<CommentVo> pageInfo = commentService.getTwoCommentPageByOneCommentId(currentPage, pageSize, oneCommentId);
         return Result.ok(pageInfo);
@@ -99,7 +96,7 @@ public class CommentController {
      * @param pageSize    分页数
      * @return 评论结果集
      */
-    @RequestMapping("getNoticeComment/{currentPage}/{pageSize}")
+    @GetMapping("getNoticeComment/{currentPage}/{pageSize}")
     public Result<?> getNoticeComment(@PathVariable long currentPage, @PathVariable long pageSize) {
         IPage<CommentVo> pageInfo = commentService.getNoticeComment(currentPage, pageSize);
         return Result.ok(pageInfo);
@@ -114,7 +111,7 @@ public class CommentController {
      * @param noteId      笔记id
      * @return 评论结果集
      */
-    @RequestMapping("getCommentPageWithCommentByNoteId/{currentPage}/{pageSize}")
+    @GetMapping("getCommentPageWithCommentByNoteId/{currentPage}/{pageSize}")
     public Result<?> getCommentPageWithCommentByNoteId(@PathVariable long currentPage, @PathVariable long pageSize, String noteId) {
         Page<CommentVo> pageInfo = commentService.getCommentPageWithCommentByNoteId(currentPage, pageSize, noteId);
         return Result.ok(pageInfo);
@@ -128,7 +125,7 @@ public class CommentController {
      * @param noteId    笔记id
      * @return resMap
      */
-    @RequestMapping("scrollComment")
+    @GetMapping("scrollComment")
     public Result<?> scrollComment(String commentId, String noteId) {
         Map<String, Object> resMap = commentService.scrollComment(commentId, noteId);
         return Result.ok(resMap);
@@ -140,7 +137,7 @@ public class CommentController {
      * @param commentId 评论id
      * @return success
      */
-    @RequestMapping("deleteCommentById")
+    @GetMapping("deleteCommentById")
     public Result<?> deleteCommentById(String commentId) {
         commentService.deleteCommentById(commentId);
         return Result.ok();

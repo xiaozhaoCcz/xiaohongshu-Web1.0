@@ -10,10 +10,7 @@ import com.yanhuo.xo.entity.Tag;
 import com.yanhuo.xo.vo.NoteVo;
 import com.yanhuo.xo.vo.TagVo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -29,7 +26,7 @@ public class TagController {
      *
      * @return List<TagVo>
      */
-    @RequestMapping("getHotTagList")
+    @GetMapping("getHotTagList")
     public Result<?> getHotTagList() {
         List<TagVo> voList = tagService.getHotTagList();
         return Result.ok(voList);
@@ -43,7 +40,7 @@ public class TagController {
      * @param keyword     关键词
      * @return 标签集
      */
-    @RequestMapping("getPageTagByKeyword/{currentPage}/{pageSize}")
+    @GetMapping("getPageTagByKeyword/{currentPage}/{pageSize}")
     public Result<?> getPageTagByKeyword(@PathVariable long currentPage, @PathVariable long pageSize, String keyword) {
         Page<Tag> page = tagService.getPageTagByKeyword(currentPage, pageSize, keyword);
         return Result.ok(page);
@@ -55,7 +52,7 @@ public class TagController {
      * @param tagId
      * @return tag
      */
-    @RequestMapping("getTagById")
+    @GetMapping("getTagById")
     public Result<?> getTagById(String tagId) {
         Tag tag = tagService.getById(tagId);
         return Result.ok(tag);
@@ -70,7 +67,7 @@ public class TagController {
      * @param type        类型
      * @return Page<NoteVo>
      */
-    @RequestMapping("getNotePageByTagId/{currentPage}/{pageSize}")
+    @GetMapping("getNotePageByTagId/{currentPage}/{pageSize}")
     public Result<?> getNotePageByTagId(@PathVariable long currentPage, @PathVariable long pageSize, String tagId, Integer type) {
         Page<NoteVo> imgDetailVoList = tagService.getNotePageByTagId(currentPage, pageSize, tagId, type);
         return Result.ok(imgDetailVoList);
@@ -82,7 +79,7 @@ public class TagController {
      * @param tagDTO tagDTO
      * @return success
      */
-    @RequestMapping("saveTagByDTO")
+    @PostMapping("saveTagByDTO")
     public Result<?> saveTagByDTO(@RequestBody TagDTO tagDTO) {
         ValidatorUtils.validateEntity(tagDTO, DefaultGroup.class);
         tagService.saveTagByDTO(tagDTO);

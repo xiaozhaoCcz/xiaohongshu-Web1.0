@@ -8,10 +8,7 @@ import com.yanhuo.platform.service.LikeOrCollectionService;
 import com.yanhuo.xo.dto.LikeOrCollectionDTO;
 import com.yanhuo.xo.vo.LikeOrCollectionVo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author xiaozhao
@@ -34,7 +31,7 @@ public class LikeOrCollectionController {
      * @param likeOrCollectionDTO 点赞收藏实体
      * @return success
      */
-    @RequestMapping("likeOrCollectionByDTO")
+    @PostMapping("likeOrCollectionByDTO")
     public Result<?> likeOrCollectionByDTO(@RequestBody LikeOrCollectionDTO likeOrCollectionDTO) {
         // ValidatorUtils.validateEntity(likeOrCollectionDTO, AddGroup.class);
         likeOrCollectionService.likeOrCollectionByDTO(likeOrCollectionDTO);
@@ -47,7 +44,7 @@ public class LikeOrCollectionController {
      * @param likeOrCollectionDTO 点赞收藏实体
      * @return flag
      */
-    @RequestMapping("isLikeOrCollection")
+    @PostMapping("isLikeOrCollection")
     public Result<?> isLikeOrCollection(@RequestBody LikeOrCollectionDTO likeOrCollectionDTO) {
         boolean flag = likeOrCollectionService.isLikeOrCollection(likeOrCollectionDTO);
         return Result.ok(flag);
@@ -60,7 +57,7 @@ public class LikeOrCollectionController {
      * @param pageSize    分页数
      * @return LikeOrCollectionVo
      */
-    @RequestMapping("getNoticeLikeOrCollection/{currentPage}/{pageSize}")
+    @GetMapping("getNoticeLikeOrCollection/{currentPage}/{pageSize}")
     public Result<?> getNoticeLikeOrCollection(@PathVariable long currentPage, @PathVariable long pageSize) {
         Page<LikeOrCollectionVo> pageInfo = likeOrCollectionService.getNoticeLikeOrCollection(currentPage, pageSize);
         return Result.ok(pageInfo);

@@ -41,7 +41,7 @@ public class FollowerController {
      * @param type        类型
      * @return FollowerVo
      */
-    @RequestMapping("getFriendPage/{currentPage}/{pageSize}")
+    @GetMapping("getFriendPage/{currentPage}/{pageSize}")
     public Result<?> getFriendPage(@PathVariable long currentPage, @PathVariable long pageSize, Integer type) {
         Page<FollowerVo> pageInfo = followerService.getFriendPage(currentPage, pageSize, type);
         return Result.ok(pageInfo);
@@ -53,7 +53,7 @@ public class FollowerController {
      * @param followerId 关注用户id
      * @return success
      */
-    @RequestMapping("followById")
+    @GetMapping("followById")
     public Result<?> followById(String followerId) {
         followerService.followById(followerId);
         return Result.ok();
@@ -65,7 +65,7 @@ public class FollowerController {
      * @param followerId 关注的用户id
      * @return success
      */
-    @RequestMapping("isFollow")
+    @GetMapping("isFollow")
     public Result<?> isFollow(String followerId) {
         boolean flag = followerService.isFollow(followerId);
         return Result.ok(flag);
@@ -78,7 +78,7 @@ public class FollowerController {
      * @param pageSize    分页数
      * @return FollowerVo
      */
-    @RequestMapping("getNoticeFollower/{currentPage}/{pageSize}")
+    @GetMapping("getNoticeFollower/{currentPage}/{pageSize}")
     public Result<?> getNoticeFollower(@PathVariable long currentPage, @PathVariable long pageSize) {
         Page<FollowerVo> pageInfo = followerService.getNoticeFollower(currentPage, pageSize);
         return Result.ok(pageInfo);

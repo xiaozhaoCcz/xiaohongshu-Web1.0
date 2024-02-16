@@ -10,10 +10,7 @@ import com.yanhuo.xo.entity.User;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -47,7 +44,7 @@ public class AuthUserController {
      * @param authUserDTO
      * @return
      */
-    @RequestMapping("loginByCode")
+    @PostMapping("loginByCode")
     public Result<?> loginByCode(@RequestBody AuthUserDTO authUserDTO) {
         Map<String, Object> map = authUserService.loginByCode(authUserDTO);
         return Result.ok(map);
@@ -60,7 +57,7 @@ public class AuthUserController {
      * @param accessToken accessToken
      * @return 用户类
      */
-    @RequestMapping("getUserInfoByToken")
+    @GetMapping("getUserInfoByToken")
     public Result<?> getUserInfoByToken(String accessToken) {
         boolean cheackToken = JwtUtils.checkToken(accessToken);
 
@@ -78,7 +75,7 @@ public class AuthUserController {
      *
      * @param authUserDTO 前台传递用户信息
      */
-    @RequestMapping("register")
+    @PostMapping("register")
     public Result<?> register(@RequestBody AuthUserDTO authUserDTO) {
         Map<String, Object> data = authUserService.register(authUserDTO);
         return Result.ok(data);
@@ -90,7 +87,7 @@ public class AuthUserController {
      * @param authUserDTO
      * @return
      */
-    @RequestMapping("isRegister")
+    @PostMapping("isRegister")
     public Result<?> isRegister(@RequestBody AuthUserDTO authUserDTO) {
         boolean flag = authUserService.isRegister(authUserDTO);
         return Result.ok(flag);
@@ -104,7 +101,7 @@ public class AuthUserController {
      * @param userId
      * @return
      */
-    @RequestMapping("loginOut")
+    @GetMapping("loginOut")
     public Result<?> loginOut(String userId) {
         authUserService.loginOut(userId);
         return Result.ok();
@@ -117,7 +114,7 @@ public class AuthUserController {
      * @param authUserDTO
      * @return
      */
-    @RequestMapping("updatePassword")
+    @PostMapping("updatePassword")
     public Result<?> updatePassword(@RequestBody AuthUserDTO authUserDTO) {
         Boolean flag = authUserService.updatePassword(authUserDTO);
         return Result.ok(flag);
@@ -130,7 +127,7 @@ public class AuthUserController {
      * @param refreshToken
      * @return
      */
-    @RequestMapping("refreshToken")
+    @GetMapping("refreshToken")
     public Result<?> refreshToken(String refreshToken) {
         boolean cheackToken = JwtUtils.checkToken(refreshToken);
         if(!cheackToken){

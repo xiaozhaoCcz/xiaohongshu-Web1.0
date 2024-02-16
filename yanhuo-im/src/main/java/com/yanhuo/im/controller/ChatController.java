@@ -8,10 +8,7 @@ import com.yanhuo.im.service.ChatService;
 import com.yanhuo.xo.entity.Chat;
 import com.yanhuo.xo.vo.ChatUserRelationVo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -30,7 +27,7 @@ public class ChatController {
      * @param message 消息实体
      * @return success
      */
-    @RequestMapping("sendMsg")
+    @PostMapping("sendMsg")
     public Result<?> sendMsg(@RequestBody Message message) {
         chatService.sendMsg(message);
         return Result.ok();
@@ -43,7 +40,7 @@ public class ChatController {
      * @param acceptUid 接收方的用户id
      * @return 聊天记录
      */
-    @RequestMapping("getAllChatRecord/{currentPage}/{pageSize}")
+    @GetMapping("getAllChatRecord/{currentPage}/{pageSize}")
     public Result<?> getAllChatRecord(@PathVariable long currentPage, @PathVariable long pageSize,String acceptUid){
         Page<Chat> page =  chatService.getAllChatRecord(currentPage, pageSize,acceptUid);
         return Result.ok(page);
@@ -53,7 +50,7 @@ public class ChatController {
      * 获取当前用户下所有聊天的用户信息
      * @return 聊天的用户信息
      */
-    @RequestMapping("getChatUserList")
+    @GetMapping("getChatUserList")
     public Result<?> getChatUserList(){
         List<ChatUserRelationVo> list = chatService.getChatUserList();
         return Result.ok(list);
@@ -63,23 +60,23 @@ public class ChatController {
      * 得到所有聊天的记录数量
      * @return 聊天数量
      */
-    @RequestMapping("getCountMessage")
+    @GetMapping("getCountMessage")
     public Result<?> getCountMessage(){
        CountMessage countMessage =  chatService.getCountMessage();
        return Result.ok(countMessage);
     }
 
-    @RequestMapping("deleteMsg")
+    @GetMapping("deleteMsg")
     public String deleteMsg(){
         return null;
     }
 
-    @RequestMapping("deleteAllChatRecord")
+    @GetMapping("deleteAllChatRecord")
     public String deleteAllChatRecord(){
         return null;
     }
 
-    @RequestMapping("deleteChatUser")
+    @GetMapping("deleteChatUser")
     public String deleteChatUser(){
         return null;
     }
@@ -90,7 +87,7 @@ public class ChatController {
      * @param type 类型
      * @return success
      */
-    @RequestMapping("clearMessageCount")
+    @GetMapping("clearMessageCount")
     public Result<?> clearMessageCount(String sendUid,Integer type){
         chatService.clearMessageCount(sendUid,type);
         return Result.ok();

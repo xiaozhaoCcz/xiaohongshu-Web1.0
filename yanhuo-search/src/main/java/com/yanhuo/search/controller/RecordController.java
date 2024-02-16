@@ -38,7 +38,7 @@ public class RecordController {
      * @param keyword 关键词
      * @return success
      */
-    @RequestMapping("addRecord")
+    @GetMapping("addRecord")
     public Result<?> addRecord(String keyword){
         recordService.addRecord(keyword);
         return Result.ok();

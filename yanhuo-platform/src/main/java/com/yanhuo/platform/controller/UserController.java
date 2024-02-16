@@ -8,10 +8,7 @@ import com.yanhuo.xo.entity.User;
 import com.yanhuo.xo.vo.FollowerVo;
 import com.yanhuo.xo.vo.NoteSearchVo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -31,7 +28,7 @@ public class UserController {
      * @param type        类型
      * @return Page<NoteSearchVo>
      */
-    @RequestMapping("getTrendPageByUser/{currentPage}/{pageSize}")
+    @GetMapping("getTrendPageByUser/{currentPage}/{pageSize}")
     public Result<?> getTrendPageByUser(@PathVariable long currentPage, @PathVariable long pageSize, String userId, Integer type) {
         Page<NoteSearchVo> pageInfo = userService.getTrendPageByUser(currentPage, pageSize, userId, type);
         return Result.ok(pageInfo);
@@ -44,7 +41,7 @@ public class UserController {
      * @param userId 用户id
      * @return user
      */
-    @RequestMapping("getUserById")
+    @GetMapping("getUserById")
     public Result<?> getUserById(String userId) {
         User user = userService.getById(userId);
         return Result.ok(user);
@@ -56,7 +53,7 @@ public class UserController {
      * @param user 用户实体
      * @return user
      */
-    @RequestMapping("updateUser")
+    @PostMapping("updateUser")
     public Result<?> updateUser(@RequestBody User user) {
         User updateUser = userService.updateUser(user);
         return Result.ok(updateUser);
@@ -69,7 +66,7 @@ public class UserController {
      * @param keyword 关键词
      * @return FollowerVo
      */
-    @RequestMapping("getUserPageByKeyword/{currentPage}/{pageSize}")
+    @GetMapping("getUserPageByKeyword/{currentPage}/{pageSize}")
     public Result<?> getUserPageByKeyword(@PathVariable long currentPage, @PathVariable long pageSize, String keyword) {
         Page<FollowerVo> pageInfo = userService.getUserPageByKeyword(currentPage, pageSize, keyword);
         return Result.ok(pageInfo);
@@ -81,7 +78,7 @@ public class UserController {
      * @param keyword 关键词
      * @return success
      */
-    @RequestMapping("saveUserSearchRecord")
+    @GetMapping("saveUserSearchRecord")
     public Result<?> saveUserSearchRecord(String keyword) {
         userService.saveUserSearchRecord(keyword);
         return Result.ok();

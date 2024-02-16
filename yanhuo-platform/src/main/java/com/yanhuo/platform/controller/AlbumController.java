@@ -10,11 +10,11 @@ import com.yanhuo.xo.dto.AlbumDTO;
 import com.yanhuo.xo.entity.Album;
 import com.yanhuo.xo.vo.AlbumVo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+/**
+ * @author xiaozhao
+ */
 @RequestMapping("/album")
 @RestController
 public class AlbumController {
@@ -29,7 +29,7 @@ public class AlbumController {
      * @param userId 用户id
      * @return 专辑数
      */
-    @RequestMapping("getAlbumPageByUserId/{currentPage}/{pageSize}")
+    @GetMapping("getAlbumPageByUserId/{currentPage}/{pageSize}")
     public Result<?> getAlbumPageByUserId(@PathVariable long currentPage, @PathVariable long pageSize,String userId){
         Page<Album> page =  albumService.getAlbumPageByUserId(currentPage,pageSize,userId);
         return Result.ok(page);
@@ -40,7 +40,7 @@ public class AlbumController {
      * @param albumDTO 专辑实体
      * @return success
      */
-    @RequestMapping("saveAlbumByDTO")
+    @PostMapping("saveAlbumByDTO")
     public Result<?> saveAlbumByDTO(@RequestBody AlbumDTO albumDTO) {
         ValidatorUtils.validateEntity(albumDTO, AddGroup.class);
         albumService.saveAlbumByDTO(albumDTO);
@@ -53,7 +53,7 @@ public class AlbumController {
      * @param albumId 专辑id
      * @return 专辑实体
      */
-    @RequestMapping("getAlbumById")
+    @GetMapping("getAlbumById")
     public Result<?> getAlbumById(String albumId) {
         AlbumVo albumVo = albumService.getAlbumById(albumId);
         return Result.ok(albumVo);
@@ -64,7 +64,7 @@ public class AlbumController {
      * @param albumId 专辑id
      * @return success
      */
-    @RequestMapping("deleteAlbumById")
+    @GetMapping("deleteAlbumById")
     public Result<?> deleteAlbumById(String albumId) {
         albumService.deleteAlbumById(albumId);
         return Result.ok();
@@ -75,7 +75,7 @@ public class AlbumController {
      * @param albumDTO 专辑实体
      * @return success
      */
-    @RequestMapping("updateAlbumByDTO")
+    @PostMapping("updateAlbumByDTO")
     public Result<?> updateAlbumByDTO(@RequestBody AlbumDTO albumDTO) {
         ValidatorUtils.validateEntity(albumDTO, UpdateGroup.class);
         albumService.updateAlbumByDTO(albumDTO);

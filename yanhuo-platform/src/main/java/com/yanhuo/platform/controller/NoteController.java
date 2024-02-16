@@ -31,7 +31,7 @@ public class NoteController {
      * @param noteId 笔记id
      * @return noteVo
      */
-    @RequestMapping("getNoteById")
+    @GetMapping("getNoteById")
     public Result<?> getNoteById(String noteId) {
         NoteVo noteVo = noteService.getNoteById(noteId);
         return Result.ok(noteVo);
@@ -43,7 +43,7 @@ public class NoteController {
      * @param noteDTO 笔记实体
      * @return 笔记id
      */
-    @RequestMapping("saveNoteByDTO")
+    @GetMapping("saveNoteByDTO")
     public Result<?> saveNoteByDTO(@RequestParam("noteData")String noteData, @RequestParam("uploadFiles")MultipartFile[] files) {
         String id = noteService.saveNoteByDTO(noteData,files);
         return Result.ok(id);
@@ -55,7 +55,7 @@ public class NoteController {
      * @param noteIds 笔记id集合
      * @return success
      */
-    @RequestMapping("deleteNoteByIds")
+    @PostMapping("deleteNoteByIds")
     public Result<?> deleteNoteByIds(@RequestBody List<String> noteIds) {
         noteService.deleteNoteByIds(noteIds);
         return Result.ok();
@@ -67,7 +67,7 @@ public class NoteController {
      * @param noteDTO 笔记实体
      * @return 笔记id
      */
-    @RequestMapping("updateNoteByDTO")
+    @PostMapping("updateNoteByDTO")
     public Result<?> updateNoteByDTO(@RequestBody NoteDTO noteDTO) {
         ValidatorUtils.validateEntity(noteDTO, UpdateGroup.class);
         String id = noteService.updateNoteByDTO(noteDTO);
@@ -81,7 +81,7 @@ public class NoteController {
      * @param pageSize    分页数
      * @return 笔记集合
      */
-    @RequestMapping("getHotPage/{currentPage}/{pageSize}")
+    @GetMapping("getHotPage/{currentPage}/{pageSize}")
     public Result<?> getHotPage(@PathVariable long currentPage, @PathVariable long pageSize) {
         Page<NoteVo> pageInfo = noteService.getHotPage(currentPage, pageSize);
         return Result.ok(pageInfo);

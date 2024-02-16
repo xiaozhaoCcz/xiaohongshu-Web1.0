@@ -28,7 +28,7 @@ public class NoteController {
      * @param noteDTO     笔记实体
      * @return
      */
-    @RequestMapping("getNotePageByDTO/{currentPage}/{pageSize}")
+    @PostMapping("getNotePageByDTO/{currentPage}/{pageSize}")
     public Result<?> getNotePageByDTO(@PathVariable long currentPage, @PathVariable long pageSize, @RequestBody NoteDTO noteDTO) {
         Page<NoteSearchVo> page = noteService.getNotePageByDTO(currentPage, pageSize, noteDTO);
         return Result.ok(page);
@@ -40,7 +40,7 @@ public class NoteController {
      * @param pageSize 分页数
      * @return Page<NoteSearchVo>
      */
-    @RequestMapping("getRecommendNotePage/{currentPage}/{pageSize}")
+    @GetMapping("getRecommendNotePage/{currentPage}/{pageSize}")
     public Result<?> getRecommendNotePage(@PathVariable long currentPage, @PathVariable long pageSize) {
         Page<NoteSearchVo> page = noteService.getRecommendNotePage(currentPage, pageSize);
         return Result.ok(page);
@@ -51,7 +51,7 @@ public class NoteController {
      *
      * @param noteSearchVo 笔记实体
      */
-    @RequestMapping("addNote")
+    @PostMapping("addNote")
     public void addNote(@RequestBody NoteSearchVo noteSearchVo) {
         noteService.addNote(noteSearchVo);
     }
@@ -61,7 +61,7 @@ public class NoteController {
      *
      * @param noteSearchVoList 笔记实体集合
      */
-    @RequestMapping("addNoteBulkData")
+    @PostMapping("addNoteBulkData")
     public void addNoteBulkData(@RequestBody List<NoteSearchVo> noteSearchVoList) {
         noteService.addNoteBulkData(noteSearchVoList);
     }

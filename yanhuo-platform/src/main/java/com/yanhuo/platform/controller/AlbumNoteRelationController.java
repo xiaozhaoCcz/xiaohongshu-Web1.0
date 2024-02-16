@@ -6,10 +6,14 @@ import com.yanhuo.platform.service.AlbumNoteRelationService;
 import com.yanhuo.xo.vo.NoteSearchVo;
 import com.yanhuo.xo.vo.NoteVo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * @author xiaozhao
+ */
 @RequestMapping("/albumNoteRelation")
 @RestController
 public class AlbumNoteRelationController {
@@ -25,7 +29,7 @@ public class AlbumNoteRelationController {
      * @param userId 用户id
      * @return 查询的笔记
      */
-    @RequestMapping("getNotePageByAid/{currentPage}/{pageSize}")
+    @GetMapping("getNotePageByAid/{currentPage}/{pageSize}")
     public Result<?> getNotePageByAlbumId(@PathVariable long currentPage, @PathVariable long pageSize, String albumId, String userId) {
         Page<NoteSearchVo> pageInfo = albumNoteRelationService.getNotePageByAlbumId(currentPage, pageSize, albumId, userId);
         return Result.ok(pageInfo);
