@@ -17,6 +17,7 @@ import com.yanhuo.xo.entity.*;
 import com.yanhuo.xo.vo.NoteSearchVo;
 import com.yanhuo.xo.vo.NoteVo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -51,6 +52,10 @@ public class NoteServiceImpl extends ServiceImpl<NoteDao, Note> implements NoteS
 
     @Autowired
     OssClient ossClient;
+
+
+    @Value("${oss.type}")
+    Integer type;
 
 
     @Override
@@ -124,7 +129,7 @@ public class NoteServiceImpl extends ServiceImpl<NoteDao, Note> implements NoteS
 
         List<String> dataList;
         try {
-            Result<List<String>> result = ossClient.saveBatch(files, 1);
+            Result<List<String>> result = ossClient.saveBatch(files, type);
             dataList = result.getData();
         }catch (Exception e){
            throw new YanHuoException("添加图片失败");

@@ -3,7 +3,6 @@ package com.yanhuo.util.oss.controller;
 import com.yanhuo.common.result.Result;
 import com.yanhuo.util.oss.service.OssService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
