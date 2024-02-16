@@ -67,7 +67,7 @@ public interface CommentService extends IService<Comment> {
      * @param noteId    笔记id
      * @return resMap
      */
-    Map<String, Object> scrollComment(String commentId, String noteId);
+    Map<String, Object> scrollComment(String commentId);
 
     /**
      * 删除一条评论

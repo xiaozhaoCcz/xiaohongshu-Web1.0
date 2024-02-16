@@ -1,5 +1,5 @@
 <template>
-  <div class="feeds-container" v-infinite-scroll="loadMoreData">
+  <div class="feeds-container" v-infinite-scroll="loadMoreData" :infinite-scroll-distance="50">
     <Waterfall
       :list="noteList"
       :width="options.width"

@@ -119,6 +119,7 @@
 
 <script lang="ts" setup>
 import { Close, Star, ChatRound, StarFilled } from "@element-plus/icons-vue";
+import { ElMessage } from "element-plus";
 import { ref, watch } from "vue";
 import { getNoteById } from "@/api/note";
 import { likeOrCollectionByDTO } from "@/api/likeOrCollection";
@@ -175,6 +176,7 @@ const currentPage = ref(1);
 const seed = ref("");
 const commentIds = ref<Array<string>>([]);
 const noteScroller = ref(null);
+const isLogin = ref(false);
 
 watch(
   () => [props.nid],
@@ -189,24 +191,51 @@ watch(
   }
 );
 
+const noLoginNotice = () => {
+  if (!isLogin.value) {
+    ElMessage({
+      message: "用户未登录",
+      type: "warning",
+    });
+    return false;
+  }
+  return true;
+};
+
 const toUser = (uid: string) => {
+  const _login = noLoginNotice();
+  if (!_login) {
+    return;
+  }
   router.push({ name: "user", state: { uid: uid } });
 };
 
 const close = () => {
-  syncCommentByIds(commentIds.value).then(() => {
-    commentIds.value = [];
-    emit("clickMain", props.nid, noteInfo.value.isLike);
-  });
+  if (isLogin.value) {
+    syncCommentByIds(commentIds.value).then(() => {
+      commentIds.value = [];
+      emit("clickMain", props.nid, noteInfo.value.isLike);
+    });
+  } else {
+    emit("clickMain");
+  }
 };
 
 const follow = (fid: string, type: number) => {
+  const _login = noLoginNotice();
+  if (!_login) {
+    return;
+  }
   followById(fid).then(() => {
     noteInfo.value.isFollow = type == 0;
   });
 };
 
 const likeOrCollection = (type: number, val: number) => {
+  const _login = noLoginNotice();
+  if (!_login) {
+    return;
+  }
   const likeOrCollectionDTO = {} as LikeOrCollectionDTO;
   likeOrCollectionDTO.likeOrCollectionId = noteInfo.value.id;
   likeOrCollectionDTO.publishUid = noteInfo.value.uid;
@@ -234,6 +263,10 @@ const commenInput = (e: any) => {
 };
 
 const saveComment = () => {
+  const _login = noLoginNotice();
+  if (!_login) {
+    return;
+  }
   const comment = {} as CommentDTO;
   comment.nid = props.nid;
   comment.noteUid = noteInfo.value.uid;
@@ -284,8 +317,8 @@ const loadMoreData = () => {
 };
 
 const initData = () => {
-  console.log(userStore.getUserInfo());
-  if (userStore.getUserInfo() !== undefined && userStore.getUserInfo() !== null) {
+  isLogin.value = userStore.isLogin();
+  if (isLogin.value) {
     currentUid.value = userStore.getUserInfo().id;
   }
 };

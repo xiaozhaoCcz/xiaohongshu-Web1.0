@@ -122,12 +122,11 @@ public class CommentController {
      * 自动滚动到当前评论
      *
      * @param commentId 评论id
-     * @param noteId    笔记id
      * @return resMap
      */
     @GetMapping("scrollComment")
-    public Result<?> scrollComment(String commentId, String noteId) {
-        Map<String, Object> resMap = commentService.scrollComment(commentId, noteId);
+    public Result<?> scrollComment(String commentId) {
+        Map<String, Object> resMap = commentService.scrollComment(commentId);
         return Result.ok(resMap);
     }
 

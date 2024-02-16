@@ -3,8 +3,6 @@ package com.yanhuo.platform.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.yanhuo.common.result.Result;
 import com.yanhuo.common.validator.ValidatorUtils;
-import com.yanhuo.common.validator.group.AddGroup;
-import com.yanhuo.common.validator.group.DefaultGroup;
 import com.yanhuo.common.validator.group.UpdateGroup;
 import com.yanhuo.platform.service.NoteService;
 import com.yanhuo.xo.dto.NoteDTO;

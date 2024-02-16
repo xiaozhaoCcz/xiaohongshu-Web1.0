@@ -12,7 +12,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class LoginMvcConfigurerAdapter extends WebMvcConfigurationSupport{
 
-    private static final String[] EXCLUDE_PATHS = {"/**/auth/**", "/**/util/**", "/**/search/**","/**/oss/**","/**/category/getCategoryTreeData"};
+    private static final String[] EXCLUDE_PATHS = {"/**/auth/**", "/**/util/**", "/**/search/**","/**/oss/**","/**/category/getCategoryTreeData","/**/note/getNoteById"};
     /**
      * 拦截器
      * @param registry

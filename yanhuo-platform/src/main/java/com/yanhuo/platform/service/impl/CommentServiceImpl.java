@@ -90,8 +90,9 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
             List<Comment> comments = ConvertUtils.sourceToTarget(commentSyncs, Comment.class);
             this.saveBatch(comments);
 
+            // TODO 可以使用异步的方式进行通知
             for (Comment comment : comments) {
-                if (!comment.getUid().equals(currentUid)) {
+                if (!comment.getNoteUid().equals(currentUid)) {
                     if (!Objects.equals(comment.getReplyUid(), comment.getNoteUid())) {
                         chatUtils.sendMessage(comment.getNoteUid(), 1);
                     }
@@ -266,8 +267,68 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
     }
 
     @Override
-    public Map<String, Object> scrollComment(String commentId, String noteId) {
-        return null;
+    public Map<String, Object> scrollComment(String commentId) {
+        Map<String, Object> resMap = new HashMap<>(16);
+        Comment comment = this.getById(commentId);
+        String pid = comment.getPid();
+        int page1 = 1;
+        int page2 = 1;
+        int limit1 = 7;
+        int limit2 = 10;
+        long total = 0;
+        boolean flag = false;
+        List<CommentVo> comments = new ArrayList<>();
+        if ("0".equals(pid)) {
+            while (!flag) {
+                Page<CommentVo> allOneCommentPage = this.getCommentPageWithCommentByNoteId(page1, limit1, comment.getNid());
+                List<CommentVo> commentVoList = allOneCommentPage.getRecords();
+                List<String> pids = commentVoList.stream().map(CommentVo::getId).collect(Collectors.toList());
+                if (pids.contains(commentId)) {
+                    flag = true;
+                    total = allOneCommentPage.getTotal();
+                } else {
+                    page1++;
+                }
+                comments.addAll(commentVoList);
+            }
+        } else {
+            boolean flag2 = false;
+
+            while (!flag) {
+                IPage<CommentVo> allOneCommentPage = this.getCommentPageWithCommentByNoteId(page1, limit1,comment.getNid());
+                List<CommentVo> commentVoList = allOneCommentPage.getRecords();
+                List<String> pids = commentVoList.stream().map(CommentVo::getId).collect(Collectors.toList());
+                if (pids.contains(pid)) {
+                    for (CommentVo commentVo : commentVoList) {
+                        if (Objects.equals(commentVo.getId(), pid)) {
+                            List<CommentVo> comments2 = new ArrayList<>();
+                            flag = true;
+                            total = allOneCommentPage.getTotal();
+                            while (!flag2) {
+                                IPage<CommentVo> allTwoCommentPage = this.getTwoCommentPageByOneCommentId(page2, limit2, pid);
+                                List<CommentVo> commentVoList2 = allTwoCommentPage.getRecords();
+                                List<String> ids = commentVoList2.stream().map(CommentVo::getId).collect(Collectors.toList());
+                                if (ids.contains(commentId)) {
+                                    flag2 = true;
+                                } else {
+                                    page2++;
+                                }
+                                comments2.addAll(commentVoList2);
+                            }
+                            commentVo.setChildren(comments2);
+                        }
+                    }
+                } else {
+                    page1++;
+                }
+                comments.addAll(commentVoList);
+            }
+        }
+        resMap.put("records", comments);
+        resMap.put("total", total);
+        resMap.put("page1", page1);
+        resMap.put("page2", page2);
+        return resMap;
     }
 
     @Override
