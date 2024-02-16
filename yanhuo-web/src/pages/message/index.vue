@@ -1,90 +1,67 @@
 <template>
   <div class="container">
-    <div class style="height: 72px">
-      <div class="reds-sticky">
-        <div class="reds-tabs-list">
-          <el-badge
-            :value="_countMessage.chatCount"
-            :max="99"
-            :hidden="_countMessage.chatCount == 0"
-          >
-            <div
-              :class="
-                type === 3 ? 'reds-tab-item active tab-item' : 'reds-tab-item tab-item'
-              "
-            >
-              <div class="badge-container" @click="toPage(3)">
-                <span>我的消息</span>
+    <div v-if="isLogin">
+      <div class style="height: 72px">
+        <div class="reds-sticky">
+          <div class="reds-tabs-list">
+            <el-badge :value="_countMessage.chatCount" :max="99" :hidden="_countMessage.chatCount == 0">
+              <div :class="type === 3 ? 'reds-tab-item active tab-item' : 'reds-tab-item tab-item'">
+                <div class="badge-container" @click="toPage(3)">
+                  <span>我的消息</span>
+                </div>
               </div>
-            </div>
-          </el-badge>
-          <el-badge
-            :value="_countMessage.commentCount"
-            :max="99"
-            :hidden="_countMessage.commentCount == 0"
-          >
-            <div
-              :class="
-                type === 1 ? 'reds-tab-item active tab-item' : 'reds-tab-item tab-item'
-              "
-            >
-              <div class="badge-container" @click="toPage(1)">
-                <span>评论和@</span>
+            </el-badge>
+            <el-badge :value="_countMessage.commentCount" :max="99" :hidden="_countMessage.commentCount == 0">
+              <div :class="type === 1 ? 'reds-tab-item active tab-item' : 'reds-tab-item tab-item'">
+                <div class="badge-container" @click="toPage(1)">
+                  <span>评论和@</span>
+                </div>
               </div>
-            </div>
-          </el-badge>
-          <el-badge
-            :value="_countMessage.likeOrCollectionCount"
-            :max="99"
-            :hidden="_countMessage.likeOrCollectionCount == 0"
-          >
-            <div
-              :class="
-                type === 0 ? 'reds-tab-item active tab-item' : 'reds-tab-item tab-item'
-              "
+            </el-badge>
+            <el-badge
+              :value="_countMessage.likeOrCollectionCount"
+              :max="99"
+              :hidden="_countMessage.likeOrCollectionCount == 0"
             >
-              <div class="badge-container" @click="toPage(0)">
-                <span>赞和收藏</span>
+              <div :class="type === 0 ? 'reds-tab-item active tab-item' : 'reds-tab-item tab-item'">
+                <div class="badge-container" @click="toPage(0)">
+                  <span>赞和收藏</span>
+                </div>
               </div>
-            </div>
-          </el-badge>
-          <el-badge
-            :value="_countMessage.followCount"
-            :max="99"
-            :hidden="_countMessage.followCount == 0"
-          >
-            <div
-              :class="
-                type === 2 ? 'reds-tab-item active tab-item' : 'reds-tab-item tab-item'
-              "
-            >
-              <div class="badge-container" @click="toPage(2)">
-                <span>新增关注</span>
+            </el-badge>
+            <el-badge :value="_countMessage.followCount" :max="99" :hidden="_countMessage.followCount == 0">
+              <div :class="type === 2 ? 'reds-tab-item active tab-item' : 'reds-tab-item tab-item'">
+                <div class="badge-container" @click="toPage(2)">
+                  <span>新增关注</span>
+                </div>
               </div>
-            </div>
-          </el-badge>
+            </el-badge>
+          </div>
+          <div class="divider" style="margin: 16px 32px 0px"></div>
         </div>
-        <div class="divider" style="margin: 16px 32px 0px"></div>
       </div>
+      <Message v-if="type == 3"></Message>
+      <Comment v-if="type == 1" @click-main="toMain"></Comment>
+      <LikeCollection v-if="type == 0" @click-main="toMain"></LikeCollection>
+      <Follower v-if="type == 2"></Follower>
+      <!-- <router-view /> -->
+
+      <Main
+        v-show="mainShow"
+        :nid="nid"
+        class="animate__animated animate__zoomIn animate__delay-0.5s"
+        @click-main="close"
+      ></Main>
+
+      <el-backtop :bottom="80" :right="24">
+        <div class="back-top">
+          <Top style="width: 1.2em; height: 1.2em" color="rgba(51, 51, 51, 0.8)" />
+        </div>
+      </el-backtop>
     </div>
-    <Message v-if="type == 3"></Message>
-    <Comment v-if="type == 1" @click-main="toMain"></Comment>
-    <LikeCollection v-if="type == 0" @click-main="toMain"></LikeCollection>
-    <Follower v-if="type == 2"></Follower>
-    <!-- <router-view /> -->
-
-    <Main
-      v-show="mainShow"
-      :nid="nid"
-      class="animate__animated animate__zoomIn animate__delay-0.5s"
-      @click-main="close"
-    ></Main>
-
-    <el-backtop :bottom="80" :right="24">
-      <div class="back-top">
-        <Top style="width: 1.2em; height: 1.2em" color="rgba(51, 51, 51, 0.8)" />
-      </div>
-    </el-backtop>
+    <div v-else>
+      <el-empty description="用户未登录" />
+    </div>
   </div>
 </template>
 <script lang="ts" setup>
@@ -103,7 +80,7 @@ const userStore = useUserStore();
 
 const type = ref(3);
 const nid = ref("");
-const currentUid = userStore.getUserInfo().id;
+const currentUid = ref("");
 const mainShow = ref(false);
 const _countMessage = ref({
   chatCount: 0,
@@ -111,6 +88,7 @@ const _countMessage = ref({
   commentCount: 0,
   followCount: 0,
 });
+const isLogin = ref(false);
 
 watchEffect(() => {
   _countMessage.value = imStore.countMessage;
@@ -118,7 +96,7 @@ watchEffect(() => {
 
 const toPage = (val: number) => {
   const _countMessage = imStore.countMessage;
-  clearMessageCount(currentUid, val).then(() => {
+  clearMessageCount(currentUid.value, val).then(() => {
     switch (val) {
       case 0:
         _countMessage.likeOrCollectionCount = 0;
@@ -143,6 +121,14 @@ const toMain = (val: string) => {
   nid.value = val;
   mainShow.value = true;
 };
+
+const initData = () => {
+  isLogin.value = userStore.isLogin();
+  if (isLogin.value) {
+    currentUid.value = userStore.getUserInfo().id;
+  }
+};
+initData();
 </script>
 <style lang="less" scoped>
 .container {

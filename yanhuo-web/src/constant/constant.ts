@@ -6,8 +6,9 @@ import { reactive } from "vue";
 // // 项目url地址
 // export const baseURL = "http://www.ccimgvideo.top/api";
 
+// 本地项目websocket地址
 export const wsKey = "ws://127.0.0.1:8802/im/ws/";
-// 项目url地址
+// 本地项目url地址
 export const baseURL = "http://127.0.0.1:88/api";
 
 // 图片必须保持在336和186之间

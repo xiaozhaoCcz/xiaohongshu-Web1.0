@@ -16,9 +16,7 @@
             <div class="history-item">
               <span @click="searchPage(item)">{{ item }}</span>
               <!---->
-              <span class="close-tag" v-show="showTagState" @click="deleteRecord(index)"
-                >X</span
-              >
+              <span class="close-tag" v-show="showTagState" @click="deleteRecord(index)">X</span>
             </div>
           </div>
           <!---->
@@ -136,7 +134,9 @@ onMounted(() => {
   margin-top: 8px;
   width: 100%;
   background-color: #fff;
-  box-shadow: 0 4px 32px 0 rgba(0, 0, 0, 0.08), 0 1px 4px 0 rgba(0, 0, 0, 0.04);
+  box-shadow:
+    0 4px 32px 0 rgba(0, 0, 0, 0.08),
+    0 1px 4px 0 rgba(0, 0, 0, 0.04);
   border-radius: 12px;
   overflow: scroll;
 }

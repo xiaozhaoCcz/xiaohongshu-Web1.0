@@ -2,10 +2,7 @@ package com.yanhuo.platform.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.yanhuo.common.result.Result;
-import com.yanhuo.common.validator.ValidatorUtils;
-import com.yanhuo.common.validator.group.DefaultGroup;
 import com.yanhuo.platform.service.TagService;
-import com.yanhuo.xo.dto.TagDTO;
 import com.yanhuo.xo.entity.Tag;
 import com.yanhuo.xo.vo.NoteVo;
 import com.yanhuo.xo.vo.TagVo;
@@ -71,18 +68,5 @@ public class TagController {
     public Result<?> getNotePageByTagId(@PathVariable long currentPage, @PathVariable long pageSize, String tagId, Integer type) {
         Page<NoteVo> imgDetailVoList = tagService.getNotePageByTagId(currentPage, pageSize, tagId, type);
         return Result.ok(imgDetailVoList);
-    }
-
-    /**
-     * 添加标签
-     *
-     * @param tagDTO tagDTO
-     * @return success
-     */
-    @PostMapping("saveTagByDTO")
-    public Result<?> saveTagByDTO(@RequestBody TagDTO tagDTO) {
-        ValidatorUtils.validateEntity(tagDTO, DefaultGroup.class);
-        tagService.saveTagByDTO(tagDTO);
-        return Result.ok();
     }
 }

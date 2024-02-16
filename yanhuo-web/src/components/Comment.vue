@@ -267,7 +267,6 @@ watch(
       dataList.value = [];
     }
     getCommentData();
-
     if (newSeed !== oldSeed) {
       addComment();
     }

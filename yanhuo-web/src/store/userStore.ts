@@ -13,12 +13,17 @@ export const userStore = defineStore("userStore", () => {
     return storage.get("accessToken");
   };
 
-  const getUserInfo = ():User => {
+  const getUserInfo = (): User => {
     return storage.get("userInfo") as User;
   };
 
   const setUserInfo = (data: User) => {
     storage.set("userInfo", data);
+  };
+
+  const isLogin = () => {
+    const user = storage.get("userInfo") as User;
+    return user != null && user != undefined;
   };
 
   const getNewToken = (token: string) => {
@@ -33,11 +38,11 @@ export const userStore = defineStore("userStore", () => {
     });
   };
 
-  const loginOut = ()=>{
+  const loginOut = () => {
     window.localStorage.clear();
-  }
+  };
 
-  return { token, getToken, getNewToken, getUserInfo, setUserInfo,loginOut };
+  return { token, getToken, getNewToken, getUserInfo, setUserInfo, loginOut, isLogin };
 });
 
 export function useUserStore() {

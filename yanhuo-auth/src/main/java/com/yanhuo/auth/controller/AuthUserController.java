@@ -59,9 +59,8 @@ public class AuthUserController {
      */
     @GetMapping("getUserInfoByToken")
     public Result<?> getUserInfoByToken(String accessToken) {
-        boolean cheackToken = JwtUtils.checkToken(accessToken);
-
-        if(!cheackToken){
+        boolean checkToken = JwtUtils.checkToken(accessToken);
+        if(!checkToken){
             //通过返回码 告诉客户端 accessToken过期了，需要调用刷新accessToken的接口
             return Result.build(ResultCodeEnum.TOKEN_EXIST.getCode(),ResultCodeEnum.TOKEN_EXIST.getMessage());
         }

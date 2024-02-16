@@ -1,68 +1,78 @@
 <template>
   <div class="container" v-infinite-scroll="loadMoreData">
-    <ul class="trend-container">
-      <li class="trend-item" v-for="(item, index) in trendData" :key="index">
-        <a class="user-avatar">
-          <img class="avatar-item" :src="item.avatar" @click="toUser(item.uid)" />
-        </a>
-        <div class="main">
-          <div class="info">
-            <div class="user-info">
-              <a class>{{ item.username }}</a>
-            </div>
-            <div class="interaction-hint">
-              <span>{{ item.time }}</span>
-            </div>
-            <div class="interaction-content" @click="toMain(item.nid)">
-              {{ item.content }}
-            </div>
-            <div class="interaction-imgs" @click="toMain(item.nid)">
-              <div class="details-box" v-for="(url, index) in item.imgUrls" :key="index">
-                <el-image v-if="!item.isLoading" :src="url" @load="handleLoad(item)" style="height: 230px; width: 100%">
-                </el-image>
-                <el-image
-                  v-else
-                  :src="url"
-                  class="note-img animate__animated animate__fadeIn animate__delay-0.5s"
-                  fit="cover"
-                ></el-image>
+    <div v-if="isLogin">
+      <ul class="trend-container">
+        <li class="trend-item" v-for="(item, index) in trendData" :key="index">
+          <a class="user-avatar">
+            <img class="avatar-item" :src="item.avatar" @click="toUser(item.uid)" />
+          </a>
+          <div class="main">
+            <div class="info">
+              <div class="user-info">
+                <a class>{{ item.username }}</a>
               </div>
-            </div>
-            <div class="interaction-footer">
-              <div class="icon-item">
-                <i
-                  class="iconfont icon-follow-fill"
-                  style="width: 1em; height: 1em"
-                  @click="like(item.nid, item.uid, index, -1)"
-                  v-if="item.isLike"
-                ></i>
-                <i
-                  class="iconfont icon-follow"
-                  style="width: 1em; height: 1em"
-                  @click="like(item.nid, item.uid, index, 1)"
-                  v-else
-                ></i
-                ><span class="count">{{ item.likeCount }}</span>
+              <div class="interaction-hint">
+                <span>{{ item.time }}</span>
               </div>
-              <div class="icon-item">
-                <ChatRound style="width: 0.9em; height: 0.9em" /><span class="count">{{ item.commentCount }}</span>
+              <div class="interaction-content" @click="toMain(item.nid)">
+                {{ item.content }}
               </div>
-              <div class="icon-item"><More style="width: 1em; height: 1em" /></div>
+              <div class="interaction-imgs" @click="toMain(item.nid)">
+                <div class="details-box" v-for="(url, index) in item.imgUrls" :key="index">
+                  <el-image
+                    v-if="!item.isLoading"
+                    :src="url"
+                    @load="handleLoad(item)"
+                    style="height: 230px; width: 100%"
+                  >
+                  </el-image>
+                  <el-image
+                    v-else
+                    :src="url"
+                    class="note-img animate__animated animate__fadeIn animate__delay-0.5s"
+                    fit="cover"
+                  ></el-image>
+                </div>
+              </div>
+              <div class="interaction-footer">
+                <div class="icon-item">
+                  <i
+                    class="iconfont icon-follow-fill"
+                    style="width: 1em; height: 1em"
+                    @click="like(item.nid, item.uid, index, -1)"
+                    v-if="item.isLike"
+                  ></i>
+                  <i
+                    class="iconfont icon-follow"
+                    style="width: 1em; height: 1em"
+                    @click="like(item.nid, item.uid, index, 1)"
+                    v-else
+                  ></i
+                  ><span class="count">{{ item.likeCount }}</span>
+                </div>
+                <div class="icon-item">
+                  <ChatRound style="width: 0.9em; height: 0.9em" /><span class="count">{{ item.commentCount }}</span>
+                </div>
+                <div class="icon-item"><More style="width: 1em; height: 1em" /></div>
+              </div>
             </div>
           </div>
-        </div>
-      </li>
-    </ul>
-    <div class="feeds-loading">
-      <Refresh style="width: 1.2em; height: 1.2em" color="rgba(51, 51, 51, 0.8)" />
+        </li>
+      </ul>
+      <div class="feeds-loading">
+        <Refresh style="width: 1.2em; height: 1.2em" color="rgba(51, 51, 51, 0.8)" />
+      </div>
+      <FloatingBtn @click-refresh="refresh"></FloatingBtn>
+      <Main
+        v-show="mainShow"
+        :nid="nid"
+        class="animate__animated animate__zoomIn animate__delay-0.5s"
+        @click-main="close"
+      ></Main>
     </div>
-    <FloatingBtn @click-refresh="refresh"></FloatingBtn>
-    <Main
-      v-show="mainShow"
-      :nid="nid"
-      class="animate__animated animate__zoomIn animate__delay-0.5s"
-      @click-main="close"
-    ></Main>
+    <div v-else>
+      <el-empty description="用户未登录" />
+    </div>
   </div>
 </template>
 <script lang="ts" setup>
@@ -75,8 +85,10 @@ import Main from "@/pages/main/main.vue";
 import type { LikeOrCollectionDTO } from "@/type/likeOrCollection";
 import { likeOrCollectionByDTO } from "@/api/likeOrCollection";
 import { useRouter } from "vue-router";
+import { useUserStore } from "@/store/userStore";
 
 const router = useRouter();
+const userStore = useUserStore();
 const currentPage = ref(1);
 const pageSize = ref(5);
 const trendData = ref<Array<any>>([]);
@@ -89,6 +101,7 @@ const likeOrCollectionDTO = ref<LikeOrCollectionDTO>({
   publishUid: "",
   type: 0,
 });
+const isLogin = ref(false);
 
 const handleLoad = (item: any) => {
   item.isLoading = true;
@@ -170,6 +183,7 @@ const like = (nid: string, uid: string, index: number, val: number) => {
 };
 
 const initData = () => {
+  isLogin.value = userStore.isLogin();
   getFollowTrends();
 };
 

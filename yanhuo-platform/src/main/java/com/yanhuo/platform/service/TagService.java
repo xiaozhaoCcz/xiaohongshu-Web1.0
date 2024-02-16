@@ -2,7 +2,6 @@ package com.yanhuo.platform.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.yanhuo.xo.dto.TagDTO;
 import com.yanhuo.xo.entity.Tag;
 import com.yanhuo.xo.vo.NoteVo;
 import com.yanhuo.xo.vo.TagVo;
@@ -30,14 +29,6 @@ public interface TagService extends IService<Tag> {
      * @return Page<NoteVo>
      */
     Page<NoteVo> getNotePageByTagId(long currentPage, long pageSize, String tagId, Integer type);
-
-    /**
-     * 添加标签
-     *
-     * @param tagDTO tagDTO
-     * @return success
-     */
-    void saveTagByDTO(TagDTO tagDTO);
 
     /**
      * 根据关键词获取标签

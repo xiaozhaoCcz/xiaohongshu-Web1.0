@@ -1,6 +1,6 @@
 <template>
   <div class="container" id="container">
-    <div class="push-container" id="tagContainer">
+    <div v-if="isLogin" class="push-container" id="tagContainer">
       <div class="header"><span class="header-icon"></span><span class="header-title">发布图文</span></div>
       <div class="img-list">
         <el-upload
@@ -79,6 +79,9 @@
         </button>
       </div>
     </div>
+    <div v-else>
+      <el-empty description="用户未登录" />
+    </div>
   </div>
 </template>
 <script lang="ts" setup>
@@ -125,6 +128,7 @@ const currentPage = ref(1);
 const pageSize = 10;
 const tagTotal = ref(0);
 const pushLoading = ref(false);
+const isLogin = ref(false);
 
 // 监听外部点击
 onMounted(() => {
@@ -238,9 +242,12 @@ const pubslish = () => {
 };
 
 const initData = () => {
-  getCategoryTreeData().then((res) => {
-    options.value = res.data;
-  });
+  isLogin.value = userStore.isLogin();
+  if (isLogin.value) {
+    getCategoryTreeData().then((res) => {
+      options.value = res.data;
+    });
+  }
 };
 
 initData();
