@@ -9,12 +9,14 @@
 此项目**基于微服务架构的前后端分离系统**。**Web** 端使用 **Vue3** +**ts**+**ElementUi** 。后端使用 **SpringBoot** + **Mybatis-plus**进行开发，使用 **ElasticSearch**  作为全文检索服务，使用**webSocket**做聊天和消息推送。
 
 - 所有功能都是自己一个开发完成，1.0版本可能还存在些小bug。
-- **推荐项目** https://gitee.com/xzjsccz/yanhuo_dev   这是免费的开源app端仿小红书项目
+- **推荐项目** https://gitee.com/xzjsccz/yanhuo_dev   这是免费的开源app端仿小红书项目(最好还是学习web端小红书项目，uniapp小红书项目我不会更新了，uniapp太难用了，项目不好维护)
 - **推荐项目** 如果想自己做一个仿小红书项目，我这里也提供了免费的前端仿小红书源码 https://gitee.com/xzjsccz/xiaohongshu
 
 **数据库文件在`doc/yanhuo-test.sql`**
 
-[微信]:**18572755162** [qq]:484235492
+**这个项目尽量做得简单，所以没有考虑接口的性能，所有功能都是直接对数据库进行操作。后续会对接口慢慢优化...**
+
+[微信]:**18572755162** [qq]:**484235492**
 ## 运行启动
 
 **前端启动**
@@ -39,7 +41,7 @@ npm run dev
 
 - 首先需要把`redis`，`elasticsearch`，`mysql` 安装好启动。
 
-- 如果是本地上传，需要修改图片保存地址，不然上传图片会失败
+- 如果是本地上传，需要修改图片保存地址，不然上传图片会失败(默认使用七牛云存储)
   ![image text](./doc/img/admin1.png)
 - 如果是使用七牛云存储图片，需要配置七牛云的oss地址(默认使用七牛云存储，因此可以也可以不用修改本地文件地址)
   ![image text](./doc/img/19.png)
@@ -48,7 +50,7 @@ npm run dev
   ![image text](./doc/img/admin3.png)
 - 启动`yanhuo-auth`,`yanhuo-gateway`,`yanhuo-im`,`yanhuo-platform`,`yanhuo-search`,`yanhuo-util`即可运行项目。
 
-- 启动项目后会发现没有任何数据，这是因为es中还没有同步数据，我们需要启动`xxl-job`（运行xxl-job这里就不展开了）并配置数据
+- 启动项目后会发现没有任何数据，这是因为es中还没有同步数据，我们需要启动`xxl-job`（运行xxl-job这里就不展开了，去git上面搜索xxl-job然后下载下来更改数据库后就可以启动了）并配置数据
   - xxl-job添加执行器
     ![image text](./doc/img/admin4.png)
   - 添加定时任务
