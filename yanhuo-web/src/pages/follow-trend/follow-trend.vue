@@ -66,6 +66,7 @@
       <Main
         v-show="mainShow"
         :nid="nid"
+        :nowTime="new Date()"
         class="animate__animated animate__zoomIn animate__delay-0.5s"
         @click-main="close"
       ></Main>

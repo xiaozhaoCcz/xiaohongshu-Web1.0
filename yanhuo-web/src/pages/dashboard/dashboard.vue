@@ -18,7 +18,7 @@
     <div class="loading-container"></div>
     <div class="feeds-container" v-infinite-scroll="loadMoreData" :infinite-scroll-distance="50">
       <div class="feeds-loading-top" v-show="topLoading">
-        <Refresh style="width: 1.2em; height: 1.2em" color="rgba(51, 51, 51, 0.8)" />
+        <Loading style="width: 1.2em; height: 1.2em"></Loading>
       </div>
 
       <Waterfall
@@ -92,20 +92,21 @@
       </Waterfall>
 
       <div class="feeds-loading">
-        <Refresh style="width: 1.2em; height: 1.2em" color="rgba(51, 51, 51, 0.8)" />
+        <!-- <Refresh style="width: 1.2em; height: 1.2em" color="rgba(51, 51, 51, 0.8)" /> -->
+        <Loading style="width: 1.2em; height: 1.2em"></Loading>
       </div>
     </div>
     <FloatingBtn @click-refresh="refresh"></FloatingBtn>
     <Main
       v-show="mainShow"
       :nid="nid"
+      :nowTime="new Date()"
       class="animate__animated animate__zoomIn animate__delay-0.5s"
       @click-main="close"
     ></Main>
   </div>
 </template>
 <script lang="ts" setup>
-import { Refresh } from "@element-plus/icons-vue";
 import { Waterfall } from "vue-waterfall-plugin-next";
 import "vue-waterfall-plugin-next/dist/style.css";
 import { ref, watch } from "vue";
@@ -117,6 +118,7 @@ import Main from "@/pages/main/main.vue";
 import FloatingBtn from "@/components/FloatingBtn.vue";
 import { options } from "@/constant/constant";
 import { useSearchStore } from "@/store/searchStore";
+import Loading from "@/components/Loading.vue";
 const searchStore = useSearchStore();
 const topLoading = ref(false);
 const noteList = ref<Array<NoteSearch>>([]);

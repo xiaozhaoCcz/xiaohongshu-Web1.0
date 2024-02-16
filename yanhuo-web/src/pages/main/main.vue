@@ -145,6 +145,10 @@ const props = defineProps({
     type: String,
     default: "",
   },
+  nowTime: {
+    type: Date,
+    default: null,
+  },
 });
 
 const currentUid = ref("");
@@ -179,11 +183,10 @@ const noteScroller = ref(null);
 const isLogin = ref(false);
 
 watch(
-  () => [props.nid],
+  () => [props.nowTime],
   () => {
     currentPage.value = 1;
     getNoteById(props.nid).then((res: any) => {
-      console.log(111);
       noteInfo.value = res.data;
       noteInfo.value.imgList = JSON.parse(res.data.urls);
       noteInfo.value.time = formateTime(res.data.time);
