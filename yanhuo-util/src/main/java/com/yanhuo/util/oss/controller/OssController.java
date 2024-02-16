@@ -15,11 +15,24 @@ public class OssController {
     @Autowired
     OssService ossService;
 
+    /**
+     * 上传文件
+     * @param file
+     * @param type
+     * @return
+     */
     @GetMapping("save/{type}")
     public Result<?> save(MultipartFile file, @PathVariable Integer type){
         String path = ossService.save(file, type);
         return Result.ok(path);
     }
+
+    /**
+     * 批量上传文件
+     * @param files
+     * @param type 类型
+     * @return
+     */
     @GetMapping(value = "saveBatch/{type}")
     public Result<List<String>> saveBatch(@RequestParam("uploadFiles") MultipartFile[] files, @PathVariable Integer type) {
         if (files.length == 0) {
@@ -29,6 +42,12 @@ public class OssController {
         return Result.ok(stringList);
     }
 
+    /**
+     * 删除文件
+     * @param path
+     * @param type
+     * @return
+     */
     @GetMapping("delete/{type}")
     public Result<?> delete(String path, @PathVariable Integer type){
         ossService.delete(path, type);

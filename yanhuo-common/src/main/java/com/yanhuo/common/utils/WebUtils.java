@@ -15,10 +15,11 @@ import java.util.Objects;
  */
 @Slf4j
 public class WebUtils {
+    private WebUtils() {}
     public static String getRequestHeader(String headerName){
         RequestAttributes ra = RequestContextHolder.getRequestAttributes();
         if(Objects.isNull(ra)){
-            log.info("服务里RequestAttributes对象为空");
+            log.error("服务里RequestAttributes对象为空");
             return null;
         }
         ServletRequestAttributes sra = (ServletRequestAttributes) ra;

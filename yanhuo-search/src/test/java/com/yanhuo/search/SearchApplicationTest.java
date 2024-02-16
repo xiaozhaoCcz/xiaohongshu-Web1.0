@@ -7,10 +7,6 @@ import co.elastic.clients.elasticsearch.indices.GetIndexResponse;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.yanhuo.search.common.NoteConstant;
 import com.yanhuo.search.config.ESConfig;
-
-import com.yanhuo.search.utils.model.ConditionParam;
-import com.yanhuo.search.utils.model.FieldParam;
-import com.yanhuo.search.utils.model.SearchParam;
 import com.yanhuo.xo.vo.NoteSearchVo;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,9 +25,6 @@ public class SearchApplicationTest {
     @Autowired
     ElasticsearchClient elasticsearchClient;
 
-
-    @Autowired
-    EsUtils esUtils;
 
 
     //创建索引
@@ -77,16 +70,6 @@ public class SearchApplicationTest {
 //        esConfig.close();
 //    }
 
-    @Test
-    public void addDocument2() throws IOException {
-
-        // 向user对象中添加数据
-        UserTest user = new UserTest();
-        user.setId("111");
-        user.setName("aaa");
-        user.setCreator("2222");
-        esUtils.addDocument("user_test",user);
-    }
 
 //    @Test
 //    public void queryDocument() throws IOException {
@@ -109,17 +92,6 @@ public class SearchApplicationTest {
 //        esConfig.close();
 //    }
 //
-    @Test
-    public void modifyDocument2() throws IOException {
-        // 使用map集合封装需要修改的内容
-        UserTest user = new UserTest();
-        user.setId("111");
-        user.setCreator("dawf");
-        // 构建请求
-       esUtils.updateDocument("user_test",user);
-
-        esConfig.close();
-    }
 //
 //
 //    @Test
@@ -406,62 +378,4 @@ public class SearchApplicationTest {
 ////
 ////        esConfig.close();
 //    }
-
-    @Test
-    public void tt5(){
-        UserTest userTest = esUtils.queryDocument("user_test", "111", UserTest.class);
-        System.out.println(userTest);
-    }
-
-    @Test
-    public void tt6(){
-        List<UserTest> userTests = new ArrayList<>();
-        UserTest userTest1 = new UserTest();
-        userTest1.setId("222");
-        userTest1.setName("bbb");
-        userTest1.setSex(12);
-        userTests.add(userTest1);
-        esUtils.addBulkDocument("user_test", userTests);
-    }
-
-    @Test
-    public void tt7(){
-        List<UserTest> userTest = esUtils.queryAllDocument("user_test", UserTest.class);
-        System.out.println(userTest);
-    }
-
-    @Test
-    public void tt8(){
-        SearchParam searchParam = new SearchParam();
-        searchParam.setIndex(NoteConstant.NOTE_INDEX);
-        searchParam.setCurrentPage(1);
-        searchParam.setPageSize(10);
-
-        List<FieldParam> fieldParamList = new ArrayList<>();
-        FieldParam fieldParam = new FieldParam();
-        fieldParam.setField("title");
-        fieldParam.setBoost(1F);
-        fieldParam.setValue("风景");
-        FieldParam fieldParam2 = new FieldParam();
-        fieldParam2.setField("content");
-        fieldParam2.setBoost(2F);
-        fieldParam2.setValue("风景");
-        fieldParamList.add(fieldParam2);
-        fieldParamList.add(fieldParam);
-
-        List<ConditionParam> conditionParamList = new ArrayList<>();
-        ConditionParam conditionParam = new ConditionParam();
-        conditionParam.setField("cpid");
-        conditionParam.setValue("1594985167723864064");
-        conditionParamList.add(conditionParam);
-
-        searchParam.setFieldParamList(fieldParamList);
-        searchParam.setConditionParamList(conditionParamList);
-
-
-
-        Page<NoteSearchVo> documentByCondition = esUtils.getDocumentByCondition(searchParam, NoteSearchVo.class);
-        System.out.println(documentByCondition.getRecords());
-    }
-
 }

@@ -1,6 +1,7 @@
 
 package com.yanhuo.common.utils;
 
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -14,8 +15,9 @@ import java.util.List;
  *
  * @author xiaozhao
  */
+@Slf4j
 public class ConvertUtils {
-    private static Logger logger = LoggerFactory.getLogger(ConvertUtils.class);
+    private ConvertUtils(){}
 
     public static <T> T sourceToTarget(Object source, Class<T> target){
         if(source == null){
@@ -26,7 +28,7 @@ public class ConvertUtils {
             targetObject = target.newInstance();
             BeanUtils.copyProperties(source, targetObject);
         } catch (Exception e) {
-            logger.error("convert error ", e);
+            log.error("convert error ", e);
         }
 
         return targetObject;
@@ -37,7 +39,7 @@ public class ConvertUtils {
             return null;
         }
 
-        List targetList = new ArrayList<>(sourceList.size());
+        List<T> targetList = new ArrayList<>(sourceList.size());
         try {
             for(Object source : sourceList){
                 T targetObject = target.newInstance();
@@ -45,7 +47,7 @@ public class ConvertUtils {
                 targetList.add(targetObject);
             }
         }catch (Exception e){
-            logger.error("convert error ", e);
+            log.error("convert error ", e);
         }
 
         return targetList;

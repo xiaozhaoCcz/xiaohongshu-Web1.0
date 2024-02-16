@@ -3,8 +3,6 @@ package com.yanhuo.util.msm.controller;
 import cn.hutool.core.util.RandomUtil;
 import com.yanhuo.common.result.Result;
 import com.yanhuo.common.utils.RedisUtils;
-import com.yanhuo.common.validator.ValidatorUtils;
-import com.yanhuo.common.validator.group.DefaultGroup;
 import com.yanhuo.util.constant.UserConstant;
 import com.yanhuo.util.dto.UserDTO;
 import com.yanhuo.util.msm.service.DmService;

@@ -7,12 +7,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
+ * 暂时用不到
  * @author xiaozhao
  */
-@Configuration
+//@Configuration
 public class RedissonConfig {
 
-    @Bean(destroyMethod = "shutdown")
+    //@Bean(destroyMethod = "shutdown")
     public RedissonClient redissonClient(){
         Config config = new Config();
         config.useSingleServer().setAddress("redis://localhost:6379");
