@@ -1,6 +1,7 @@
 package com.yanhuo.platform.controller;
 
 import com.yanhuo.common.result.Result;
+import com.yanhuo.common.validator.myVaildator.noLogin.NoLoginIntercept;
 import com.yanhuo.platform.service.CategoryService;
 import com.yanhuo.xo.vo.CategoryVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,7 @@ public class CategoryController {
      * @return 分类数据
      */
     @GetMapping("getCategoryTreeData")
+    @NoLoginIntercept
     public Result<?> getCategoryTreeData() {
         List<CategoryVo> categoryList = categoryService.getCategoryTreeData();
         return Result.ok(categoryList);

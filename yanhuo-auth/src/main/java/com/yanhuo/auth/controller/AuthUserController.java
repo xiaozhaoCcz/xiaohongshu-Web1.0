@@ -6,6 +6,7 @@ import com.yanhuo.auth.service.AuthUserService;
 import com.yanhuo.common.result.Result;
 import com.yanhuo.common.result.ResultCodeEnum;
 import com.yanhuo.common.utils.JwtUtils;
+import com.yanhuo.common.validator.myVaildator.noLogin.NoLoginIntercept;
 import com.yanhuo.xo.entity.User;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +34,7 @@ public class AuthUserController {
      * @return
      */
     @PostMapping("login")
+    @NoLoginIntercept
     public Result<?> login(@RequestBody AuthUserDTO authUserDTO) {
         Map<String, Object> map = authUserService.login(authUserDTO);
         return Result.ok(map);
@@ -45,6 +47,7 @@ public class AuthUserController {
      * @return
      */
     @PostMapping("loginByCode")
+    @NoLoginIntercept
     public Result<?> loginByCode(@RequestBody AuthUserDTO authUserDTO) {
         Map<String, Object> map = authUserService.loginByCode(authUserDTO);
         return Result.ok(map);
@@ -75,6 +78,7 @@ public class AuthUserController {
      * @param authUserDTO 前台传递用户信息
      */
     @PostMapping("register")
+    @NoLoginIntercept
     public Result<?> register(@RequestBody AuthUserDTO authUserDTO) {
         Map<String, Object> data = authUserService.register(authUserDTO);
         return Result.ok(data);
@@ -127,6 +131,7 @@ public class AuthUserController {
      * @return
      */
     @GetMapping("refreshToken")
+    @NoLoginIntercept
     public Result<?> refreshToken(String refreshToken) {
         boolean cheackToken = JwtUtils.checkToken(refreshToken);
         if(!cheackToken){

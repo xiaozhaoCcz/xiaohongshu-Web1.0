@@ -2,6 +2,7 @@ package com.yanhuo.search.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.yanhuo.common.result.Result;
+import com.yanhuo.common.validator.myVaildator.noLogin.NoLoginIntercept;
 import com.yanhuo.search.dto.NoteDTO;
 import com.yanhuo.search.service.NoteService;
 import com.yanhuo.xo.vo.NoteSearchVo;
@@ -28,6 +29,7 @@ public class NoteController {
      * @param noteDTO     笔记实体
      * @return
      */
+    @NoLoginIntercept
     @PostMapping("getNotePageByDTO/{currentPage}/{pageSize}")
     public Result<?> getNotePageByDTO(@PathVariable long currentPage, @PathVariable long pageSize, @RequestBody NoteDTO noteDTO) {
         Page<NoteSearchVo> page = noteService.getNotePageByDTO(currentPage, pageSize, noteDTO);
@@ -40,6 +42,7 @@ public class NoteController {
      * @param pageSize 分页数
      * @return Page<NoteSearchVo>
      */
+    @NoLoginIntercept
     @GetMapping("getRecommendNotePage/{currentPage}/{pageSize}")
     public Result<?> getRecommendNotePage(@PathVariable long currentPage, @PathVariable long pageSize) {
         Page<NoteSearchVo> page = noteService.getRecommendNotePage(currentPage, pageSize);

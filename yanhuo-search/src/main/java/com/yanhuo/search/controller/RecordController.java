@@ -1,6 +1,7 @@
 package com.yanhuo.search.controller;
 
 import com.yanhuo.common.result.Result;
+import com.yanhuo.common.validator.myVaildator.noLogin.NoLoginIntercept;
 import com.yanhuo.search.service.RecordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,6 +29,7 @@ public class RecordController {
      * 热门关键词
      * @return list
      */
+    @NoLoginIntercept
     @GetMapping("getHotRecord")
     public Result<?> getHotRecord(){
         return Result.ok(recordService.getHotRecord());

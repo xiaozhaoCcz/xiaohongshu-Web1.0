@@ -6,8 +6,10 @@ import com.yanhuo.common.exception.YanHuoException;
 import com.yanhuo.common.result.ResultCodeEnum;
 import com.yanhuo.common.utils.JwtUtils;
 import com.yanhuo.common.utils.WebUtils;
+import com.yanhuo.common.validator.myVaildator.noLogin.NoLoginIntercept;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,6 +32,18 @@ public class UserLoginInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response,
                              Object handler) {
+
+        //获取方法处理器
+        HandlerMethod handlerMethod = (HandlerMethod) handler;
+        NoLoginIntercept noLoginIntercept =
+                handlerMethod.getMethod()//这一步是获取到我们要访问的方法
+                        //然后根据我们制定的自定义注解的Class对象来获取到对应的注解
+                        .getAnnotation(NoLoginIntercept.class);
+
+        if(noLoginIntercept!=null){
+            return true;
+        }
+
         String accessToken = request.getHeader(TokenConstant.ACCESS_TOKEN);
         log.info("accessToken:{},{}", accessToken,WebUtils.getRequestHeader(UserConstant.USER_ID));
         //判断token不为空

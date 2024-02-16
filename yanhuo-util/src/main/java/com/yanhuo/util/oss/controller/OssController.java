@@ -21,7 +21,7 @@ public class OssController {
      * @param type
      * @return
      */
-    @GetMapping("save/{type}")
+    @PostMapping("save/{type}")
     public Result<?> save(MultipartFile file, @PathVariable Integer type){
         String path = ossService.save(file, type);
         return Result.ok(path);
@@ -33,7 +33,7 @@ public class OssController {
      * @param type 类型
      * @return
      */
-    @GetMapping(value = "saveBatch/{type}")
+    @PostMapping(value = "saveBatch/{type}")
     public Result<List<String>> saveBatch(@RequestParam("uploadFiles") MultipartFile[] files, @PathVariable Integer type) {
         if (files.length == 0) {
             return Result.fail(null);

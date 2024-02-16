@@ -11,8 +11,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  */
 @Configuration
 public class LoginMvcConfigurerAdapter extends WebMvcConfigurationSupport{
-
-    private static final String[] EXCLUDE_PATHS = {"/**/auth/**", "/**/util/**", "/**/search/**","/**/oss/**","/**/category/getCategoryTreeData","/**/note/getNoteById"};
     /**
      * 拦截器
      * @param registry
@@ -20,9 +18,7 @@ public class LoginMvcConfigurerAdapter extends WebMvcConfigurationSupport{
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new UserLoginInterceptor())
-                .excludePathPatterns(EXCLUDE_PATHS)
                 .addPathPatterns("/**");
-
         super.addInterceptors(registry);
     }
 

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.yanhuo.common.result.Result;
 import com.yanhuo.common.validator.ValidatorUtils;
 import com.yanhuo.common.validator.group.UpdateGroup;
+import com.yanhuo.common.validator.myVaildator.noLogin.NoLoginIntercept;
 import com.yanhuo.platform.service.NoteService;
 import com.yanhuo.xo.dto.NoteDTO;
 import com.yanhuo.xo.vo.NoteVo;
@@ -30,6 +31,7 @@ public class NoteController {
      * @return noteVo
      */
     @GetMapping("getNoteById")
+    @NoLoginIntercept
     public Result<?> getNoteById(String noteId) {
         NoteVo noteVo = noteService.getNoteById(noteId);
         return Result.ok(noteVo);
@@ -41,7 +43,7 @@ public class NoteController {
      * @param noteDTO 笔记实体
      * @return 笔记id
      */
-    @GetMapping("saveNoteByDTO")
+    @PostMapping("saveNoteByDTO")
     public Result<?> saveNoteByDTO(@RequestParam("noteData")String noteData, @RequestParam("uploadFiles")MultipartFile[] files) {
         String id = noteService.saveNoteByDTO(noteData,files);
         return Result.ok(id);
