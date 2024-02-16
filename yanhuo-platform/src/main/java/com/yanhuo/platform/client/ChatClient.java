@@ -5,6 +5,8 @@ import com.yanhuo.common.result.Result;
 import com.yanhuo.platform.config.FeignRequestInterceptor;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -20,6 +22,6 @@ public interface ChatClient {
      * @param message 消息实体
      * @return success
      */
-    @RequestMapping("/im/chat/sendMsg")
+    @PostMapping("/im/chat/sendMsg")
     Result<?> sendMsg(@RequestBody Message message);
 }

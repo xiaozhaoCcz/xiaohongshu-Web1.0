@@ -1,5 +1,5 @@
 <template>
-  <div class="container" v-infinite-scroll="loadMoreData">
+  <div class="container" v-infinite-scroll="loadMoreData" :infinite-scroll-distance="50">
     <div v-if="isLogin">
       <ul class="trend-container">
         <li class="trend-item" v-for="(item, index) in trendData" :key="index">

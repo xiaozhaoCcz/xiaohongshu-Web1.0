@@ -352,6 +352,7 @@ const logout = () => {
     userStore.loginOut();
     userInfo.value = null;
     loginShow.value = true;
+    activeLink.value = 0;
     ws.value.onclose();
     router.push({ path: "/" });
   });
