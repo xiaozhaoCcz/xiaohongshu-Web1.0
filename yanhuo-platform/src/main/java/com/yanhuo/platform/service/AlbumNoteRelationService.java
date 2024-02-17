@@ -4,8 +4,10 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.yanhuo.xo.entity.AlbumNoteRelation;
 import com.yanhuo.xo.vo.NoteSearchVo;
-import com.yanhuo.xo.vo.NoteVo;
 
+/**
+ * @author xiaozhao
+ */
 public interface AlbumNoteRelationService extends IService<AlbumNoteRelation> {
     /**
      * 得到当前专辑下的所有笔记

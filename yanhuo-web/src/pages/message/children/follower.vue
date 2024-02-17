@@ -16,22 +16,9 @@
             </div>
           </div>
           <div class="extra">
-            <el-button
-              type="info"
-              round
-              size="large"
-              v-if="item.isFollow"
-              @click="follow(item.uid, index, 1)"
-              >已关注</el-button
-            >
-            <el-button
-              type="danger"
-              round
-              size="large"
-              v-else
-              @click="follow(item.uid, index, -1)"
-              >回关</el-button
-            >
+            <el-button type="info" round size="large" v-if="item.isFollow"
+              @click="follow(item.uid, index, 1)">已关注</el-button>
+            <el-button type="danger" round size="large" v-else @click="follow(item.uid, index, -1)">回关</el-button>
           </div>
         </div>
       </li>
@@ -86,6 +73,7 @@ initData();
 textarea {
   overflow: auto;
 }
+
 .agree-container {
   width: 40rem;
   height: 90vh;
@@ -130,12 +118,14 @@ textarea {
           align-items: center;
           justify-content: space-between;
           margin-bottom: 4px;
+
           a {
             color: #333;
             font-size: 16px;
             font-weight: 600;
           }
         }
+
         .interaction-hint {
           font-size: 14px;
           color: rgba(51, 51, 51, 0.6);
@@ -149,6 +139,7 @@ textarea {
           line-height: 140%;
           cursor: pointer;
           margin-bottom: 12px;
+
           .msg-count {
             width: 20px;
             height: 20px;
@@ -185,9 +176,11 @@ textarea {
         min-width: 48px;
         flex-shrink: 0;
         margin-left: 24px;
+
         .follow-button {
           width: 96px;
         }
+
         .reds-button-new.large {
           font-size: 16px;
           font-weight: 600;
@@ -195,10 +188,12 @@ textarea {
           padding: 0 24px;
           height: 40px;
         }
+
         .reds-button-new.primary {
           background-color: #ff2e4d;
           color: #fff;
         }
+
         .reds-button-new {
           position: relative;
           cursor: pointer;

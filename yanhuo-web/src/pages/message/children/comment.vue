@@ -13,12 +13,8 @@
             </div>
             <div class="interaction-hint">
               <span v-if="item.pid === '0'">评论了您的笔记</span>
-              <span v-if="item.replyUid === currentUid && item.pid !== '0'"
-                >回复了您的评论</span
-              >
-              <span v-if="item.replyUid !== currentUid && item.pid !== '0'"
-                >回复了{{ item.replyUsername }}的评论</span
-              >
+              <span v-if="item.replyUid === currentUid && item.pid !== '0'">回复了您的评论</span>
+              <span v-if="item.replyUid !== currentUid && item.pid !== '0'">回复了{{ item.replyUsername }}的评论</span>
               &nbsp;<span>{{ item.time }}</span>
             </div>
             <div class="interaction-content">
@@ -143,9 +139,11 @@ initData();
 textarea {
   overflow: auto;
 }
+
 .message-container {
   width: 40rem;
   height: 90vh;
+
   .message-item {
     display: flex;
     flex-direction: row;
@@ -186,12 +184,14 @@ textarea {
           align-items: center;
           justify-content: space-between;
           margin-bottom: 4px;
+
           a {
             color: #333;
             font-size: 16px;
             font-weight: 600;
           }
         }
+
         .interaction-hint {
           font-size: 14px;
           color: rgba(51, 51, 51, 0.6);
@@ -205,6 +205,7 @@ textarea {
           line-height: 140%;
           cursor: pointer;
           margin-bottom: 12px;
+
           .msg-count {
             width: 20px;
             height: 20px;
@@ -281,6 +282,7 @@ textarea {
               width: calc(100% - 70px);
               flex-shrink: 0;
               transition: flex 0.3s;
+
               .comment-input:placeholder-shown {
                 background-image: none;
                 padding: 12px 92px 12px 36px;
@@ -290,6 +292,7 @@ textarea {
                 background-position: 16px 12px;
                 color: rgba(51, 51, 51, 0.3);
               }
+
               .comment-input {
                 padding: 12px 92px 12px 16px;
                 width: 100%;
@@ -348,6 +351,7 @@ textarea {
             font-size: 16px;
             color: rgba(51, 51, 51, 0.8);
           }
+
           .comment-wrapper {
             display: flex;
             font-size: 16px;
@@ -372,5 +376,4 @@ textarea {
       }
     }
   }
-}
-</style>
+}</style>

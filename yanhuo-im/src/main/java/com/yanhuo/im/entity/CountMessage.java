@@ -4,6 +4,9 @@ import lombok.Data;
 
 import java.io.Serializable;
 
+/**
+ * @author xiaozhao
+ */
 @Data
 public class CountMessage implements Serializable {
     private static final long serialVersionUID = 1L;

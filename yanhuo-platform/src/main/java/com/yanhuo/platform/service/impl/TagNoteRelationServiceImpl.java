@@ -6,6 +6,9 @@ import com.yanhuo.xo.dao.TagNoteRelationDao;
 import com.yanhuo.xo.entity.TagNoteRelation;
 import org.springframework.stereotype.Service;
 
+/**
+ * @author xiaozhao
+ */
 @Service
 public class TagNoteRelationServiceImpl extends ServiceImpl<TagNoteRelationDao, TagNoteRelation> implements TagNoteRelationService {
 }

@@ -11,14 +11,24 @@ import org.apache.commons.lang3.StringUtils;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 
+/**
+ * @author xiaozhao
+ */
 @Slf4j
 public class JwtUtils {
     //定义两个常量，1.设置过期时间 2.密钥（随机，由公司生成）
     public static final String APP_SECRET = "ukc8BDbRigUDaY6pZFfWus2jZWLPHO";
-    //生成token字符串，用户id和名称（可以写多个）
-    public static String getJwtToken(String uid,long expirationTime){
 
-        String JwtToken = Jwts.builder()
+    private JwtUtils(){}
+
+    /**
+     * 生成token
+     * @param uid
+     * @param expirationTime
+     * @return
+     */
+    public static String getJwtToken(String uid,long expirationTime){
+        return Jwts.builder()
                 //设置token的头信息
                 .setHeaderParam("typ", "JWT")
                 .setHeaderParam("alg", "HS256")
@@ -32,8 +42,6 @@ public class JwtUtils {
                 //签名哈希
                 .signWith(SignatureAlgorithm.HS256, APP_SECRET)
                 .compact();
-
-        return JwtToken;
     }
 
     /**

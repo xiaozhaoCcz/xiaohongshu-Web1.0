@@ -18,11 +18,8 @@
                 </div>
               </div>
             </el-badge>
-            <el-badge
-              :value="_countMessage.likeOrCollectionCount"
-              :max="99"
-              :hidden="_countMessage.likeOrCollectionCount == 0"
-            >
+            <el-badge :value="_countMessage.likeOrCollectionCount" :max="99"
+              :hidden="_countMessage.likeOrCollectionCount == 0">
               <div :class="type === 0 ? 'reds-tab-item active tab-item' : 'reds-tab-item tab-item'">
                 <div class="badge-container" @click="toPage(0)">
                   <span>赞和收藏</span>
@@ -46,13 +43,8 @@
       <Follower v-if="type == 2"></Follower>
       <!-- <router-view /> -->
 
-      <Main
-        v-show="mainShow"
-        :nid="nid"
-        :nowTime="new Date()"
-        class="animate__animated animate__zoomIn animate__delay-0.5s"
-        @click-main="close"
-      ></Main>
+      <Main v-show="mainShow" :nid="nid" :nowTime="new Date()"
+        class="animate__animated animate__zoomIn animate__delay-0.5s" @click-main="close"></Main>
 
       <el-backtop :bottom="80" :right="24">
         <div class="back-top">
@@ -138,6 +130,7 @@ initData();
   padding-top: 72px;
   width: 67%;
   margin: 0 auto;
+
   .reds-sticky {
     top: 72px;
     position: fixed;
@@ -149,6 +142,7 @@ initData();
     justify-content: center;
     flex-direction: column;
     background: #fff;
+
     .reds-tabs-list {
       justify-content: flex-start;
       display: flex;
@@ -183,6 +177,7 @@ initData();
         }
       }
     }
+
     .divider {
       margin: 4px 8px;
       list-style: none;
@@ -190,6 +185,7 @@ initData();
       border: solid rgba(0, 0, 0, 0.08);
       border-width: 1px 0 0;
     }
+
     .back-top {
       width: 40px;
       height: 40px;

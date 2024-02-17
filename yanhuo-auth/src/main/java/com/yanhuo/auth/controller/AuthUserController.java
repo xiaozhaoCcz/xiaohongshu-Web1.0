@@ -9,6 +9,7 @@ import com.yanhuo.common.utils.JwtUtils;
 import com.yanhuo.common.validator.myVaildator.noLogin.NoLoginIntercept;
 import com.yanhuo.xo.entity.User;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +34,7 @@ public class AuthUserController {
      * @param authUserDTO
      * @return
      */
+    @ApiOperation("用户登录")
     @PostMapping("login")
     @NoLoginIntercept
     public Result<?> login(@RequestBody AuthUserDTO authUserDTO) {
@@ -46,6 +48,7 @@ public class AuthUserController {
      * @param authUserDTO
      * @return
      */
+    @ApiOperation("使用验证码登录")
     @PostMapping("loginByCode")
     @NoLoginIntercept
     public Result<?> loginByCode(@RequestBody AuthUserDTO authUserDTO) {
@@ -60,6 +63,7 @@ public class AuthUserController {
      * @param accessToken accessToken
      * @return 用户类
      */
+    @ApiOperation("根据用户的token信息得到当前用户")
     @GetMapping("getUserInfoByToken")
     public Result<?> getUserInfoByToken(String accessToken) {
         boolean checkToken = JwtUtils.checkToken(accessToken);
@@ -77,6 +81,7 @@ public class AuthUserController {
      *
      * @param authUserDTO 前台传递用户信息
      */
+    @ApiOperation("用户注册")
     @PostMapping("register")
     @NoLoginIntercept
     public Result<?> register(@RequestBody AuthUserDTO authUserDTO) {
@@ -90,6 +95,7 @@ public class AuthUserController {
      * @param authUserDTO
      * @return
      */
+    @ApiOperation("用户是否注册")
     @PostMapping("isRegister")
     public Result<?> isRegister(@RequestBody AuthUserDTO authUserDTO) {
         boolean flag = authUserService.isRegister(authUserDTO);
@@ -104,6 +110,7 @@ public class AuthUserController {
      * @param userId
      * @return
      */
+    @ApiOperation("退出登录")
     @GetMapping("loginOut")
     public Result<?> loginOut(String userId) {
         authUserService.loginOut(userId);
@@ -117,6 +124,7 @@ public class AuthUserController {
      * @param authUserDTO
      * @return
      */
+    @ApiOperation("修改密码")
     @PostMapping("updatePassword")
     public Result<?> updatePassword(@RequestBody AuthUserDTO authUserDTO) {
         Boolean flag = authUserService.updatePassword(authUserDTO);
@@ -130,11 +138,12 @@ public class AuthUserController {
      * @param refreshToken
      * @return
      */
+    @ApiOperation("刷新token")
     @GetMapping("refreshToken")
     @NoLoginIntercept
     public Result<?> refreshToken(String refreshToken) {
-        boolean cheackToken = JwtUtils.checkToken(refreshToken);
-        if(!cheackToken){
+        boolean checkToken = JwtUtils.checkToken(refreshToken);
+        if(!checkToken){
             //通过返回码 告诉客户端 refreshToken过期了，需要客户端就得跳转登录界面
             return Result.build(ResultCodeEnum.TOKEN_FAIL.getCode(),ResultCodeEnum.TOKEN_FAIL.getMessage());
         }

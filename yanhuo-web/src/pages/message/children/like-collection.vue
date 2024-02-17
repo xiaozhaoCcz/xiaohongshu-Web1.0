@@ -79,9 +79,11 @@ initData();
 textarea {
   overflow: auto;
 }
+
 .agree-container {
   width: 40rem;
   height: 90vh;
+
   .agree-item {
     display: flex;
     flex-direction: row;
@@ -122,12 +124,14 @@ textarea {
           align-items: center;
           justify-content: space-between;
           margin-bottom: 4px;
+
           a {
             color: #333;
             font-size: 16px;
             font-weight: 600;
           }
         }
+
         .interaction-hint {
           font-size: 14px;
           color: rgba(51, 51, 51, 0.6);
@@ -141,6 +145,7 @@ textarea {
           line-height: 140%;
           cursor: pointer;
           margin-bottom: 12px;
+
           .msg-count {
             width: 20px;
             height: 20px;

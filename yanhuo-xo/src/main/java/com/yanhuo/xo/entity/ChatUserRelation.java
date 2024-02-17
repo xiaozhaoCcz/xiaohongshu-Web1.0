@@ -8,6 +8,9 @@ import lombok.Data;
 import java.io.Serializable;
 import java.util.Date;
 
+/**
+ * @author xiaozhao
+ */
 @Data
 @TableName("t_chat_user_relation")
 public class ChatUserRelation implements Serializable {

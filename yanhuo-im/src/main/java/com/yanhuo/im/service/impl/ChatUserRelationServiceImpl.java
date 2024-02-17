@@ -23,6 +23,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * @author xiaozhao
+ */
 @Service
 public class ChatUserRelationServiceImpl extends ServiceImpl<ChatUserRelationDao, ChatUserRelation> implements ChatUserRelationService {
 

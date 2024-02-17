@@ -19,41 +19,25 @@
               </div>
               <div class="interaction-imgs" @click="toMain(item.nid)">
                 <div class="details-box" v-for="(url, index) in item.imgUrls" :key="index">
-                  <el-image
-                    v-if="!item.isLoading"
-                    :src="url"
-                    @load="handleLoad(item)"
-                    style="height: 230px; width: 100%"
-                  >
+                  <el-image v-if="!item.isLoading" :src="url" @load="handleLoad(item)" style="height: 230px; width: 100%">
                   </el-image>
-                  <el-image
-                    v-else
-                    :src="url"
-                    class="note-img animate__animated animate__fadeIn animate__delay-0.5s"
-                    fit="cover"
-                  ></el-image>
+                  <el-image v-else :src="url" class="note-img animate__animated animate__fadeIn animate__delay-0.5s"
+                    fit="cover"></el-image>
                 </div>
               </div>
               <div class="interaction-footer">
                 <div class="icon-item">
-                  <i
-                    class="iconfont icon-follow-fill"
-                    style="width: 1em; height: 1em"
-                    @click="like(item.nid, item.uid, index, -1)"
-                    v-if="item.isLike"
-                  ></i>
-                  <i
-                    class="iconfont icon-follow"
-                    style="width: 1em; height: 1em"
-                    @click="like(item.nid, item.uid, index, 1)"
-                    v-else
-                  ></i
-                  ><span class="count">{{ item.likeCount }}</span>
+                  <i class="iconfont icon-follow-fill" style="width: 1em; height: 1em"
+                    @click="like(item.nid, item.uid, index, -1)" v-if="item.isLike"></i>
+                  <i class="iconfont icon-follow" style="width: 1em; height: 1em"
+                    @click="like(item.nid, item.uid, index, 1)" v-else></i><span class="count">{{ item.likeCount }}</span>
                 </div>
                 <div class="icon-item">
                   <ChatRound style="width: 0.9em; height: 0.9em" /><span class="count">{{ item.commentCount }}</span>
                 </div>
-                <div class="icon-item"><More style="width: 1em; height: 1em" /></div>
+                <div class="icon-item">
+                  <More style="width: 1em; height: 1em" />
+                </div>
               </div>
             </div>
           </div>
@@ -63,13 +47,8 @@
         <Refresh style="width: 1.2em; height: 1.2em" color="rgba(51, 51, 51, 0.8)" />
       </div>
       <FloatingBtn @click-refresh="refresh"></FloatingBtn>
-      <Main
-        v-show="mainShow"
-        :nid="nid"
-        :nowTime="new Date()"
-        class="animate__animated animate__zoomIn animate__delay-0.5s"
-        @click-main="close"
-      ></Main>
+      <Main v-show="mainShow" :nid="nid" :nowTime="new Date()"
+        class="animate__animated animate__zoomIn animate__delay-0.5s" @click-main="close"></Main>
     </div>
     <div v-else>
       <el-empty description="用户未登录" />
@@ -253,11 +232,13 @@ initData();
               color: #333;
             }
           }
+
           .interaction-hint {
             font-size: 14px;
             color: rgba(51, 51, 51, 0.6);
             margin-bottom: 8px;
           }
+
           .interaction-content {
             display: flex;
             font-size: 14px;
@@ -269,6 +250,7 @@ initData();
 
           .interaction-imgs {
             display: flex;
+
             .details-box {
               width: 25%;
               border-radius: 4px;
@@ -300,6 +282,7 @@ initData();
               justify-content: left;
               align-items: center;
               color: rgba(51, 51, 51, 0.929);
+
               .count {
                 margin-left: 3px;
               }

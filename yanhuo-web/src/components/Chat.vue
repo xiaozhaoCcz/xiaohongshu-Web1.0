@@ -1,9 +1,6 @@
 <template>
-  <div
-    class="container"
-    style="transition: background-color 0.4s ease 0s;
-  hsla(0,0%,100%,0.98)"
-  >
+  <div class="container" style="transition: background-color 0.4s ease 0s;
+  hsla(0,0%,100%,0.98)">
     <div class="chat-container">
       <header class="chat-header">
         <div class="header-left"></div>
@@ -46,13 +43,7 @@
             </div>
           </div>
 
-          <textarea
-            type="textarea"
-            v-model="content"
-            class="input-content"
-            rows="15"
-            @keyup.enter="submit"
-          />
+          <textarea type="textarea" v-model="content" class="input-content" rows="15" @keyup.enter="submit" />
         </div>
       </main>
     </div>
@@ -104,6 +95,7 @@ watch(
 const insertMessage = async (message: any) => {
   dataList.value?.push(message);
   await nextTick();
+  // 滚动到最底部
   ChatRef.value.lastElementChild.scrollIntoView({
     block: "start",
     behavior: "smooth",
@@ -172,6 +164,7 @@ onMounted(async () => {
       dataList.value.splice(0, 0, item);
     });
     await nextTick();
+    // 滚动到最底部
     ChatRef.value.lastElementChild.scrollIntoView({
       block: "start",
       behavior: "smooth",
@@ -186,6 +179,7 @@ onMounted(async () => {
   margin-right: 5px;
   color: rgba(51, 51, 51, 0.8);
 }
+
 .container {
   position: fixed;
   left: 0;
@@ -226,10 +220,12 @@ onMounted(async () => {
 
     .chat-main {
       height: 100%;
+
       .chat-record {
         height: 60%;
         padding: 0 20px;
         overflow-y: scroll;
+
         .message-item {
           display: flex;
           justify-content: left;
@@ -262,6 +258,7 @@ onMounted(async () => {
           }
         }
       }
+
       .chat-input {
         height: 40%;
 

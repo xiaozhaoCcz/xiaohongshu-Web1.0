@@ -4,11 +4,7 @@
       <div class="user-info">
         <div class="avatar">
           <div class="avatar-wrapper">
-            <img
-              :src="userInfo.avatar"
-              class="user-image"
-              style="border: 1px solid rgba(0, 0, 0, 0.08)"
-            />
+            <img :src="userInfo.avatar" class="user-image" style="border: 1px solid rgba(0, 0, 0, 0.08)" />
           </div>
         </div>
         <div class="info-part">
@@ -22,8 +18,7 @@
                   </div>
                 </div>
                 <div class="user-content">
-                  <span class="user-redId">小红书号：{{ userInfo.yxId }}</span
-                  ><span class="user-IP"> IP属地：广东</span>
+                  <span class="user-redId">小红书号：{{ userInfo.yxId }}</span><span class="user-IP"> IP属地：广东</span>
                 </div>
               </div>
             </div>
@@ -35,22 +30,23 @@
               <div class="tag-item">
                 <div>射手座</div>
               </div>
-              <div class="tag-item"><div>广东广州</div></div>
-              <div class="tag-item"><div>程序员</div></div>
+              <div class="tag-item">
+                <div>广东广州</div>
+              </div>
+              <div class="tag-item">
+                <div>程序员</div>
+              </div>
             </div>
             <div class="data-info">
               <div class="user-interactions">
                 <div>
-                  <span class="count">{{ userInfo.trendCount }}</span
-                  ><span class="shows">作品</span>
+                  <span class="count">{{ userInfo.trendCount }}</span><span class="shows">作品</span>
                 </div>
                 <div>
-                  <span class="count">{{ userInfo.followerCount }}</span
-                  ><span class="shows">关注</span>
+                  <span class="count">{{ userInfo.followerCount }}</span><span class="shows">关注</span>
                 </div>
                 <div>
-                  <span class="count">{{ userInfo.fanCount }}</span
-                  ><span class="shows">粉丝</span>
+                  <span class="count">{{ userInfo.fanCount }}</span><span class="shows">粉丝</span>
                 </div>
               </div>
             </div>
@@ -62,35 +58,24 @@
         <div class="tool-btn" v-show="uid !== currentUid">
           <el-button :icon="ChatLineRound" circle @click="toChat" />
 
-          <el-button type="info" round v-if="_isFollow" @click="follow(uid, 1)"
-            >已关注</el-button
-          >
+          <el-button type="info" round v-if="_isFollow" @click="follow(uid, 1)">已关注</el-button>
           <el-button type="danger" round v-else @click="follow(uid, 0)">关注</el-button>
         </div>
       </div>
     </div>
-    <div
-      class="reds-sticky-box user-page-sticky"
-      style="--1ee3a37c: all 0.4s cubic-bezier(0.2, 0, 0.25, 1) 0s"
-    >
+    <div class="reds-sticky-box user-page-sticky" style="--1ee3a37c: all 0.4s cubic-bezier(0.2, 0, 0.25, 1) 0s">
       <div class="reds-sticky" style="">
         <div class="tertiary center reds-tabs-list" style="padding: 0px 12px">
-          <div
-            :class="type == 1 ? 'reds-tab-item active' : 'reds-tab-item'"
-            style="padding: 0px 16px; margin-right: 0px; font-size: 16px"
-          >
+          <div :class="type == 1 ? 'reds-tab-item active' : 'reds-tab-item'"
+            style="padding: 0px 16px; margin-right: 0px; font-size: 16px">
             <!----><!----><span @click="toPage(1)">笔记</span>
           </div>
-          <div
-            :class="type == 2 ? 'reds-tab-item active' : 'reds-tab-item'"
-            style="padding: 0px 16px; margin-right: 0px; font-size: 16px"
-          >
+          <div :class="type == 2 ? 'reds-tab-item active' : 'reds-tab-item'"
+            style="padding: 0px 16px; margin-right: 0px; font-size: 16px">
             <!----><!----><span @click="toPage(2)">点赞</span>
           </div>
-          <div
-            :class="type == 3 ? 'reds-tab-item active' : 'reds-tab-item'"
-            style="padding: 0px 16px; margin-right: 0px; font-size: 16px"
-          >
+          <div :class="type == 3 ? 'reds-tab-item active' : 'reds-tab-item'"
+            style="padding: 0px 16px; margin-right: 0px; font-size: 16px">
             <!----><!----><span @click="toPage(3)">收藏</span>
           </div>
           <!---->
@@ -98,17 +83,10 @@
         </div>
       </div>
     </div>
-    <div
-      class="feeds-tab-container"
-      style="--1ee3a37c: all 0.4s cubic-bezier(0.2, 0, 0.25, 1) 0s"
-    >
+    <div class="feeds-tab-container" style="--1ee3a37c: all 0.4s cubic-bezier(0.2, 0, 0.25, 1) 0s">
       <!-- <router-view /> -->
-      <Chat
-        v-if="chatShow"
-        :acceptUid="uid"
-        class="animate__animated animate__zoomIn animate__delay-0.5s"
-        @click-chat="close"
-      ></Chat>
+      <Chat v-if="chatShow" :acceptUid="uid" class="animate__animated animate__zoomIn animate__delay-0.5s"
+        @click-chat="close"></Chat>
 
       <Note :type="type"></Note>
     </div>
@@ -169,6 +147,7 @@ initData();
     display: flex;
     align-items: center;
     justify-content: center;
+
     .user-info {
       display: flex;
       justify-content: center;
@@ -179,6 +158,7 @@ initData();
           text-align: center;
           width: 250.66667px;
           height: 175.46667px;
+
           .user-image {
             border-radius: 50%;
             margin: 0 auto;
@@ -197,17 +177,22 @@ initData();
           @media screen and (min-width: 1728px) {
             width: 533.33333px;
           }
+
           margin-left: 32px;
+
           .basic-info {
             display: flex;
             align-items: center;
+
             .user-basic {
               width: 100%;
+
               .user-nickname {
                 width: 100%;
                 display: flex;
                 align-items: center;
                 max-width: calc(100% - 96px);
+
                 .user-name {
                   font-weight: 600;
                   font-size: 24px;
@@ -215,6 +200,7 @@ initData();
                   color: #333;
                 }
               }
+
               .user-content {
                 width: 100%;
                 font-size: 12px;
@@ -222,12 +208,14 @@ initData();
                 color: rgba(51, 51, 51, 0.6);
                 display: flex;
                 margin-top: 8px;
+
                 .user-redId {
                   padding-right: 12px;
                 }
               }
             }
           }
+
           .user-desc {
             width: 100%;
             font-size: 14px;
@@ -236,6 +224,7 @@ initData();
             margin-top: 16px;
             white-space: pre-line;
           }
+
           .user-tags {
             height: 24px;
             margin-top: 16px;
@@ -246,9 +235,11 @@ initData();
             text-align: center;
             font-weight: 400;
             line-height: 120%;
+
             .tag-item :first-child {
               padding: 3px 6px;
             }
+
             .tag-item {
               display: flex;
               align-items: center;
@@ -265,27 +256,32 @@ initData();
               color: rgba(51, 51, 51, 0.6);
             }
           }
+
           .data-info {
             display: flex;
             align-items: center;
             justify-content: center;
             margin-top: 20px;
+
             .user-interactions {
               width: 100%;
               display: flex;
               align-items: center;
+
               .count {
                 font-weight: 500;
                 font-size: 14px;
                 margin-right: 4px;
               }
+
               .shows {
                 color: rgba(51, 51, 51, 0.6);
                 font-size: 14px;
                 line-height: 120%;
               }
             }
-            .user-interactions > div {
+
+            .user-interactions>div {
               height: 100%;
               display: flex;
               align-items: center;
@@ -322,6 +318,7 @@ initData();
       screen and (min-width: 1728px) {
         width: 1445.33333px;
       }
+
       display: flex;
       flex-wrap: nowrap;
       position: relative;
@@ -342,6 +339,7 @@ initData();
         transition: transform 0.3s cubic-bezier(0.2, 0, 0.25, 1);
         z-index: 1;
       }
+
       .reds-tab-item.active {
         background-color: rgba(0, 0, 0, 0.03);
         border-radius: 20px;

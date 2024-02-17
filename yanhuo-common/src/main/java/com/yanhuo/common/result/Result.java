@@ -1,15 +1,24 @@
 package com.yanhuo.common.result;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+/**
+ * @author xiaozhao
+ */
+@ApiModel("统一返回结果")
 @Data
 public class Result<T> {
 
-    //状态码
+
+    @ApiModelProperty("状态码")
     private Integer code;
-    //信息
+
+    @ApiModelProperty("信息")
     private String message;
-    //数据
+
+    @ApiModelProperty("数据")
     private T data;
 
     //构造私有化

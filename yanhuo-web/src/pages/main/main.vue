@@ -1,19 +1,12 @@
 <template>
-  <div
-    class="note-detail-mask"
-    style="transition: background-color 0.4s ease 0s;
-  hsla(0,0%,100%,0.98)"
-  >
+  <div class="note-detail-mask" style="transition: background-color 0.4s ease 0s;
+  hsla(0,0%,100%,0.98)">
     <div class="note-container">
       <div class="media-container">
         <el-carousel height="90vh" :autoplay="false">
           <el-carousel-item v-for="(item, index) in noteInfo.imgList" :key="index">
-            <el-image
-              style="width: 100%; height: 100%"
-              :src="item"
-              fit="contain"
-              class="animate__animated animate__zoomIn animate__delay-0.5s"
-            />
+            <el-image style="width: 100%; height: 100%" :src="item" fit="contain"
+              class="animate__animated animate__zoomIn animate__delay-0.5s" />
           </el-carousel-item>
         </el-carousel>
       </div>
@@ -22,30 +15,13 @@
         <div class="author-container">
           <div class="author-me">
             <div class="info" @click="toUser(noteInfo.uid)">
-              <img
-                class="avatar-item"
-                style="width: 40px; height: 40px"
-                :src="noteInfo.avatar"
-              />
+              <img class="avatar-item" style="width: 40px; height: 40px" :src="noteInfo.avatar" />
               <span class="name">{{ noteInfo.username }}</span>
             </div>
             <div class="follow-btn" v-show="currentUid !== noteInfo.uid">
-              <el-button
-                type="info"
-                size="large"
-                round
-                v-if="noteInfo.isFollow"
-                @click="follow(noteInfo.uid, 1)"
-                >已关注</el-button
-              >
-              <el-button
-                type="danger"
-                size="large"
-                round
-                v-else
-                @click="follow(noteInfo.uid, 0)"
-                >关注</el-button
-              >
+              <el-button type="info" size="large" round v-if="noteInfo.isFollow"
+                @click="follow(noteInfo.uid, 1)">已关注</el-button>
+              <el-button type="danger" size="large" round v-else @click="follow(noteInfo.uid, 0)">关注</el-button>
             </div>
           </div>
 
@@ -54,12 +30,7 @@
               <div class="title">{{ noteInfo.title }}</div>
               <div class="desc">
                 <span>{{ noteInfo.content }} <br /></span>
-                <a
-                  class="tag tag-search"
-                  v-for="(item, index) in noteInfo.tagList"
-                  :key="index"
-                  >#{{ item.title }}</a
-                >
+                <a class="tag tag-search" v-for="(item, index) in noteInfo.tagList" :key="index">#{{ item.title }}</a>
               </div>
               <div class="bottom-container">
                 <span class="date">{{ noteInfo.time }}</span>
@@ -69,13 +40,8 @@
 
             <!-- 评论 -->
             <div class="comments-el">
-              <Comment
-                :nid="props.nid"
-                :currentPage="currentPage"
-                :replyComment="replyComment"
-                :seed="seed"
-                @click-comment="clickComment"
-              ></Comment>
+              <Comment :nid="props.nid" :currentPage="currentPage" :replyComment="replyComment" :seed="seed"
+                @click-comment="clickComment"></Comment>
             </div>
             <!--  -->
           </div>
@@ -83,61 +49,36 @@
           <div class="interactions-footer">
             <div class="buttons">
               <div class="left">
-                <span class="like-wrapper"
-                  ><span
-                    class="like-lottie"
-                    v-if="noteInfo.isCollection"
-                    @click="likeOrCollection(3, -1)"
-                  >
+                <span class="like-wrapper"><span class="like-lottie" v-if="noteInfo.isCollection"
+                    @click="likeOrCollection(3, -1)">
                     <StarFilled style="width: 0.9em; height: 0.9em; color: #333" />
                   </span>
                   <span class="like-lottie" v-else @click="likeOrCollection(3, 1)">
                     <Star style="width: 0.8em; height: 0.8em; color: #333" />
                   </span>
-                  <span class="count">{{ noteInfo.collectionCount }}</span></span
-                >
+                  <span class="count">{{ noteInfo.collectionCount }}</span></span>
                 <span class="collect-wrapper">
-                  <span
-                    class="like-lottie"
-                    v-if="noteInfo.isLike"
-                    @click="likeOrCollection(1, -1)"
-                  >
-                    <i
-                      class="iconfont icon-follow-fill"
-                      style="width: 0.8em; height: 0.8em; color: #333"
-                    ></i>
+                  <span class="like-lottie" v-if="noteInfo.isLike" @click="likeOrCollection(1, -1)">
+                    <i class="iconfont icon-follow-fill" style="width: 0.8em; height: 0.8em; color: #333"></i>
                   </span>
                   <span class="like-lottie" v-else @click="likeOrCollection(1, 1)">
-                    <i
-                      class="iconfont icon-follow"
-                      style="width: 0.8em; height: 0.8em; color: #333"
-                    ></i>
+                    <i class="iconfont icon-follow" style="width: 0.8em; height: 0.8em; color: #333"></i>
                   </span>
-                  <span class="count">{{ noteInfo.likeCount }}</span></span
-                >
+                  <span class="count">{{ noteInfo.likeCount }}</span></span>
                 <span class="chat-wrapper">
                   <span class="like-lottie">
-                    <ChatRound style="width: 0.8em; height: 0.8em; color: #333" /> </span
-                  ><span class="count">{{ noteInfo.commentCount }}</span></span
-                >
+                    <ChatRound style="width: 0.8em; height: 0.8em; color: #333" />
+                  </span><span class="count">{{ noteInfo.commentCount }}</span></span>
               </div>
               <div class="share-wrapper"></div>
             </div>
-            <div
-              :class="
-                showSaveBtn
-                  ? 'comment-wrapper active comment-comp '
-                  : 'comment-wrapper comment-comp '
-              "
-            >
+            <div :class="showSaveBtn
+                ? 'comment-wrapper active comment-comp '
+                : 'comment-wrapper comment-comp '
+              ">
               <div class="input-wrapper">
-                <input
-                  class="comment-input"
-                  v-model="commentValue"
-                  type="text"
-                  :placeholder="commentPlaceVal"
-                  @input="commenInput"
-                />
+                <input class="comment-input" v-model="commentValue" type="text" :placeholder="commentPlaceVal"
+                  @input="commenInput" />
                 <div class="input-buttons" @click="clearCommeent" v-show="showSaveBtn">
                   <Close style="width: 1.2em; height: 1.2em" />
                 </div>
@@ -556,6 +497,7 @@ initData();
         .interaction-divider {
           margin: 0 24px;
         }
+
         .divider {
           margin: 4px 8px;
           list-style: none;
@@ -593,6 +535,7 @@ initData();
 
           .left {
             display: flex;
+
             .like-wrapper {
               position: relative;
               cursor: pointer;
@@ -601,6 +544,7 @@ initData();
               color: rgba(51, 51, 51, 0.6);
               margin-right: 5px;
               align-items: center;
+
               .like-lottie {
                 transform: scale(1.7);
               }
@@ -613,6 +557,7 @@ initData();
               color: rgba(51, 51, 51, 0.6);
               margin-right: 5px;
               align-items: center;
+
               .like-lottie {
                 transform: scale(1.7);
               }
@@ -623,6 +568,7 @@ initData();
               color: rgba(51, 51, 51, 0.6);
               display: flex;
               align-items: center;
+
               .like-lottie {
                 transform: scale(1.7);
               }

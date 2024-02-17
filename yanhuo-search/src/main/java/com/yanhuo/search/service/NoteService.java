@@ -8,6 +8,9 @@ import com.yanhuo.xo.vo.NoteSearchVo;
 
 import java.util.List;
 
+/**
+ * @author xiaozhao
+ */
 public interface NoteService extends IService<Note> {
 
     /**

@@ -1,5 +1,8 @@
 package com.yanhuo.search.common;
 
+/**
+ * @author xiaozhao
+ */
 public interface NoteConstant {
 
     String NOTE_INDEX = "note_index";

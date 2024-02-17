@@ -1,6 +1,5 @@
 package com.yanhuo.common.utils;
 
-import com.yanhuo.common.constant.TokenConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -16,6 +15,12 @@ import java.util.Objects;
 @Slf4j
 public class WebUtils {
     private WebUtils() {}
+
+    /**
+     * 获取请求头中的内容
+     * @param headerName 请求头name
+     * @return 请求内容
+     */
     public static String getRequestHeader(String headerName){
         RequestAttributes ra = RequestContextHolder.getRequestAttributes();
         if(Objects.isNull(ra)){

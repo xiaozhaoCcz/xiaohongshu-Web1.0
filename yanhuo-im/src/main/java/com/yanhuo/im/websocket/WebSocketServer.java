@@ -9,6 +9,7 @@ import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -101,7 +102,7 @@ public class WebSocketServer {
         return onlineNum;
     }
     
-    public static ConcurrentHashMap<String, Session> getSessionPools() {
+    public static ConcurrentMap<String, Session> getSessionPools() {
         return sessionPools;
     }
 }

@@ -2,8 +2,6 @@ package com.yanhuo.util.msm.controller;
 
 
 import com.yanhuo.common.utils.RedisUtils;
-import com.yanhuo.common.validator.ValidatorUtils;
-import com.yanhuo.common.validator.group.DefaultGroup;
 import com.yanhuo.util.constant.UserConstant;
 import com.yanhuo.util.dto.UserDTO;
 import com.yanhuo.util.msm.service.MsmService;
@@ -16,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  *发送信息的功能
+ * @author xiaozhao
  */
 @RestController
 @RequestMapping("/util/msm")

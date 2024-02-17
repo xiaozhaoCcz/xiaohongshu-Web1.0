@@ -8,6 +8,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+/**
+ * @author xiaozhao
+ */
 @RequestMapping("/oss")
 @RestController
 public class OssController {

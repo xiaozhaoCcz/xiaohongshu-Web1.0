@@ -23,12 +23,8 @@
         </div>
       </li>
     </ul>
-    <Chat
-      v-if="chatShow"
-      :acceptUid="acceptUid"
-      class="animate__animated animate__zoomIn animate__delay-0.5s"
-      @click-chat="close"
-    ></Chat>
+    <Chat v-if="chatShow" :acceptUid="acceptUid" class="animate__animated animate__zoomIn animate__delay-0.5s"
+      @click-chat="close"></Chat>
   </div>
 </template>
 <script lang="ts" setup>
@@ -88,6 +84,7 @@ const close = (uid: string) => {
 <style lang="less" scoped>
 .message-container {
   width: 40rem;
+
   .message-item {
     display: flex;
     flex-direction: row;
@@ -128,11 +125,13 @@ const close = (uid: string) => {
           align-items: center;
           justify-content: space-between;
           margin-bottom: 8px;
+
           a {
             color: #333;
             font-size: 16px;
             font-weight: 600;
           }
+
           .interaction-hint {
             font-size: 12px;
             color: rgba(51, 51, 51, 0.6);
@@ -147,6 +146,7 @@ const close = (uid: string) => {
           cursor: pointer;
           justify-content: space-between;
           align-items: center;
+
           .msg-count {
             width: 20px;
             height: 20px;

@@ -29,9 +29,9 @@ export interface NoteInfo {
   commentCount: number;
   tagList: Array<any>;
   time: string;
-  isFollow:boolean,
-  isLike:boolean,
-  isCollection:boolean
+  isFollow: boolean,
+  isLike: boolean,
+  isCollection: boolean
 }
 
 export interface NoteDTO {

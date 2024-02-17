@@ -46,6 +46,7 @@ watchEffect(() => {
 .sug-container-wrapper::-webkit-scrollbar {
   display: none;
 }
+
 .sug-container-wrapper {
   margin-top: 8px;
   width: 100%;

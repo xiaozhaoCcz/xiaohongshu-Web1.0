@@ -1,29 +1,17 @@
 <template>
   <div class="feeds-container" v-infinite-scroll="loadMoreData" :infinite-scroll-distance="50">
-    <Waterfall
-      :list="noteList"
-      :width="options.width"
-      :gutter="options.gutter"
-      :hasAroundGutter="options.hasAroundGutter"
-      :animation-effect="options.animationEffect"
-      :animation-duration="options.animationDuration"
-      :animation-delay="options.animationDelay"
-      :breakpoints="options.breakpoints"
-      style="min-width: 740px"
-    >
+    <Waterfall :list="noteList" :width="options.width" :gutter="options.gutter" :hasAroundGutter="options.hasAroundGutter"
+      :animation-effect="options.animationEffect" :animation-duration="options.animationDuration"
+      :animation-delay="options.animationDelay" :breakpoints="options.breakpoints" style="min-width: 740px">
       <template #item="{ item }">
         <el-skeleton style="width: 240px" :loading="!item.isLoading" animated>
           <template #template>
-            <el-image
-              :src="item.noteCover"
-              :style="{
-                width: '240px',
-                maxHeight: '300px',
-                height: item.noteCoverHeight + 'px',
-                borderRadius: '8px',
-              }"
-              @load="handleLoad(item)"
-            ></el-image>
+            <el-image :src="item.noteCover" :style="{
+              width: '240px',
+              maxHeight: '300px',
+              height: item.noteCoverHeight + 'px',
+              borderRadius: '8px',
+            }" @load="handleLoad(item)"></el-image>
             <div style="padding: 14px">
               <el-skeleton-item variant="h3" style="width: 100%" />
               <div style="display: flex; align-items: center; margin-top: 2px; height: 16px">
@@ -38,17 +26,12 @@
           </template>
           <template #default>
             <div class="card" style="max-width: 240px">
-              <el-image
-                :src="item.noteCover"
-                :style="{
-                  width: '240px',
-                  maxHeight: '300px',
-                  height: item.noteCoverHeight + 'px',
-                  borderRadius: '8px',
-                }"
-                fit="cover"
-                @click="toMain(item.id)"
-              ></el-image>
+              <el-image :src="item.noteCover" :style="{
+                width: '240px',
+                maxHeight: '300px',
+                height: item.noteCoverHeight + 'px',
+                borderRadius: '8px',
+              }" fit="cover" @click="toMain(item.id)"></el-image>
               <div class="footer">
                 <a class="title">
                   <span>{{ item.title }}</span>
@@ -71,13 +54,8 @@
     </Waterfall>
   </div>
 
-  <Main
-    v-show="mainShow"
-    :nid="nid"
-    :nowTime="new Date()"
-    class="animate__animated animate__zoomIn animate__delay-0.5s"
-    @click-main="close"
-  ></Main>
+  <Main v-show="mainShow" :nid="nid" :nowTime="new Date()" class="animate__animated animate__zoomIn animate__delay-0.5s"
+    @click-main="close"></Main>
 </template>
 <script lang="ts" setup>
 import { Waterfall } from "vue-waterfall-plugin-next";
@@ -165,6 +143,7 @@ initData();
 
   .footer {
     padding: 12px;
+
     .title {
       margin-bottom: 8px;
       word-break: break-all;

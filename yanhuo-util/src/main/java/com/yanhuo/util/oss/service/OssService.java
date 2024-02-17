@@ -4,6 +4,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+/**
+ * @author xiaozhao
+ */
 public interface OssService {
     String save(MultipartFile file, Integer type);
 

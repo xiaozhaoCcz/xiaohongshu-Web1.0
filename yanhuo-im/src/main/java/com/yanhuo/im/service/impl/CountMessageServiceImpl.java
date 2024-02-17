@@ -8,6 +8,9 @@ import com.yanhuo.common.im.Message;
 import com.yanhuo.im.factory.MessageFactory;
 
 
+/**
+ * @author xiaozhao
+ */
 public class CountMessageServiceImpl implements MessageFactory {
 
     RedisUtils redisUtils;

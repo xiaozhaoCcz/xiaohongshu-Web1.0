@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * @author xiaozhao
- */ //AOP 面向切面
+ */
 @ControllerAdvice
 public class GlobalExceptionHandler {
 

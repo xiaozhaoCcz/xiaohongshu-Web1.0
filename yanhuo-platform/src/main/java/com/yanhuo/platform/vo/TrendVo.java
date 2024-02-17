@@ -6,6 +6,9 @@ import lombok.experimental.Accessors;
 import java.io.Serializable;
 import java.util.List;
 
+/**
+ * @author xiaozhao
+ */
 @Data
 @Accessors(chain = true)
 public class TrendVo implements Serializable {

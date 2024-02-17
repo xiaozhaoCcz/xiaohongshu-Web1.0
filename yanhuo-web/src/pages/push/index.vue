@@ -3,16 +3,11 @@
     <div v-if="isLogin" class="push-container" id="tagContainer">
       <div class="header"><span class="header-icon"></span><span class="header-title">发布图文</span></div>
       <div class="img-list">
-        <el-upload
-          v-model:file-list="fileList"
-          action="http://localhost:88/api/util/oss/saveBatch/0"
-          list-type="picture-card"
-          multiple
-          :limit="9"
-          :headers="uploadHeader"
-          :auto-upload="false"
-        >
-          <el-icon><Plus /></el-icon>
+        <el-upload v-model:file-list="fileList" action="http://localhost:88/api/util/oss/saveBatch/0"
+          list-type="picture-card" multiple :limit="9" :headers="uploadHeader" :auto-upload="false">
+          <el-icon>
+            <Plus />
+          </el-icon>
         </el-upload>
 
         <el-dialog v-model="dialogVisible">
@@ -21,22 +16,9 @@
       </div>
       <el-divider style="margin: 12px; width: 576px" />
       <div class="push-content">
-        <el-input
-          v-model="title"
-          maxlength="20"
-          show-word-limit
-          type="text"
-          placeholder="请输入标题"
-          class="input-title"
-        />
-        <p
-          id="post-textarea"
-          ref="postContent"
-          class="post-content"
-          contenteditable="true"
-          data-tribute="true"
-          placeholder="填写更全面的描述信息，让更多的人看到你吧！"
-        ></p>
+        <el-input v-model="title" maxlength="20" show-word-limit type="text" placeholder="请输入标题" class="input-title" />
+        <p id="post-textarea" ref="postContent" class="post-content" contenteditable="true" data-tribute="true"
+          placeholder="填写更全面的描述信息，让更多的人看到你吧！"></p>
 
         <div v-infinite-scroll="loadMoreData" class="scroll-tag-container" v-show="showTagState">
           <p v-for="(item, index) in selectTagList" :key="index" class="scrollbar-tag-item" @click="selectTag(item)">
@@ -46,24 +28,17 @@
       </div>
 
       <div class="categorys">
-        <el-cascader
-          v-model="categoryList"
-          :options="options"
-          @change="handleChange"
-          :props="props"
-          placeholder="请选择分类"
-        />
+        <el-cascader v-model="categoryList" :options="options" @change="handleChange" :props="props"
+          placeholder="请选择分类" />
       </div>
       <div class="btns">
         <button class="css-fm44j css-osq2ks dyn">
-          <span class="btn-content" @click="addTag"># 话题</span></button
-        ><button class="css-fm44j css-osq2ks dyn">
-          <span class="btn-content"><span>@</span> 用户</span></button
-        ><button class="css-fm44j css-osq2ks dyn">
-          <span class="btn-content"
-            ><div class="smile"></div>
-            表情</span
-          >
+          <span class="btn-content" @click="addTag"># 话题</span></button><button class="css-fm44j css-osq2ks dyn">
+          <span class="btn-content"><span>@</span> 用户</span></button><button class="css-fm44j css-osq2ks dyn">
+          <span class="btn-content">
+            <div class="smile"></div>
+            表情
+          </span>
         </button>
       </div>
 
@@ -145,7 +120,7 @@ onMounted(() => {
   });
 
   // replace(/<[^>]*>[^<]*(<[^>]*>)?/gi,"")
-  document.getElementById("post-textarea")!.addEventListener("input", () => {});
+  document.getElementById("post-textarea")!.addEventListener("input", () => { });
 });
 
 const addTag = () => {
@@ -262,9 +237,11 @@ initData();
   width: 80px;
   height: 80px;
 }
+
 /deep/ .el-upload-list__item.is-success .el-upload-list__item-status-label {
   display: none;
 }
+
 /deep/ .el-upload--picture-card {
   width: 80px;
   height: 80px;
@@ -273,6 +250,7 @@ initData();
 a {
   text-decoration: none;
 }
+
 .container {
   flex: 1;
   padding-top: 72px;
@@ -332,6 +310,7 @@ a {
           color: #484848;
           font-size: 14px;
         }
+
         .scrollbar-tag-item:hover {
           background-color: #f8f8f8;
         }
@@ -351,6 +330,7 @@ a {
         color: #ccc;
         font-size: 14px;
       }
+
       .post-content {
         cursor: text;
         margin-top: 10px;
@@ -374,8 +354,10 @@ a {
         border: 1px solid #3a64ff;
       }
     }
+
     .btns {
       padding: 0 12px 10px 12px;
+
       button {
         min-width: 62px;
         width: 62px;
@@ -414,19 +396,23 @@ a {
     .categorys {
       padding: 0 12px 10px 12px;
     }
+
     .submit {
       padding: 0 12px 10px 12px;
       margin-top: 10px;
+
       button {
         width: 80px;
         height: 32px;
         font-size: 14px;
       }
+
       .publishBtn {
         background-color: #ff2442;
         color: #fff;
         border-radius: 4px;
       }
+
       .clearBtn {
         border-radius: 4px;
         margin-left: 10px;

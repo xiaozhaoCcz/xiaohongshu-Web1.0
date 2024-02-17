@@ -22,6 +22,7 @@
   width: 100%;
   margin: 0 auto;
 }
+
 .loading {
   width: 30px;
   height: 30px;
@@ -65,7 +66,7 @@
   animation: animationShape4 7s linear infinite;
 }
 
-.shape-4 > div {
+.shape-4>div {
   width: 100%;
   height: 100%;
   border-radius: 50%;

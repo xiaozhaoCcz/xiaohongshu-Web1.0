@@ -8,22 +8,16 @@
         </a>
         <div class="tool-box"></div>
         <div class="input-box" id="sujContainer">
-          <input
-            type="text"
-            v-model="keyword"
-            class="search-input"
-            placeholder="搜索小红书"
-            @input="changeInput"
-            @focus="focusInput"
-            @keyup.enter="searchPage"
-            ref="SearchInput"
-          />
+          <input type="text" v-model="keyword" class="search-input" placeholder="搜索小红书" @input="changeInput"
+            @focus="focusInput" @keyup.enter="searchPage" ref="SearchInput" />
           <div class="input-button">
             <div class="close-icon" v-show="showClose" @click="clearInput">
               <Close style="width: 1.2em; height: 1.2em; margin-right: 20px; margin-top: 5px" />
             </div>
             <div class="search-icon" @click="searchPage">
-              <a href="#"><Search style="width: 1.2em; height: 1.2em; margin-right: 20px; margin-top: 5px" /></a>
+              <a href="#">
+                <Search style="width: 1.2em; height: 1.2em; margin-right: 20px; margin-top: 5px" />
+              </a>
             </div>
           </div>
           <SearchContainer v-show="showSearch" :recordList="recordList"></SearchContainer>
@@ -37,8 +31,8 @@
         <ul class="channel-list">
           <li :class="activeLink == 0 ? 'active-channel' : ''" @click="toLink(0)">
             <a class="link-wrapper">
-              <House style="width: 1em; height: 1em; margin-right: 8px" /><span class="channel">发现</span></a
-            >
+              <House style="width: 1em; height: 1em; margin-right: 8px" /><span class="channel">发现</span>
+            </a>
           </li>
           <li :class="activeLink == 1 ? 'active-channel' : ''" @click="toLink(1)">
             <Star style="width: 1em; height: 1em; margin-right: 8px" /><span class="channel"> 动态</span>
@@ -47,8 +41,7 @@
             <Bell style="width: 1em; height: 1em; margin-right: 8px" />
 
             <el-badge is-dot class="item" v-if="messageCount > 0 && userInfo != null">
-              <span class="channel"> 消息</span></el-badge
-            >
+              <span class="channel"> 消息</span></el-badge>
             <span class="channel" v-else>消息</span>
           </li>
           <li :class="activeLink == 3 ? 'active-channel' : ''" @click="toLink(3)">
@@ -411,6 +404,7 @@ a {
   text-decoration: none;
   color: rgba(51, 51, 51, 0.8);
 }
+
 .container {
   max-width: 1728px;
   background-color: #fff;
@@ -473,6 +467,7 @@ a {
         @media screen and (min-width: 1728px) {
           width: 533.33333px;
         }
+
         .search-input {
           padding: 0 84px 0 16px;
           width: 100%;
@@ -516,6 +511,7 @@ a {
       @media screen and (max-width: 695px) {
         display: none;
       }
+
       @media screen and (min-width: 696px) and (max-width: 959px) {
         display: none;
       }

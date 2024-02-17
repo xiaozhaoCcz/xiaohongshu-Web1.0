@@ -7,6 +7,9 @@ import com.yanhuo.xo.dao.CommentSyncDao;
 import com.yanhuo.xo.entity.*;
 import org.springframework.stereotype.Service;
 
+/**
+ * @author xiaozhao
+ */
 @Service
 public class CommentSyncServiceImpl extends ServiceImpl<CommentSyncDao, CommentSync> implements CommentSyncService {
 }

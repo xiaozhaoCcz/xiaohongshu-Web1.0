@@ -7,7 +7,6 @@ import org.apache.ibatis.annotations.Mapper;
 /**
  * @author xiaozhao
  */
-
 @Mapper
 public interface AlbumDao extends BaseMapper<Album>{
 }

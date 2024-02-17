@@ -4,6 +4,9 @@ import lombok.Data;
 
 import java.io.Serializable;
 
+/**
+ * @author xiaozhao
+ */
 @Data
 public class NoteDTO implements Serializable {
     private String keyword;

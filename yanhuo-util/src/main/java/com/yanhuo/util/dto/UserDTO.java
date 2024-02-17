@@ -1,9 +1,6 @@
 package com.yanhuo.util.dto;
 
-import com.yanhuo.common.validator.group.DefaultGroup;
 import lombok.Data;
-
-import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 
 /**

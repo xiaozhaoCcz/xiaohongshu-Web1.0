@@ -1,5 +1,5 @@
 
-export const formatDate = (t: number):string => {
+export const formatDate = (t: number): string => {
   t = t || Date.now();
   const time = new Date(t);
   let str = time.getFullYear();
@@ -19,7 +19,7 @@ export const formatDate = (t: number):string => {
  * @prama time 13位时间戳
  * @return str x秒 / x分钟 / x小时
  */
-export const formateTime = (time: number):string=> {
+export const formateTime = (time: number): string => {
   const second = 1000;
   const minute = second * 60;
   const hour = minute * 60;
@@ -56,7 +56,7 @@ export const formateTime = (time: number):string=> {
  * 随机生成字符串
  * @param len 指定生成字符串长度
  */
-export const  getRandomString = (len: number)=>{
+export const getRandomString = (len: number) => {
   const _charStr = "abacdefghjklmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ0123456789",
     min = 0,
     max = _charStr.length - 1;
@@ -67,9 +67,9 @@ export const  getRandomString = (len: number)=>{
   for (let i = 0, index; i < len; i++) {
     index = (function (randomIndexFunc, i) {
       return randomIndexFunc(min, max, i, randomIndexFunc);
-    })(function (min:any, max:any, i:any, _self:any) {
-      let indexTemp = Math.floor(Math.random() * (max - min + 1) + min),
-        numStart = _charStr.length - 10;
+    })(function (min: any, max: any, i: any, _self: any) {
+      let indexTemp = Math.floor(Math.random() * (max - min + 1) + min);
+      const numStart = _charStr.length - 10;
       if (i == 0 && indexTemp >= numStart) {
         indexTemp = _self(min, max, i, _self);
       }

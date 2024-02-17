@@ -5,6 +5,9 @@ import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 
+/**
+ * @author xiaozhao
+ */
 @Data
 @Accessors(chain = true)
 public class FollowerVo implements Serializable {

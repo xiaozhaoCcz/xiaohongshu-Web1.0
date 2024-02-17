@@ -15,9 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  *发送邮件的功能
+ * @author xiaozhao
  */
 @RestController
-@RequestMapping("/util/dm")
+@RequestMapping("/dm")
 public class DmController {
 
     @Autowired

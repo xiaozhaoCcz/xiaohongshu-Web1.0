@@ -18,12 +18,13 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
+/**
+ * @author xiaozhao
+ */
 public class QiNiuYunUploadFile implements OssFactory {
     private    String accessKey;
 
-
     private   String secretKey;
-
 
     private   String bucketName ;
 

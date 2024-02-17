@@ -22,11 +22,8 @@
                 </div>
                 <div class="interactions">
                   <div class="like">
-                    <span
-                      class="like-wrapper"
-                      v-if="oneComment.isLike"
-                      @click="likeComment(oneComment, -1, oneIndex, -1)"
-                    >
+                    <span class="like-wrapper" v-if="oneComment.isLike"
+                      @click="likeComment(oneComment, -1, oneIndex, -1)">
                       <i class="iconfont icon-follow-fill" style="width: 1em; height: 1em"></i>
                       <span class="count">{{ oneComment.likeCount }}</span>
                     </span>
@@ -60,8 +57,8 @@
                     </div>
                   </div>
                   <div class="content">
-                    回复<span style="color: rgba(61, 61, 61, 0.8)">{{ twoComment.replyUsername }}: </span
-                    >{{ twoComment.content }}
+                    回复<span style="color: rgba(61, 61, 61, 0.8)">{{ twoComment.replyUsername }}: </span>{{
+                      twoComment.content }}
                   </div>
 
                   <div class="info">
@@ -70,11 +67,8 @@
                     </div>
                     <div class="interactions">
                       <div class="like">
-                        <span
-                          class="like-wrapper"
-                          v-if="twoComment.isLike"
-                          @click="likeComment(twoComment, -1, oneIndex, twoIndex)"
-                        >
+                        <span class="like-wrapper" v-if="twoComment.isLike"
+                          @click="likeComment(twoComment, -1, oneIndex, twoIndex)">
                           <i class="iconfont icon-follow-fill" style="width: 1em; height: 1em"></i>
                           <span class="count">{{ twoComment.likeCount }}</span>
                         </span>
@@ -95,24 +89,14 @@
               </div>
             </div>
           </div>
-          <div
-            class="show-more"
-            v-if="
-              oneComment.twoCommentCount >= commentTotalMap.get(oneComment.id) &&
-              oneComment.twoCommentCount > showTwoCommentCount
-            "
-            @click="loadTwoMore(oneComment.id, oneIndex)"
-          >
+          <div class="show-more" v-if="oneComment.twoCommentCount >= commentTotalMap.get(oneComment.id) &&
+            oneComment.twoCommentCount > showTwoCommentCount
+            " @click="loadTwoMore(oneComment.id, oneIndex)">
             展开更多的回复
           </div>
-          <div
-            class="show-more"
-            v-if="
-              oneComment.twoCommentCount < commentTotalMap.get(oneComment.id) &&
-              oneComment.twoCommentCount > showTwoCommentCount
-            "
-            @click="reback(oneComment.id, oneIndex)"
-          >
+          <div class="show-more" v-if="oneComment.twoCommentCount < commentTotalMap.get(oneComment.id) &&
+            oneComment.twoCommentCount > showTwoCommentCount
+            " @click="reback(oneComment.id, oneIndex)">
             收起所有回复
           </div>
         </div>
@@ -124,7 +108,10 @@
 <script lang="ts" setup>
 import { ChatRound } from "@element-plus/icons-vue";
 import { ref, watch } from "vue";
-import { getCommentPageWithCommentByNoteId, getTwoCommentPageByOneCommentId } from "@/api/comment";
+import {
+  getCommentPageWithCommentByNoteId,
+  getTwoCommentPageByOneCommentId,
+} from "@/api/comment";
 import { likeOrCollectionByDTO } from "@/api/likeOrCollection";
 import type { LikeOrCollectionDTO } from "@/type/likeOrCollection";
 import { formateTime } from "@/utils/util";
@@ -233,30 +220,32 @@ const reback = (oneCommentId: string, index: number) => {
 };
 
 const getCommentData = () => {
-  getCommentPageWithCommentByNoteId(props.currentPage, pageSize, props.nid).then((res: any) => {
-    const { records, total } = res.data;
-    records.forEach((item: any) => {
-      item.time = formateTime(item.time);
-      const twoComments = item.children;
-      // 设置每一个一级评论的集合
-      commentMap.set(item.id, 0);
-      commentTotalMap.set(item.id, 0);
-      if (twoComments != null) {
-        const twoData = [] as Array<any>;
-        twoComments.forEach((element: any) => {
-          element.time = formateTime(element.time);
-          twoData.push(element);
-        });
+  getCommentPageWithCommentByNoteId(props.currentPage, pageSize, props.nid).then(
+    (res: any) => {
+      const { records, total } = res.data;
+      records.forEach((item: any) => {
+        item.time = formateTime(item.time);
+        const twoComments = item.children;
+        // 设置每一个一级评论的集合
+        commentMap.set(item.id, 0);
+        commentTotalMap.set(item.id, 0);
+        if (twoComments != null) {
+          const twoData = [] as Array<any>;
+          twoComments.forEach((element: any) => {
+            element.time = formateTime(element.time);
+            twoData.push(element);
+          });
 
-        item.children = twoData;
-      }
-      computedTotal.value += item.twoCommentCount + 1;
-      dataList.value.push(item);
-    });
-    console.log("---所有评论", dataList.value);
-    commentTotal.value = total;
-    if (pageSize * props.currentPage >= commentTotal.value) return;
-  });
+          item.children = twoData;
+        }
+        computedTotal.value += item.twoCommentCount + 1;
+        dataList.value.push(item);
+      });
+      console.log("---所有评论", dataList.value);
+      commentTotal.value = total;
+      if (pageSize * props.currentPage >= commentTotal.value) return;
+    }
+  );
 };
 
 watch(
@@ -333,6 +322,7 @@ watch(
               .author {
                 display: flex;
                 align-items: center;
+
                 .name {
                   color: rgba(51, 51, 51, 0.6);
                   line-height: 18px;
@@ -357,6 +347,7 @@ watch(
               .date {
                 margin: 8px 0;
               }
+
               .interactions {
                 display: flex;
                 margin-left: -2px;

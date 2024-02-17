@@ -21,9 +21,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
+
 
 /**
  * @author xiaozhao
@@ -122,9 +126,12 @@ public class AuthUserServiceImpl extends ServiceImpl<UserDao, User> implements A
 
     @Override
     public void loginOut(String userId) {
-        String key = AuthConstant.USER_KEY + userId;
-        redisUtils.delete(key);
-        redisUtils.delete(AuthConstant.REFRESH_TOKEN_START_TIME + userId);
+        String userKey = AuthConstant.USER_KEY + userId;
+        String refreshTokenStartTimeKey = AuthConstant.REFRESH_TOKEN_START_TIME + userId;
+        List<String> keyList = new ArrayList<>();
+        keyList.add(userKey);
+        keyList.add(refreshTokenStartTimeKey);
+        redisUtils.delete(keyList);
     }
 
     @Override

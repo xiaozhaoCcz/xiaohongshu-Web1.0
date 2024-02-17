@@ -24,6 +24,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * @author xiaozhao
+ */
 @Service
 public class FollowerServiceImpl extends ServiceImpl<FollowerDao, Follower> implements FollowerService {
 

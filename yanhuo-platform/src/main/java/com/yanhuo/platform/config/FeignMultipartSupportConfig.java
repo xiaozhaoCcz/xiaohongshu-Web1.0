@@ -10,6 +10,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 
+/**
+ * @author xiaozhao
+ * 远程调用上传文件需要
+ */
 @Configuration
 public class FeignMultipartSupportConfig {
 

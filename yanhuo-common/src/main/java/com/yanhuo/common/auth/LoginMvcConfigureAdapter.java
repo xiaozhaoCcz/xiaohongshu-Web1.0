@@ -4,13 +4,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
  * @author xiaozhao
  */
 @Configuration
-public class LoginMvcConfigurerAdapter extends WebMvcConfigurationSupport{
+public class LoginMvcConfigureAdapter extends WebMvcConfigurationSupport{
     /**
      * 拦截器
      * @param registry
