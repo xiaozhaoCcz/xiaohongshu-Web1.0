@@ -14,7 +14,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * @author xiaozhao
  */
-@ServerEndpoint(value = "/im/ws/{uid}",encoders = { ServerEncoder.class })
+@ServerEndpoint(value = "/ws/{uid}",encoders = { ServerEncoder.class })
 @Component
 @Slf4j
 public class WebSocketServer {

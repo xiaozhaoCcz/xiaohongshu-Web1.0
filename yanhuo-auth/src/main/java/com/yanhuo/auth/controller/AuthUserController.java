@@ -20,7 +20,7 @@ import java.util.Map;
  */
 @Api(tags = "权限模块")
 @RestController
-@RequestMapping("/auth/auth")
+@RequestMapping("/auth")
 @Slf4j
 public class AuthUserController {
 

@@ -8,7 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-@RequestMapping("/util/oss")
+@RequestMapping("/oss")
 @RestController
 public class OssController {
 

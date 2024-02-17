@@ -7,5 +7,7 @@ spring:
 
 server:
   port: 8802
+  servlet:
+    context-path: /im
 
 

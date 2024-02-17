@@ -15,7 +15,7 @@ import java.util.List;
  * @author xiaozhao
  */
 @RestController
-@RequestMapping("/search/note")
+@RequestMapping("/note")
 public class NoteController {
 
     @Autowired

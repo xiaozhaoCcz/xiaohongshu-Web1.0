@@ -5,6 +5,8 @@ spring:
   application:
     name: yanhuo-util
   servlet:
+    servlet:
+      context-path: /util
     multipart:
       max-file-size: 1024MB
       max-request-size: 1024MB
