@@ -112,7 +112,6 @@ const fileList = ref<UploadUserFile[]>([]);
 const dialogImageUrl = ref("");
 const dialogVisible = ref(false);
 const title = ref("");
-const content = ref("");
 const uploadHeader = ref({
   accessToken: userStore.getToken(),
 });
@@ -147,7 +146,6 @@ onMounted(() => {
 });
 
 const addTag = () => {
-  content.value += "#";
   showTagState.value = true;
   selectTagList.value = [];
   currentPage.value = 1;
@@ -191,7 +189,7 @@ const pubslish = () => {
     return;
   }
 
-  if (title.value === null || content.value == null) {
+  if (title.value === null) {
     ElMessage({
       message: "标题或内容不能为空",
       type: "error",
@@ -233,7 +231,6 @@ const pubslish = () => {
     saveNoteByDTO(params).then(() => {
       note.value = {};
       title.value = "";
-      content.value = "";
       categoryList.value = [];
       fileList.value = [];
       tagList.value = [];
