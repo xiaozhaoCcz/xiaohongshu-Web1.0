@@ -65,6 +65,7 @@ public class NoteController {
      * @param noteSearchVoList 笔记实体集合
      */
     @PostMapping("addNoteBulkData")
+    @NoLoginIntercept
     public void addNoteBulkData(@RequestBody List<NoteSearchVo> noteSearchVoList) {
         noteService.addNoteBulkData(noteSearchVoList);
     }

@@ -22,14 +22,30 @@
         <div class="author-container">
           <div class="author-me">
             <div class="info" @click="toUser(noteInfo.uid)">
-              <img class="avatar-item" style="width: 40px; height: 40px" :src="noteInfo.avatar" />
+              <img
+                class="avatar-item"
+                style="width: 40px; height: 40px"
+                :src="noteInfo.avatar"
+              />
               <span class="name">{{ noteInfo.username }}</span>
             </div>
             <div class="follow-btn" v-show="currentUid !== noteInfo.uid">
-              <el-button type="info" size="large" round v-if="noteInfo.isFollow" @click="follow(noteInfo.uid, 1)"
+              <el-button
+                type="info"
+                size="large"
+                round
+                v-if="noteInfo.isFollow"
+                @click="follow(noteInfo.uid, 1)"
                 >已关注</el-button
               >
-              <el-button type="danger" size="large" round v-else @click="follow(noteInfo.uid, 0)">关注</el-button>
+              <el-button
+                type="danger"
+                size="large"
+                round
+                v-else
+                @click="follow(noteInfo.uid, 0)"
+                >关注</el-button
+              >
             </div>
           </div>
 
@@ -38,7 +54,12 @@
               <div class="title">{{ noteInfo.title }}</div>
               <div class="desc">
                 <span>{{ noteInfo.content }} <br /></span>
-                <a class="tag tag-search" v-for="(item, index) in noteInfo.tagList" :key="index">#{{ item.title }}</a>
+                <a
+                  class="tag tag-search"
+                  v-for="(item, index) in noteInfo.tagList"
+                  :key="index"
+                  >#{{ item.title }}</a
+                >
               </div>
               <div class="bottom-container">
                 <span class="date">{{ noteInfo.time }}</span>
@@ -63,7 +84,11 @@
             <div class="buttons">
               <div class="left">
                 <span class="like-wrapper"
-                  ><span class="like-lottie" v-if="noteInfo.isCollection" @click="likeOrCollection(3, -1)">
+                  ><span
+                    class="like-lottie"
+                    v-if="noteInfo.isCollection"
+                    @click="likeOrCollection(3, -1)"
+                  >
                     <StarFilled style="width: 0.9em; height: 0.9em; color: #333" />
                   </span>
                   <span class="like-lottie" v-else @click="likeOrCollection(3, 1)">
@@ -72,22 +97,39 @@
                   <span class="count">{{ noteInfo.collectionCount }}</span></span
                 >
                 <span class="collect-wrapper">
-                  <span class="like-lottie" v-if="noteInfo.isLike" @click="likeOrCollection(1, -1)">
-                    <i class="iconfont icon-follow-fill" style="width: 0.8em; height: 0.8em; color: #333"></i>
+                  <span
+                    class="like-lottie"
+                    v-if="noteInfo.isLike"
+                    @click="likeOrCollection(1, -1)"
+                  >
+                    <i
+                      class="iconfont icon-follow-fill"
+                      style="width: 0.8em; height: 0.8em; color: #333"
+                    ></i>
                   </span>
                   <span class="like-lottie" v-else @click="likeOrCollection(1, 1)">
-                    <i class="iconfont icon-follow" style="width: 0.8em; height: 0.8em; color: #333"></i>
+                    <i
+                      class="iconfont icon-follow"
+                      style="width: 0.8em; height: 0.8em; color: #333"
+                    ></i>
                   </span>
                   <span class="count">{{ noteInfo.likeCount }}</span></span
                 >
                 <span class="chat-wrapper">
-                  <span class="like-lottie"> <ChatRound style="width: 0.8em; height: 0.8em; color: #333" /> </span
+                  <span class="like-lottie">
+                    <ChatRound style="width: 0.8em; height: 0.8em; color: #333" /> </span
                   ><span class="count">{{ noteInfo.commentCount }}</span></span
                 >
               </div>
               <div class="share-wrapper"></div>
             </div>
-            <div :class="showSaveBtn ? 'comment-wrapper active comment-comp ' : 'comment-wrapper comment-comp '">
+            <div
+              :class="
+                showSaveBtn
+                  ? 'comment-wrapper active comment-comp '
+                  : 'comment-wrapper comment-comp '
+              "
+            >
               <div class="input-wrapper">
                 <input
                   class="comment-input"
@@ -186,11 +228,13 @@ watch(
   () => [props.nowTime],
   () => {
     currentPage.value = 1;
-    getNoteById(props.nid).then((res: any) => {
-      noteInfo.value = res.data;
-      noteInfo.value.imgList = JSON.parse(res.data.urls);
-      noteInfo.value.time = formateTime(res.data.time);
-    });
+    if (props.nid !== null && props.nid !== "") {
+      getNoteById(props.nid).then((res: any) => {
+        noteInfo.value = res.data;
+        noteInfo.value.imgList = JSON.parse(res.data.urls);
+        noteInfo.value.time = formateTime(res.data.time);
+      });
+    }
   }
 );
 
@@ -262,7 +306,8 @@ const clickComment = (comment: any) => {
 const commenInput = (e: any) => {
   const { value } = e.target;
   commentValue.value = value;
-  showSaveBtn.value = commentValue.value.length > 0 || commentObject.value.pid !== undefined;
+  showSaveBtn.value =
+    commentValue.value.length > 0 || commentObject.value.pid !== undefined;
 };
 
 const saveComment = () => {
@@ -358,9 +403,7 @@ initData();
     cursor: pointer;
 
     .close-mask-white {
-      box-shadow:
-        0 2px 8px 0 rgba(0, 0, 0, 0.04),
-        0 1px 2px 0 rgba(0, 0, 0, 0.02);
+      box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.04), 0 1px 2px 0 rgba(0, 0, 0, 0.02);
       border: 1px solid rgba(0, 0, 0, 0.08);
     }
 
@@ -381,16 +424,12 @@ initData();
   .note-container {
     width: 86%;
     height: 90%;
-    transition:
-      transform 0.4s ease 0s,
-      width 0.4s ease 0s;
+    transition: transform 0.4s ease 0s, width 0.4s ease 0s;
     transform: translate(104px, 32px) scale(1);
     overflow: visible;
 
     display: flex;
-    box-shadow:
-      0 8px 64px 0 rgba(0, 0, 0, 0.04),
-      0 1px 4px 0 rgba(0, 0, 0, 0.02);
+    box-shadow: 0 8px 64px 0 rgba(0, 0, 0, 0.04), 0 1px 4px 0 rgba(0, 0, 0, 0.02);
     border-radius: 20px;
     background: #f8f8f8;
     transform-origin: left top;
