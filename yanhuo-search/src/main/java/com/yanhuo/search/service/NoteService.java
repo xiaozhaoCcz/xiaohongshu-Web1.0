@@ -45,4 +45,10 @@ public interface NoteService extends IService<Note> {
      * @param noteSearchVoList 笔记实体集合
      */
     void addNoteBulkData(List<NoteSearchVo> noteSearchVoList);
+
+    /**
+     * 删除es中的笔记
+     * @param noteId
+     */
+    void deleteNote(String noteId);
 }

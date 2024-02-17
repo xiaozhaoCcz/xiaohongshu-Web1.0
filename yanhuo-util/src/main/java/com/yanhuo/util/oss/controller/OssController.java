@@ -56,4 +56,19 @@ public class OssController {
         ossService.delete(path, type);
         return Result.ok();
     }
+
+    /**
+     * 批量删除文件
+     * @param filePaths
+     * @param type
+     * @return
+     */
+    @PostMapping(value = "deleteBatch/{type}")
+    public Result<?> deleteBatch(@RequestBody List<String> filePaths, @PathVariable Integer type) {
+        if (filePaths.isEmpty()) {
+            return Result.fail(null);
+        }
+        ossService.batchDelete(filePaths, type);
+        return Result.ok();
+    }
 }

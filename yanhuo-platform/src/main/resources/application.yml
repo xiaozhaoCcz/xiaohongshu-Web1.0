@@ -4,16 +4,17 @@ spring:
     name: yanhuo-platform
   profiles:
     active: test
+  servlet:
+    multipart:
+      max-file-size: 1024MB
+      max-request-size: 1024MB
+
 
 server:
   port: 8803
   servlet:
     context-path: /platform
-    multipart:
-      enabled: true # 启用上传处理，默认是true
-      file-size-threshold: 1MB # 当上传文件达到1MB的时候进行磁盘写入
-      max-request-size: 100MB # 设置最大的请求文件的大小
-      max-file-size: 2MB # 设置单个文件的最大长度
+
 
 
 ### 调度中心部署根地址 [选填]：如调度中心集群部署存在多个地址则用逗号分隔。执行器将会使用该地址进行"执行器心跳注册"和"任务结果回调"；为空则关闭自动注册；

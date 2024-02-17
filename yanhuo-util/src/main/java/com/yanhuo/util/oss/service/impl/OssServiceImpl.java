@@ -53,10 +53,18 @@ public class OssServiceImpl implements OssService {
                factory =  new UploadFileToLoacl();
                 break;
             case 1:
+                factory = new QiNiuYunUploadFile();
                 break;
             default:
                 break;
         }
         factory.delete(path);
+    }
+
+    @Override
+    public void batchDelete(List<String> filePaths, Integer type) {
+        for (String path : filePaths){
+           delete(path,type);
+        }
     }
 }

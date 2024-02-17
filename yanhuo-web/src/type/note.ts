@@ -31,7 +31,8 @@ export interface NoteInfo {
   time: string;
   isFollow: boolean,
   isLike: boolean,
-  isCollection: boolean
+  isCollection: boolean,
+  pinned: number
 }
 
 export interface NoteDTO {

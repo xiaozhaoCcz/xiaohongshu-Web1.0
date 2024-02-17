@@ -86,4 +86,15 @@ public class NoteController {
         Page<NoteVo> pageInfo = noteService.getHotPage(currentPage, pageSize);
         return Result.ok(pageInfo);
     }
+
+    /**
+     * 置顶笔记
+     * @param noteId 笔记id
+     * @return
+     */
+    @GetMapping("pinnedNote")
+    public Result<?> pinnedNote(String noteId){
+       boolean flag =  noteService.pinnedNote(noteId);
+       return Result.ok(flag);
+    }
 }

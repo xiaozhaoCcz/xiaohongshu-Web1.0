@@ -233,16 +233,16 @@ const initData = () => {
 initData();
 </script>
 <style lang="less" scoped>
-/deep/ .el-upload-list--picture-card .el-upload-list__item {
+:deep(.el-upload-list--picture-card .el-upload-list__item) {
   width: 80px;
   height: 80px;
 }
 
-/deep/ .el-upload-list__item.is-success .el-upload-list__item-status-label {
+:deep(.el-upload-list__item.is-success .el-upload-list__item-status-label) {
   display: none;
 }
 
-/deep/ .el-upload--picture-card {
+:deep(.el-upload--picture-card) {
   width: 80px;
   height: 80px;
 }

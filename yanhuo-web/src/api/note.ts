@@ -10,7 +10,7 @@ export const getNoteById = (noteId: string) => {
     url: "/platform/note/getNoteById", // mock接口
     method: "get",
     params: {
-      noteId: noteId,
+      noteId,
     },
   });
 };
@@ -26,5 +26,33 @@ export const saveNoteByDTO = (data: any) => {
     method: "post",
     data: data,
     headers: { "Content-Type": "multipart/form-data;boundary=----WebKitFormBoundaryk4ZvuPo6pkphe7Pl" },
+  });
+};
+
+/**
+ * 置顶笔记
+ * @param noteId 
+ * @returns 
+ */
+export const pinnedNote = (noteId: string) => {
+  return request<any>({
+    url: "/platform/note/pinnedNote", // mock接口
+    method: "get",
+    params: {
+      noteId,
+    },
+  });
+};
+
+/**
+ * 删除笔记
+ * @param data 
+ * @returns 
+ */
+export const deleteNoteByIds = (data: any) => {
+  return request<any>({
+    url: "/platform/note/deleteNoteByIds", // mock接口
+    method: "post",
+    data: data,
   });
 };

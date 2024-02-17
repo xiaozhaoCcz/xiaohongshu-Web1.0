@@ -7,6 +7,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,4 +28,7 @@ public interface OssClient {
      */
     @PostMapping(value = "/util/oss/saveBatch/{type}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     Result<List<String>> saveBatch(@RequestPart("uploadFiles") MultipartFile[] files, @PathVariable Integer type);
+
+    @PostMapping(value = "/util/oss/deleteBatch/{type}")
+    Result<?> deleteBatch(@RequestBody List<String> filePaths, @PathVariable Integer type);
 }

@@ -18,10 +18,25 @@
               <img class="avatar-item" style="width: 40px; height: 40px" :src="noteInfo.avatar" />
               <span class="name">{{ noteInfo.username }}</span>
             </div>
-            <div class="follow-btn" v-show="currentUid !== noteInfo.uid">
+            <div class="follow-btn" v-if="currentUid !== noteInfo.uid">
               <el-button type="info" size="large" round v-if="noteInfo.isFollow"
                 @click="follow(noteInfo.uid, 1)">已关注</el-button>
               <el-button type="danger" size="large" round v-else @click="follow(noteInfo.uid, 0)">关注</el-button>
+            </div>
+            <div class="follow-btn" v-else>
+              <el-dropdown>
+                <el-button type="danger" size="large" round>
+                  编辑<el-icon class="el-icon--right"><arrow-down /></el-icon>
+                </el-button>
+                <template #dropdown>
+                  <el-dropdown-menu>
+                    <el-dropdown-item v-if="noteInfo.pinned === 0" @click="pinned(noteInfo.id, 1)">置顶</el-dropdown-item>
+                    <el-dropdown-item v-else @click="pinned(noteInfo.id, 0)">取消置顶</el-dropdown-item>
+                    <el-dropdown-item @click="deleteNote(noteInfo.id)">删除</el-dropdown-item>
+                    <el-dropdown-item>编辑</el-dropdown-item>
+                  </el-dropdown-menu>
+                </template>
+              </el-dropdown>
             </div>
           </div>
 
@@ -73,8 +88,8 @@
               <div class="share-wrapper"></div>
             </div>
             <div :class="showSaveBtn
-                ? 'comment-wrapper active comment-comp '
-                : 'comment-wrapper comment-comp '
+              ? 'comment-wrapper active comment-comp '
+              : 'comment-wrapper comment-comp '
               ">
               <div class="input-wrapper">
                 <input class="comment-input" v-model="commentValue" type="text" :placeholder="commentPlaceVal"
@@ -101,10 +116,10 @@
 </template>
 
 <script lang="ts" setup>
-import { Close, Star, ChatRound, StarFilled } from "@element-plus/icons-vue";
+import { Close, Star, ChatRound, StarFilled, ArrowDown } from "@element-plus/icons-vue";
 import { ElMessage } from "element-plus";
 import { ref, watch } from "vue";
-import { getNoteById } from "@/api/note";
+import { getNoteById, pinnedNote, deleteNoteByIds } from "@/api/note";
 import { likeOrCollectionByDTO } from "@/api/likeOrCollection";
 import type { NoteInfo } from "@/type/note";
 import type { LikeOrCollectionDTO } from "@/type/likeOrCollection";
@@ -153,6 +168,7 @@ const noteInfo = ref<NoteInfo>({
   isFollow: false,
   isLike: false,
   isCollection: false,
+  pinned: 0,
 });
 const commentValue = ref("");
 const commentPlaceVal = ref("请输入内容");
@@ -171,6 +187,7 @@ watch(
     currentPage.value = 1;
     if (props.nid !== null && props.nid !== "") {
       getNoteById(props.nid).then((res: any) => {
+        console.log("---note", res.data)
         noteInfo.value = res.data;
         noteInfo.value.imgList = JSON.parse(res.data.urls);
         noteInfo.value.time = formateTime(res.data.time);
@@ -238,6 +255,26 @@ const likeOrCollection = (type: number, val: number) => {
     }
   });
 };
+
+const pinned = (noteId: string, type: number) => {
+  pinnedNote(noteId).then((res: any) => {
+    if (res.data) {
+      noteInfo.value.pinned = type;
+    }
+  })
+}
+
+const deleteNote = (noteId: string) => {
+  const data = [] as Array<string>;
+  data.push(noteId);
+  deleteNoteByIds(data).then(() => {
+    ElMessage({
+      message: "删除成功",
+      type: "success",
+    });
+    emit("clickMain");
+  })
+}
 
 const clickComment = (comment: any) => {
   commentObject.value = comment;
@@ -316,6 +353,11 @@ initData();
 </script>
 
 <style lang="less" scoped>
+:deep(.el-dropdown-menu__item:not(.is-disabled):focus) {
+  background-color: #f8f8f8;
+  color: black;
+}
+
 .note-detail-mask {
   position: fixed;
   left: 0;

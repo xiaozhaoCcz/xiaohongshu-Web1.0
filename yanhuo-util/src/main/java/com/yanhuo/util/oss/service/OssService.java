@@ -13,4 +13,6 @@ public interface OssService {
     List<String> saveBatch(MultipartFile[] files, Integer type);
 
     void delete(String path, Integer type);
+
+    void batchDelete(List<String> filePaths, Integer type);
 }

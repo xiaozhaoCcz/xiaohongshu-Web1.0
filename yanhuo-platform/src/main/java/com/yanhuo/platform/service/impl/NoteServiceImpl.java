@@ -1,5 +1,6 @@
 package com.yanhuo.platform.service.impl;
 
+import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -23,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -156,8 +158,22 @@ public class NoteServiceImpl extends ServiceImpl<NoteDao, Note> implements NoteS
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void deleteNoteByIds(List<String> noteIds) {
-
+        List<Note> noteList = this.listByIds(noteIds);
+        // TODO 这里可以优化
+        noteList.forEach(item->{
+            esClient.deleteNote(item.getId());
+            String urls = item.getUrls();
+            JSONArray objects = JSONUtil.parseArray(urls);
+            Object[] array = objects.toArray();
+            List<String> pathArr = new ArrayList<>();
+            for (Object o : array) {
+                pathArr.add((String) o);
+            }
+            ossClient.deleteBatch(pathArr,type);
+        });
+        this.removeBatchByIds(noteIds);
     }
 
     @Override
@@ -168,5 +184,22 @@ public class NoteServiceImpl extends ServiceImpl<NoteDao, Note> implements NoteS
     @Override
     public Page<NoteVo> getHotPage(long currentPage, long pageSize) {
         return null;
+    }
+
+    @Override
+    public boolean pinnedNote(String noteId) {
+        String currentUid = AuthContextHolder.getUserId();
+        Note note = this.getById(noteId);
+        if(note.getPinned().equals(1)){
+           note.setPinned(0);
+        }else{
+            List<Note> noteList = this.list(new QueryWrapper<Note>().eq("uid", currentUid));
+            long count = noteList.stream().filter(item -> item.getPinned() == 1).count();
+            if(count>=2) {
+                throw new YanHuoException("最多只能置顶2个笔记");
+            }
+            note.setPinned(1);
+        }
+        return this.updateById(note);
     }
 }

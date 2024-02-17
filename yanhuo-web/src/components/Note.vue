@@ -47,6 +47,11 @@
                   </span>
                 </div>
               </div>
+              <div class="top-tag-area" v-show="type === 1 && item.pinned === 1">
+                <div class="top-wrapper">
+                  置顶
+                </div>
+              </div>
             </div>
           </template>
         </el-skeleton>
@@ -140,6 +145,31 @@ initData();
     object-fit: cover;
     border-radius: 8px;
   }
+
+  .card {
+    position: relative;
+
+    .top-tag-area {
+      position: absolute;
+      left: 12px;
+      top: 12px;
+      z-index: 4;
+
+      .top-wrapper {
+        background: #ff2442;
+        border-radius: 999px;
+        font-weight: 500;
+        color: #fff;
+        line-height: 120%;
+        font-size: 12px;
+        padding: 5px 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+  }
+
 
   .footer {
     padding: 12px;

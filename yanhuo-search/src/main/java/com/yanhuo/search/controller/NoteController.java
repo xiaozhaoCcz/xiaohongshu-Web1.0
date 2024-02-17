@@ -69,4 +69,13 @@ public class NoteController {
     public void addNoteBulkData(@RequestBody List<NoteSearchVo> noteSearchVoList) {
         noteService.addNoteBulkData(noteSearchVoList);
     }
+
+    /**
+     * 删除es中的笔记
+     * @param noteId
+     */
+    @RequestMapping("deleteNote/{noteId}")
+    public void deleteNote(@PathVariable String noteId) {
+        noteService.deleteNote(noteId);
+    }
 }

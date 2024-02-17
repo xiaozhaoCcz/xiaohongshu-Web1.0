@@ -50,9 +50,9 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
         Page<Note> notePage;
         if(currentUserId.equals(userId)){
             //是当前用户
-            notePage =noteService.page(new Page<>((int)currentPage,(int)pageSize),new QueryWrapper<Note>().eq("uid",userId).orderByDesc("update_date"));
+            notePage =noteService.page(new Page<>((int)currentPage,(int)pageSize),new QueryWrapper<Note>().eq("uid",userId).orderByDesc("pinned","update_date"));
         }else{
-            notePage =noteService.page(new Page<>((int)currentPage,(int)pageSize),new QueryWrapper<Note>().eq("uid",userId).eq("type",1).orderByDesc("update_date"));
+            notePage =noteService.page(new Page<>((int)currentPage,(int)pageSize),new QueryWrapper<Note>().eq("uid",userId).eq("type",1).orderByDesc("pinned","update_date"));
         }
         List<Note> noteList = notePage.getRecords();
         long total = notePage.getTotal();

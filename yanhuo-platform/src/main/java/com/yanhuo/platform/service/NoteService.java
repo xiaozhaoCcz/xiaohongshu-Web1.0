@@ -48,4 +48,11 @@ public interface NoteService extends IService<Note> {
      * @return 笔记集合
      */
     Page<NoteVo> getHotPage(long currentPage, long pageSize);
+
+    /**
+     * 置顶笔记
+     * @param noteId
+     * @return
+     */
+    boolean pinnedNote(String noteId);
 }

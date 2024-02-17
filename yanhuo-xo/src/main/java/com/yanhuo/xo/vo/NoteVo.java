@@ -47,6 +47,8 @@ public class NoteVo implements Serializable {
 
     private Long time;
 
+    private Integer pinned;
+
     //点赞关注收藏
     private Boolean isFollow;
 

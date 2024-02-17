@@ -1,6 +1,7 @@
 package com.yanhuo.platform;
 
 import cn.hutool.core.util.RandomUtil;
+import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.yanhuo.common.auth.AuthContextHolder;
@@ -20,12 +21,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import springfox.documentation.spring.web.json.Json;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -257,5 +260,23 @@ public class PlatformApplicationTests {
                 allFileList.add(file);
             }
         }
+    }
+
+    @Test
+    public void test10(){
+        String[] a ={"11","22"};
+        String jsonStr = JSONUtil.toJsonStr(a);
+
+        JSONArray objects = JSONUtil.parseArray(jsonStr);
+        Object[] array = objects.stream().toArray();
+        List<String> list = new ArrayList<String>();
+        for (Object o : array) {
+            System.out.println(o);
+            list.add((String) o);
+        }
+
+        System.out.println(list);
+
+
     }
 }
