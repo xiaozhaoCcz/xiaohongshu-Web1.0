@@ -5,12 +5,7 @@
       <div class="sug-box">
         <!---->
         <div class="sug-wrapper">
-          <div
-            class="sug-item"
-            v-for="(item, index) in dataList"
-            :key="index"
-            @click="searchPage(item.content)"
-          >
+          <div class="sug-item" v-for="(item, index) in dataList" :key="index" @click="searchPage(item.content)">
             <!---->
             <span v-html="item.highlightContent"></span>
           </div>
@@ -26,14 +21,13 @@ import { useSearchStore } from "@/store/searchStore";
 
 const searchStore = useSearchStore();
 const props = defineProps({
- recordList: {
+  recordList: {
     type: Array<any>,
     default: [],
   },
 });
 
-const dataList = ref<Array<any>>([])
-
+const dataList = ref<Array<any>>([]);
 
 const searchPage = (keyword: string) => {
   searchStore.setKeyword(keyword);
@@ -43,8 +37,8 @@ const searchPage = (keyword: string) => {
 };
 watchEffect(() => {
   dataList.value = [];
-  if(props.recordList.length>0){
-    dataList.value = props.recordList
+  if (props.recordList.length > 0) {
+    dataList.value = props.recordList;
   }
 });
 </script>
@@ -56,9 +50,12 @@ watchEffect(() => {
   margin-top: 8px;
   width: 100%;
   background-color: #fff;
-  box-shadow: 0 4px 32px 0 rgba(0, 0, 0, 0.08), 0 1px 4px 0 rgba(0, 0, 0, 0.04);
+  box-shadow:
+    0 4px 32px 0 rgba(0, 0, 0, 0.08),
+    0 1px 4px 0 rgba(0, 0, 0, 0.04);
   border-radius: 12px;
   overflow: scroll;
+  z-index: 9999;
 
   .sug-container {
     padding-top: 4px;

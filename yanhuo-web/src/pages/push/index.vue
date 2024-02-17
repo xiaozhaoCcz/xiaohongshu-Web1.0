@@ -142,7 +142,12 @@ onMounted(() => {
   });
 
   // replace(/<[^>]*>[^<]*(<[^>]*>)?/gi,"")
-  document.getElementById("post-textarea")!.addEventListener("input", () => {});
+  document.getElementById("post-textarea")!.addEventListener("input", (e) => {
+    var event = e || window.event;
+    var target = event.target || (event.srcElement as any);
+    target.placeholder = "";
+    console.log(target);
+  });
 });
 
 const addTag = () => {
@@ -343,7 +348,7 @@ a {
         font-size: 12px;
       }
 
-      .post-content::before {
+      .post-content:empty::before {
         content: attr(placeholder);
         color: #ccc;
         font-size: 14px;

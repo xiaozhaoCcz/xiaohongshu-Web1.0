@@ -139,6 +139,7 @@ onMounted(() => {
     0 1px 4px 0 rgba(0, 0, 0, 0.04);
   border-radius: 12px;
   overflow: scroll;
+  z-index: 9999;
 }
 
 .sug-container.query-trending {

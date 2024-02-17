@@ -141,7 +141,7 @@ initData();
   .reds-sticky {
     top: 72px;
     position: fixed;
-    z-index: 12;
+    z-index: 1;
     width: 40rem;
     box-sizing: border-box;
     height: 72px;
