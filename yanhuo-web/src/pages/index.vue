@@ -304,7 +304,7 @@ const connectWs = (uid: string) => {
   };
   ws.value.onclose = () => {
     console.log("连接断开");
-    if (userInfo.value != null) {
+    if (userInfo.value != null && userInfo.value != undefined) {
       connectWs(userInfo.value.id);
     }
   };
@@ -371,21 +371,22 @@ const logout = () => {
 };
 
 const getWsMessage = async () => {
-  if (userInfo.value != null) {
-    loginShow.value = false;
-    connectWs(userInfo.value.id);
-    const p = await getChatUserListMethod();
-    const q = (await getCountMessageMethod()) as any;
-
-    // TODO: 需要修复显示数量bug
-    const _countMessage = {} as any;
-    _countMessage.chatCount = p;
-    _countMessage.likeOrCollectionCount = q.likeOrCollectionCount;
-    _countMessage.commentCount = q.commentCount;
-    _countMessage.followCount = q.followCount;
-
-    messageCount.value = _countMessage;
+  if (userInfo.value === null || userInfo.value === undefined) {
+    return;
   }
+  loginShow.value = false;
+  connectWs(userInfo.value.id);
+  const p = await getChatUserListMethod();
+  const q = (await getCountMessageMethod()) as any;
+
+  // TODO: 需要修复显示数量bug
+  const _countMessage = {} as any;
+  _countMessage.chatCount = p;
+  _countMessage.likeOrCollectionCount = q.likeOrCollectionCount;
+  _countMessage.commentCount = q.commentCount;
+  _countMessage.followCount = q.followCount;
+
+  messageCount.value = _countMessage;
 };
 
 const initData = () => {

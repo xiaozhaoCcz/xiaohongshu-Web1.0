@@ -130,6 +130,9 @@ const postContent = ref(null);
 
 // 监听外部点击
 onMounted(() => {
+  if (!isLogin.value) {
+    return;
+  }
   document.getElementById("container")!.addEventListener("click", function (e) {
     var event = e || window.event;
     var target = event.target || (event.srcElement as any);
@@ -142,12 +145,7 @@ onMounted(() => {
   });
 
   // replace(/<[^>]*>[^<]*(<[^>]*>)?/gi,"")
-  document.getElementById("post-textarea")!.addEventListener("input", (e) => {
-    var event = e || window.event;
-    var target = event.target || (event.srcElement as any);
-    target.placeholder = "";
-    console.log(target);
-  });
+  document.getElementById("post-textarea")!.addEventListener("input", () => {});
 });
 
 const addTag = () => {
