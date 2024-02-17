@@ -1,7 +1,7 @@
 <template>
   <div class="sug-container-wrapper query-trending sug-pad">
     <div class="sug-container query-trending">
-      <div class="history">
+      <div class="history" v-show="historyRecordList != null && historyRecordList.length > 0">
         <div class="header">
           <span> 历史记录 </span>
           <div class="icon-group">

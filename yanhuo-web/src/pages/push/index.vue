@@ -26,19 +26,17 @@
           maxlength="20"
           show-word-limit
           type="text"
-          placeholder="Please input"
+          placeholder="请输入标题"
           class="input-title"
         />
-        <el-input
-          :rows="5"
-          maxlength="200"
-          show-word-limit
-          type="textarea"
-          v-model="content"
-          placeholder="Please input"
-          class="input-content"
-          id="inputContent"
-        />
+        <p
+          id="post-textarea"
+          ref="postContent"
+          class="post-content"
+          contenteditable="true"
+          data-tribute="true"
+          placeholder="填写更全面的描述信息，让更多的人看到你吧！"
+        ></p>
 
         <div v-infinite-scroll="loadMoreData" class="scroll-tag-container" v-show="showTagState">
           <p v-for="(item, index) in selectTagList" :key="index" class="scrollbar-tag-item" @click="selectTag(item)">
@@ -129,6 +127,7 @@ const pageSize = 10;
 const tagTotal = ref(0);
 const pushLoading = ref(false);
 const isLogin = ref(false);
+const postContent = ref(null);
 
 // 监听外部点击
 onMounted(() => {
@@ -142,6 +141,9 @@ onMounted(() => {
       showTagState.value = false;
     }
   });
+
+  // replace(/<[^>]*>[^<]*(<[^>]*>)?/gi,"")
+  document.getElementById("post-textarea")!.addEventListener("input", () => {});
 });
 
 const addTag = () => {
@@ -161,7 +163,10 @@ const setData = () => {
 };
 
 const selectTag = (val: any) => {
-  content.value += val.title;
+  // content.value += val.title;
+  const contentDom = document.getElementById("post-textarea");
+  contentDom!.innerHTML += `<a href='#' style='text-decoration:none'>#${val.title}</a>`;
+  console.log(contentDom!.innerHTML);
   tagList.value.push(val.id);
   showTagState.value = false;
 };
@@ -177,7 +182,7 @@ const handleChange = (ids: Array<any>) => {
 
 // 上传图片功能
 const pubslish = () => {
-  // 验证
+  //验证
   if (fileList.value.length <= 0) {
     ElMessage({
       message: "图片数量不能为空",
@@ -214,7 +219,7 @@ const pubslish = () => {
   note.value.count = fileList.value.length;
   note.value.type = 1;
   note.value.title = title.value;
-  note.value.content = content.value.split("#")[0];
+  note.value.content = document.getElementById("post-textarea")!.innerHTML.replace(/<[^>]*>[^<]*(<[^>]*>)?/gi, "");
   note.value.cpid = categoryList.value[0];
   note.value.cid = categoryList.value[1];
   note.value.tagList = tagList.value;
@@ -265,6 +270,9 @@ initData();
   height: 80px;
 }
 
+a {
+  text-decoration: none;
+}
 .container {
   flex: 1;
   padding-top: 72px;
@@ -336,6 +344,34 @@ initData();
 
       .input-content {
         font-size: 12px;
+      }
+
+      .post-content::before {
+        content: attr(placeholder);
+        color: #ccc;
+        font-size: 14px;
+      }
+      .post-content {
+        cursor: text;
+        margin-top: 10px;
+        width: 100%;
+        min-height: 90px;
+        max-height: 300px;
+        margin-bottom: 10px;
+        background: #fff;
+        border: 1px solid #d9d9d9;
+        border-radius: 4px;
+        padding: 6px 12px 22px;
+        outline: none;
+        overflow-y: auto;
+        text-rendering: optimizeLegibility;
+        font-size: 14px;
+        line-height: 22px;
+      }
+
+      .post-content:focus,
+      .post-content:hover {
+        border: 1px solid #3a64ff;
       }
     }
     .btns {

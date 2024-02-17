@@ -4,7 +4,7 @@
       <header class="mask-paper">
         <a style="display: flex">
           <!--  -->
-          烟火
+          <img src="@/assets/logo.png" style="width: 80px" />
         </a>
         <div class="tool-box"></div>
         <div class="input-box" id="sujContainer">
@@ -23,7 +23,7 @@
               <Close style="width: 1.2em; height: 1.2em; margin-right: 20px; margin-top: 5px" />
             </div>
             <div class="search-icon" @click="searchPage">
-              <Search style="width: 1.2em; height: 1.2em; margin-right: 20px; margin-top: 5px" />
+              <a href="#"><Search style="width: 1.2em; height: 1.2em; margin-right: 20px; margin-top: 5px" /></a>
             </div>
           </div>
           <SearchContainer v-show="showSearch" :recordList="recordList"></SearchContainer>
@@ -63,7 +63,7 @@
           </li>
         </ul>
 
-        <div class="information-container">
+        <div class="information-container" id="informationContainer">
           <div class="information-pad" v-show="padShow">
             <div class="container">
               <div>
@@ -190,15 +190,27 @@ onMounted(() => {
   document.getElementById("container")!.addEventListener("click", function (e) {
     let event = e || window.event;
     let target = event.target || (event.srcElement as any);
-    // if(target.id == "name") {
-    if (document.getElementById("sujContainer")!.contains(target)) {
-      console.log("在div内");
-    } else {
-      showHistory.value = false;
-      showSearch.value = false;
-    }
+    isInDiv("sujContainer", target).then((data) => {
+      if (!data) {
+        showHistory.value = false;
+        showSearch.value = false;
+      }
+    });
+
+    isInDiv("informationContainer", target).then((data) => {
+      if (!data) {
+        padShow.value = false;
+      }
+    });
   });
 });
+
+const isInDiv = (dom: string, target: any) => {
+  return new Promise((res) => {
+    const data = document.getElementById(dom)!.contains(target);
+    res(data);
+  });
+};
 
 const searchPage = () => {
   // 1.storage中添加搜索记录

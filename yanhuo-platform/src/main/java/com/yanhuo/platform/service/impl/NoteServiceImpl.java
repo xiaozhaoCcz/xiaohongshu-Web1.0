@@ -53,7 +53,6 @@ public class NoteServiceImpl extends ServiceImpl<NoteDao, Note> implements NoteS
     @Autowired
     OssClient ossClient;
 
-
     @Value("${oss.type}")
     Integer type;
 

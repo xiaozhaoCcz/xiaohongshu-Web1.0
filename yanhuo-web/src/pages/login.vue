@@ -7,7 +7,7 @@
         <Close style="width: 1em; height: 1em" />
       </div>
       <div class="left">
-        <img class="logo" src="#" />
+        <img class="logo" src="@/assets/logo.png" />
         <div class="course-video" style="display: none">
           <video
             src="https://fe-video-qc.xhscdn.com/fe-platform/f3ddbc4d8062e08c8684e1fa3bea7c2e2bb77c21.mp4"
