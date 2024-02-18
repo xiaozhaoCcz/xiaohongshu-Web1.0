@@ -123,6 +123,16 @@ public class NoteServiceImpl extends ServiceImpl<NoteDao, Note> implements NoteS
     }
 
     @Override
+    public void updateNote(NoteSearchVo noteSearchVo) {
+        try {
+            UpdateResponse<NoteSearchVo> updateResponse = elasticsearchClient.update(e -> e.index(NoteConstant.NOTE_INDEX).id(noteSearchVo.getId()).doc(noteSearchVo), NoteSearchVo.class);
+            log.info("updateResponse.result() = " + updateResponse.result());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     public void addNoteBulkData(List<NoteSearchVo> noteSearchVoList) {
         try {
             List<BulkOperation> result = new ArrayList<>();

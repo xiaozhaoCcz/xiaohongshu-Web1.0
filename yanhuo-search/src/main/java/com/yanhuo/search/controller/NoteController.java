@@ -59,6 +59,17 @@ public class NoteController {
         noteService.addNote(noteSearchVo);
     }
 
+
+    /**
+     * 修改笔记
+     *
+     * @param noteSearchVo 笔记实体
+     */
+    @PostMapping("updateNote")
+    public void updateNote(@RequestBody NoteSearchVo noteSearchVo) {
+        noteService.updateNote(noteSearchVo);
+    }
+
     /**
      * 批量增加笔记
      *

@@ -40,6 +40,13 @@ public interface NoteService extends IService<Note> {
     void addNote(NoteSearchVo noteSearchVo);
 
     /**
+     * 修改笔记
+     *
+     * @param noteSearchVo 笔记实体
+     */
+    void updateNote(NoteSearchVo noteSearchVo);
+
+    /**
      * 批量增加笔记
      *
      * @param noteSearchVoList 笔记实体集合
@@ -51,4 +58,6 @@ public interface NoteService extends IService<Note> {
      * @param noteId
      */
     void deleteNote(String noteId);
+
+
 }

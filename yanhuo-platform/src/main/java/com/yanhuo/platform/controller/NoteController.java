@@ -68,10 +68,9 @@ public class NoteController {
      * @return 笔记id
      */
     @PostMapping("updateNoteByDTO")
-    public Result<?> updateNoteByDTO(@RequestBody NoteDTO noteDTO) {
-        ValidatorUtils.validateEntity(noteDTO, UpdateGroup.class);
-        String id = noteService.updateNoteByDTO(noteDTO);
-        return Result.ok(id);
+    public Result<?> updateNoteByDTO(@RequestParam("noteData")String noteData, @RequestParam("uploadFiles")MultipartFile[] files) {
+        noteService.updateNoteByDTO(noteData,files);
+        return Result.ok();
     }
 
     /**

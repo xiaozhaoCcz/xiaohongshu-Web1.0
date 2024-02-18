@@ -29,6 +29,13 @@ public interface EsClient {
     void addNote(@RequestBody NoteSearchVo noteSearchVo);
 
     /**
+     * 修改一条笔记
+     * @param noteSearchVo 笔记实体
+     */
+    @RequestMapping("/search/note/updateNote")
+    void updateNote(@RequestBody NoteSearchVo noteSearchVo);
+
+    /**
      * 批量增加笔记
      * @param noteSearchVoList 笔记集合
      */

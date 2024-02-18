@@ -33,7 +33,7 @@
                     <el-dropdown-item v-if="noteInfo.pinned === 0" @click="pinned(noteInfo.id, 1)">置顶</el-dropdown-item>
                     <el-dropdown-item v-else @click="pinned(noteInfo.id, 0)">取消置顶</el-dropdown-item>
                     <el-dropdown-item @click="deleteNote(noteInfo.id)">删除</el-dropdown-item>
-                    <el-dropdown-item>编辑</el-dropdown-item>
+                    <el-dropdown-item @click="toEdit(noteInfo.id)">编辑</el-dropdown-item>
                   </el-dropdown-menu>
                 </template>
               </el-dropdown>
@@ -274,6 +274,10 @@ const deleteNote = (noteId: string) => {
     });
     emit("clickMain");
   })
+}
+
+const toEdit = (noteId: string) => {
+  router.push({ path: "/push", query: { date: Date.now(), noteId: noteId } });
 }
 
 const clickComment = (comment: any) => {

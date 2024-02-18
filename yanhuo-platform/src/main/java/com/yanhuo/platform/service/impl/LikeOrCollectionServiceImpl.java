@@ -5,8 +5,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yanhuo.common.auth.AuthContextHolder;
 import com.yanhuo.common.utils.ConvertUtils;
-import com.yanhuo.common.utils.RedisUtils;
-import com.yanhuo.platform.client.ChatClient;
 import com.yanhuo.platform.im.ChatUtils;
 import com.yanhuo.platform.service.*;
 import com.yanhuo.xo.dao.LikeOrCollectionDao;
@@ -27,13 +25,6 @@ import java.util.stream.Collectors;
  */
 @Service
 public class LikeOrCollectionServiceImpl extends ServiceImpl<LikeOrCollectionDao, LikeOrCollection> implements LikeOrCollectionService {
-
-    @Autowired
-    RedisUtils redisUtils;
-
-    @Autowired
-    ChatClient chatClient;
-
     @Autowired
     NoteService noteService;
 

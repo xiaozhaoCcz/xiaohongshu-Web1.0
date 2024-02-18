@@ -1,4 +1,6 @@
 
+
+import axios from 'axios'
 export const formatDate = (t: number): string => {
   t = t || Date.now();
   const time = new Date(t);
@@ -78,4 +80,45 @@ export const getRandomString = (len: number) => {
     _str += _charStr[index];
   }
   return _str;
+}
+
+
+
+export const getFileFromUrl = async (url: string, fileName: string) => {
+  try {
+    // 第一步：使用axios获取网络图片数据
+    const response = await axios.get(url, { responseType: 'arraybuffer' })
+
+    // 第二步：将图片数据转换为Blob对象
+    const blob = new Blob([response.data], {
+      type: response.headers['content-type']
+    })
+
+    // 第三步：创建一个新的File对象
+    const file = new File([blob], fileName, {
+      type: response.headers['content-type']
+    })
+
+    return file
+  } catch (error) {
+    console.error('将图片转换为File对象时发生错误:', error)
+    throw error
+  }
+}
+
+/**
+ * 得到html标签中的内容
+ * @param content 
+ */
+export const getHtmlContent = (html: string) => {
+
+  const pattern = /<[a-z]+[1-6]?\b[^>]*>(.*?)<\/[a-z]+[1-6]?>/g;
+  const res = [];
+  let match;
+
+  while ((match = pattern.exec(html)) !== null) {
+    const content = match[1].trim();
+    res.push(content);
+  }
+  return res;
 }

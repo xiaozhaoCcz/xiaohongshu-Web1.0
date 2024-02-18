@@ -4,7 +4,8 @@
       <div class="header"><span class="header-icon"></span><span class="header-title">发布图文</span></div>
       <div class="img-list">
         <el-upload v-model:file-list="fileList" action="http://localhost:88/api/util/oss/saveBatch/0"
-          list-type="picture-card" multiple :limit="9" :headers="uploadHeader" :auto-upload="false">
+          list-type="picture-card" multiple :limit="9" :headers="uploadHeader" :auto-upload="false"
+          :on-change="changeFiles">
           <el-icon>
             <Plus />
           </el-icon>
@@ -16,7 +17,8 @@
       </div>
       <el-divider style="margin: 12px; width: 576px" />
       <div class="push-content">
-        <el-input v-model="title" maxlength="20" show-word-limit type="text" placeholder="请输入标题" class="input-title" />
+        <el-input v-model="note.title" maxlength="20" show-word-limit type="text" placeholder="请输入标题"
+          class="input-title" />
         <p id="post-textarea" ref="postContent" class="post-content" contenteditable="true" data-tribute="true"
           placeholder="填写更全面的描述信息，让更多的人看到你吧！"></p>
 
@@ -60,12 +62,14 @@
 <script lang="ts" setup>
 import { ref, onMounted } from "vue";
 import { Plus } from "@element-plus/icons-vue";
+import { useRoute } from "vue-router";
 import type { UploadUserFile, CascaderProps } from "element-plus";
-import { ElMessage } from "element-plus";
+import { ElMessage, UploadProps } from "element-plus";
 import { useUserStore } from "@/store/userStore";
 import { getCategoryTreeData } from "@/api/category";
-import { saveNoteByDTO } from "@/api/note";
+import { saveNoteByDTO, getNoteById, updateNoteByDTO } from "@/api/note";
 import { getPageTagByKeyword } from "@/api/tag";
+import { getFileFromUrl, getHtmlContent } from "@/utils/util";
 // import Schema from "async-validator";
 // import Crop from "@/components/Crop.vue";
 const props: CascaderProps = {
@@ -81,12 +85,12 @@ const props: CascaderProps = {
 // const validator = new Schema(rules);
 
 const userStore = useUserStore();
+const route = useRoute();
 
 const fileList = ref<UploadUserFile[]>([]);
 
 const dialogImageUrl = ref("");
 const dialogVisible = ref(false);
-const title = ref("");
 const uploadHeader = ref({
   accessToken: userStore.getToken(),
 });
@@ -94,7 +98,6 @@ const categoryList = ref<Array<any>>([]);
 const options = ref([]);
 const note = ref<any>({});
 const showTagState = ref(false);
-const tagList = ref<Array<any>>([]);
 const selectTagList = ref<Array<any>>([]);
 const currentPage = ref(1);
 const pageSize = 10;
@@ -120,7 +123,11 @@ onMounted(() => {
   });
 
   // replace(/<[^>]*>[^<]*(<[^>]*>)?/gi,"")
-  document.getElementById("post-textarea")!.addEventListener("input", () => { });
+  document.getElementById("post-textarea")!.addEventListener("input", (e) => {
+    var event = e || window.event;
+    var target = event.target || (event.srcElement as any);
+    console.log(target);
+  });
 });
 
 const addTag = () => {
@@ -143,7 +150,7 @@ const selectTag = (val: any) => {
   const contentDom = document.getElementById("post-textarea");
   contentDom!.innerHTML += `<a href='#' style='text-decoration:none'>#${val.title}</a>`;
   console.log(contentDom!.innerHTML);
-  tagList.value.push(val.id);
+  // note.value.tagList.push(val.id);
   showTagState.value = false;
 };
 
@@ -156,6 +163,33 @@ const handleChange = (ids: Array<any>) => {
   categoryList.value = ids;
 };
 
+const changeFiles: UploadProps['onChange'] = (uploadFile, uploadFiles) => {
+  console.log("---filename", uploadFile, uploadFiles)
+}
+
+const getNoteByIdMethod = (noteId: string) => {
+  getNoteById(noteId).then((res) => {
+    console.log("---edit", res.data)
+    const { data } = res;
+    note.value = data;
+    const urls = JSON.parse(data.urls);
+    console.log(urls)
+    urls.forEach((item: string) => {
+      const fileName = item.substring(item.lastIndexOf("/") + 1)
+      console.log(fileName)
+      getFileFromUrl(item, fileName).then((res: any) => {
+        fileList.value.push({ name: fileName, url: item, raw: res })
+      })
+    })
+    categoryList.value.push(data.cpid);
+    categoryList.value.push(data.cid);
+    document.getElementById("post-textarea")!.innerHTML += data.content
+    data.tagList.forEach((item: any) => {
+      document.getElementById("post-textarea")!.innerHTML += `<a href='#' style='text-decoration:none'>#${item.title}</a>`;
+    })
+  })
+}
+
 // 上传图片功能
 const pubslish = () => {
   //验证
@@ -167,7 +201,7 @@ const pubslish = () => {
     return;
   }
 
-  if (title.value === null) {
+  if (note.value.title === null) {
     ElMessage({
       message: "标题或内容不能为空",
       type: "error",
@@ -190,40 +224,78 @@ const pubslish = () => {
 
   fileList.value.forEach((file: any) => {
     params.append("uploadFiles", file.raw);
+    console.log(file.raw)
   });
 
   note.value.count = fileList.value.length;
   note.value.type = 1;
-  note.value.title = title.value;
   note.value.content = document.getElementById("post-textarea")!.innerHTML.replace(/<[^>]*>[^<]*(<[^>]*>)?/gi, "");
   note.value.cpid = categoryList.value[0];
   note.value.cid = categoryList.value[1];
-  note.value.tagList = tagList.value;
+  note.value.tagList = [];
+  const _content = getHtmlContent(document.getElementById("post-textarea")!.innerHTML);
+  console.log(_content)
+  _content.forEach((item: string) => {
+    note.value.tagList.push(item.replace("#", ""))
+  })
+
   const coverImage = new Image();
   coverImage.src = fileList.value[0].url!;
   coverImage.onload = () => {
     const size = coverImage.width / coverImage.height;
     note.value.noteCoverHeight = size >= 1.3 ? 200 : 300;
     const noteData = JSON.stringify(note.value);
+    console.log("---noteData", noteData)
     params.append("noteData", noteData);
-    saveNoteByDTO(params).then(() => {
-      note.value = {};
-      title.value = "";
-      categoryList.value = [];
-      fileList.value = [];
-      tagList.value = [];
-      ElMessage({
-        message: "发布成功",
-        type: "success",
-      });
+
+    if (note.value.id !== null) {
+      updateNote(params);
+    } else {
+      saveNote(params);
+    }
+    setTimeout(() => {
       pushLoading.value = false;
-    });
+    }, 5000);
   };
 };
+
+const updateNote = (params: FormData) => {
+  updateNoteByDTO(params).then(() => {
+    resetData();
+    ElMessage({
+      message: "修改成功",
+      type: "success",
+    });
+  });
+}
+
+const saveNote = (params: FormData) => {
+  saveNoteByDTO(params).then(() => {
+    resetData();
+    ElMessage({
+      message: "发布成功",
+      type: "success",
+    });
+
+  });
+}
+
+const resetData = () => {
+  note.value = {};
+  document.getElementById("post-textarea")!.innerHTML = "";
+  categoryList.value = [];
+  fileList.value = [];
+  pushLoading.value = false;
+}
 
 const initData = () => {
   isLogin.value = userStore.isLogin();
   if (isLogin.value) {
+    const noteId = route.query.noteId as string;
+    console.log("---noteId", noteId);
+    if (noteId !== "" && noteId !== undefined) {
+      getNoteByIdMethod(noteId)
+    }
     getCategoryTreeData().then((res) => {
       options.value = res.data;
     });

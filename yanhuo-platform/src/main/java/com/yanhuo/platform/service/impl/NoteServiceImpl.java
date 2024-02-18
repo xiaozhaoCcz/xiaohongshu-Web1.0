@@ -17,16 +17,14 @@ import com.yanhuo.xo.dto.NoteDTO;
 import com.yanhuo.xo.entity.*;
 import com.yanhuo.xo.vo.NoteSearchVo;
 import com.yanhuo.xo.vo.NoteVo;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -55,11 +53,48 @@ public class NoteServiceImpl extends ServiceImpl<NoteDao, Note> implements NoteS
     @Autowired
     LikeOrCollectionService likeOrCollectionService;
 
+
+    @Autowired
+    CommentService commentService;
+
+
+    @Autowired
+    AlbumNoteRelationService albumNoteRelationService;
+
     @Autowired
     OssClient ossClient;
 
     @Value("${oss.type}")
     Integer type;
+
+    @NotNull
+    private StringBuilder getTags(Note note,NoteDTO noteDTO) {
+        List<String> tagList = noteDTO.getTagList();
+        List<TagNoteRelation> tagNoteRelationList = new ArrayList<>();
+        List<Tag> tagList1 = tagService.list();
+        Map<String, Tag> tagMap = tagList1.stream().collect(Collectors.toMap(Tag::getTitle, tag -> tag));
+        StringBuilder tags= new StringBuilder();
+        if(!tagList.isEmpty()){
+            for (String tag : tagList) {
+                TagNoteRelation tagNoteRelation = new TagNoteRelation();
+                if(tagMap.containsKey(tag)){
+                    Tag tagModel = tagMap.get(tag);
+                    tagNoteRelation.setTid(tagModel.getId());
+                }else{
+                    Tag model = new Tag();
+                    model.setTitle(tag);
+                    model.setLikeCount(1L);
+                    tagService.save(model);
+                    tagNoteRelation.setTid(model.getId());
+                }
+                tagNoteRelation.setNid(note.getId());
+                tagNoteRelationList.add(tagNoteRelation);
+                tags.append(tag);
+            }
+            tagNoteRelationService.saveBatch(tagNoteRelationList);
+        }
+        return tags;
+    }
 
 
     @Override
@@ -108,35 +143,23 @@ public class NoteServiceImpl extends ServiceImpl<NoteDao, Note> implements NoteS
         if(!save){
             return null;
         }
-        // TODO 需要往专辑中添加
+        // TODO 存在数据一致性问题，需要往专辑中添加
 
         User user = userService.getById(currentUid);
         user.setTrendCount(user.getTrendCount() + 1);
         userService.updateById(user);
+        // 获取所有的标签
+        StringBuilder tags = getTags(note, noteDTO);
 
-        List<String> tids = noteDTO.getTagList();
-        List<TagNoteRelation> tagNoteRelationList = new ArrayList<>();
-
-        String tags="";
-        if(!tids.isEmpty()){
-            for (String tid : tids) {
-                TagNoteRelation tagNoteRelation = new TagNoteRelation();
-                tagNoteRelation.setTid(tid);
-                tagNoteRelation.setNid(note.getId());
-                tagNoteRelationList.add(tagNoteRelation);
-            }
-            tagNoteRelationService.saveBatch(tagNoteRelationList);
-            tags  = tagService.listByIds(tids).stream().map(Tag::getTitle).collect(Collectors.joining(","));
-        }
         Category category = categoryService.getById(note.getCid());
         Category parentCategory = categoryService.getById(note.getCpid());
 
-        List<String> dataList;
+        List<String> dataList = null;
         try {
             Result<List<String>> result = ossClient.saveBatch(files, type);
             dataList = result.getData();
         }catch (Exception e){
-           throw new YanHuoException("添加图片失败");
+           e.printStackTrace();
         }
         String[] urlArr = dataList.toArray(new String[dataList.size()]);
         String urls = JSONUtil.toJsonStr(urlArr);
@@ -151,17 +174,19 @@ public class NoteServiceImpl extends ServiceImpl<NoteDao, Note> implements NoteS
                 .setLikeCount(0L)
                 .setCategoryName(category.getTitle())
                 .setCategoryParentName(parentCategory.getTitle())
-                .setTags(tags)
+                .setTags(tags.toString())
                 .setTime(note.getUpdateDate().getTime());
         esClient.addNote(noteSearchVo);
         return note.getId();
     }
 
+
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteNoteByIds(List<String> noteIds) {
         List<Note> noteList = this.listByIds(noteIds);
-        // TODO 这里可以优化
+        // TODO 这里需要优化，数据一致性问题
         noteList.forEach(item->{
             esClient.deleteNote(item.getId());
             String urls = item.getUrls();
@@ -172,13 +197,75 @@ public class NoteServiceImpl extends ServiceImpl<NoteDao, Note> implements NoteS
                 pathArr.add((String) o);
             }
             ossClient.deleteBatch(pathArr,type);
+
+            // TODO 可以使用多线程优化，
+            // 删除点赞图片，评论，标签关系，收藏关系
+            likeOrCollectionService.remove(new QueryWrapper<LikeOrCollection>().eq("like_or_collection_id", item));
+            List<Comment> commentList = commentService.list(new QueryWrapper<Comment>().eq("nid", item));
+            List<String> cids = commentList.stream().map(Comment::getId).collect(Collectors.toList());
+            likeOrCollectionService.remove(new QueryWrapper<LikeOrCollection>().in("like_or_collection_id", cids).eq("type", 2));
+            commentService.removeBatchByIds(cids);
+            tagNoteRelationService.remove(new QueryWrapper<TagNoteRelation>().eq("nid",item));
+            albumNoteRelationService.remove(new QueryWrapper<AlbumNoteRelation>().eq("nid",item));
         });
         this.removeBatchByIds(noteIds);
     }
 
     @Override
-    public String updateNoteByDTO(NoteDTO noteDTO) {
-        return null;
+    @Transactional(rollbackFor = Exception.class)
+    public void  updateNoteByDTO(String noteData, MultipartFile[] files) {
+        // TODO 需要解决数据一致性问题
+        String currentUid = AuthContextHolder.getUserId();
+        NoteDTO noteDTO = JSONUtil.toBean(noteData, NoteDTO.class);
+        Note note =ConvertUtils.sourceToTarget(noteDTO, Note.class);
+        note.setUid(currentUid);
+        boolean flag = this.updateById(note);
+        if(!flag){
+            return;
+        }
+
+        Category category = categoryService.getById(note.getCid());
+        Category parentCategory = categoryService.getById(note.getCpid());
+
+        List<String> dataList = null;
+        try {
+            Result<List<String>> result = ossClient.saveBatch(files, type);
+            dataList = result.getData();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        // 删除原来图片的地址
+        String urls = note.getUrls();
+        JSONArray objects = JSONUtil.parseArray(urls);
+        Object[] array = objects.toArray();
+        List<String> pathArr = new ArrayList<>();
+        for (Object o : array) {
+            pathArr.add((String) o);
+        }
+        ossClient.deleteBatch(pathArr,type);
+
+        String[] urlArr = dataList.toArray(new String[dataList.size()]);
+        String newUrls = JSONUtil.toJsonStr(urlArr);
+        note.setUrls(newUrls);
+        note.setNoteCover(urlArr[0]);
+        this.updateById(note);
+
+        // 删除原来的标签绑定关系
+        tagNoteRelationService.remove(new QueryWrapper<TagNoteRelation>().eq("nid",note.getId()));
+        // 重新绑定标签关系
+        StringBuilder tags = getTags(note, noteDTO);
+
+        User user = userService.getById(currentUid);
+
+        NoteSearchVo noteSearchVo = ConvertUtils.sourceToTarget(note, NoteSearchVo.class);
+        noteSearchVo.setUsername(user.getUsername())
+                .setAvatar(user.getAvatar())
+                .setCategoryName(category.getTitle())
+                .setCategoryParentName(parentCategory.getTitle())
+                .setTags(tags.toString())
+                .setTime(note.getUpdateDate().getTime());
+        esClient.updateNote(noteSearchVo);
     }
 
     @Override

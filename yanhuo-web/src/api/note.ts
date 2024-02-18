@@ -30,6 +30,20 @@ export const saveNoteByDTO = (data: any) => {
 };
 
 /**
+ * 更新笔记
+ * @param data 笔记实体
+ * @returns 笔记id
+ */
+export const updateNoteByDTO = (data: any) => {
+  return request<any>({
+    url: "/platform/note/updateNoteByDTO", // mock接口
+    method: "post",
+    data: data,
+    headers: { "Content-Type": "multipart/form-data;boundary=----WebKitFormBoundaryk4ZvuPo6pkphe7Pl" },
+  });
+};
+
+/**
  * 置顶笔记
  * @param noteId 
  * @returns 

@@ -31,6 +31,10 @@ public class NoteVo implements Serializable {
 
     private String urls;
 
+    private String cid;
+
+    private String cpid;
+
     //图片数量
     private Integer count;
 

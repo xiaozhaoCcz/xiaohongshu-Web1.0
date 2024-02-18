@@ -38,7 +38,7 @@ public interface NoteService extends IService<Note> {
      * @param noteDTO 笔记实体
      * @return 笔记id
      */
-    String updateNoteByDTO(NoteDTO noteDTO);
+    void updateNoteByDTO(String noteData, MultipartFile[] files);
 
     /**
      * 获取热门的笔记数据
