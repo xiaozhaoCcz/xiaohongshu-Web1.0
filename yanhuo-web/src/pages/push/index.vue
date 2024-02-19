@@ -4,8 +4,7 @@
       <div class="header"><span class="header-icon"></span><span class="header-title">发布图文</span></div>
       <div class="img-list">
         <el-upload v-model:file-list="fileList" action="http://localhost:88/api/util/oss/saveBatch/0"
-          list-type="picture-card" multiple :limit="9" :headers="uploadHeader" :auto-upload="false"
-          :on-change="changeFiles">
+          list-type="picture-card" multiple :limit="9" :headers="uploadHeader" :auto-upload="false">
           <el-icon>
             <Plus />
           </el-icon>
@@ -64,7 +63,7 @@ import { ref, onMounted } from "vue";
 import { Plus } from "@element-plus/icons-vue";
 import { useRoute } from "vue-router";
 import type { UploadUserFile, CascaderProps } from "element-plus";
-import { ElMessage, UploadProps } from "element-plus";
+import { ElMessage } from "element-plus";
 import { useUserStore } from "@/store/userStore";
 import { getCategoryTreeData } from "@/api/category";
 import { saveNoteByDTO, getNoteById, updateNoteByDTO } from "@/api/note";
@@ -123,11 +122,7 @@ onMounted(() => {
   });
 
   // replace(/<[^>]*>[^<]*(<[^>]*>)?/gi,"")
-  document.getElementById("post-textarea")!.addEventListener("input", (e) => {
-    var event = e || window.event;
-    var target = event.target || (event.srcElement as any);
-    console.log(target);
-  });
+  document.getElementById("post-textarea")!.addEventListener("input", () => { });
 });
 
 const addTag = () => {
@@ -150,7 +145,6 @@ const selectTag = (val: any) => {
   const contentDom = document.getElementById("post-textarea");
   contentDom!.innerHTML += `<a href='#' style='text-decoration:none'>#${val.title}</a>`;
   console.log(contentDom!.innerHTML);
-  // note.value.tagList.push(val.id);
   showTagState.value = false;
 };
 
@@ -162,10 +156,6 @@ const loadMoreData = () => {
 const handleChange = (ids: Array<any>) => {
   categoryList.value = ids;
 };
-
-const changeFiles: UploadProps['onChange'] = (uploadFile, uploadFiles) => {
-  console.log("---filename", uploadFile, uploadFiles)
-}
 
 const getNoteByIdMethod = (noteId: string) => {
   getNoteById(noteId).then((res) => {
@@ -245,9 +235,7 @@ const pubslish = () => {
     const size = coverImage.width / coverImage.height;
     note.value.noteCoverHeight = size >= 1.3 ? 200 : 300;
     const noteData = JSON.stringify(note.value);
-    console.log("---noteData", note.value.id)
     params.append("noteData", noteData);
-
 
     if (note.value.id !== null && note.value.id !== undefined) {
       updateNote(params);

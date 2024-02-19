@@ -236,10 +236,8 @@ public class NoteServiceImpl extends ServiceImpl<NoteDao, Note> implements NoteS
         if(!flag){
             return;
         }
-
         Category category = categoryService.getById(note.getCid());
         Category parentCategory = categoryService.getById(note.getCpid());
-
         List<String> dataList = null;
         try {
             Result<List<String>> result = ossClient.saveBatch(files, type);
@@ -247,7 +245,6 @@ public class NoteServiceImpl extends ServiceImpl<NoteDao, Note> implements NoteS
         }catch (Exception e){
             e.printStackTrace();
         }
-
         // 删除原来图片的地址
         String urls = note.getUrls();
         JSONArray objects = JSONUtil.parseArray(urls);
