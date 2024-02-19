@@ -37,7 +37,6 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   (response: AxiosResponse) => {
     const { code } = response.data;
-    console.log(code);
     if (code === 200) {
       return response.data;
     }
@@ -58,11 +57,9 @@ service.interceptors.response.use(
           .getNewToken(refreshToken)
           .then(async (rftRes) => {
             console.log("rftRes", rftRes);
-            const { accessToken } = rftRes.data;
-            console.log("accessToken", accessToken);
-
+            const { accessToken, refreshToken } = rftRes.data;
             storage.set("accessToken", accessToken);
-
+            storage.set("refreshToken", refreshToken);
             config.headers.accessToken = accessToken;
             // 重新请求一下第一个 501 的接口
             const firstReqRes = await service.request(config);
@@ -71,19 +68,7 @@ service.interceptors.response.use(
             // 队列中的请求执行完毕后，清空数组
             requestsQueue = [];
             return firstReqRes;
-          })
-          .catch((rftErr) => {
-            // 参数依据接口返回状态码字段
-            console.log("123", rftErr.data);
-
-            // 如果refreshtoken过期则跳转到登录页面
-            if (rftErr.data.code == 401) {
-              window.localStorage.clear();
-              ElMessage.error("登录过期，请重新登陆");
-            }
-            return Promise.reject(rftErr);
-          })
-          .finally(() => {
+          }).finally(() => {
             isRefreshing = false;
           });
       } else {
@@ -100,11 +85,19 @@ service.interceptors.response.use(
         });
       }
     }
-    return Promise.reject(response);
-  },
-  (error: any) => {
-    console.log("错误请求", error);
-    return Promise.reject(error);
+    Promise.reject(response).catch((error: any) => {
+      console.log("错误请求", error);
+      const { data } = error;
+      if (data.code == 401) {
+        window.localStorage.clear();
+        ElMessage.error("登录过期，请重新登陆");
+        setTimeout(() => {
+          window.location.href = "/"
+        }, 1000)
+      } else {
+        ElMessage.error(data.message);
+      }
+    });
   }
 );
 

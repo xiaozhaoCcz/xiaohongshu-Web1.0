@@ -33,6 +33,17 @@ public class UserLoginInterceptor implements HandlerInterceptor {
                              HttpServletResponse response,
                              Object handler) {
 
+        //获取方法处理器
+        HandlerMethod handlerMethod = (HandlerMethod) handler;
+        NoLoginIntercept noLoginIntercept =
+                handlerMethod.getMethod()//这一步是获取到我们要访问的方法
+                        //然后根据我们制定的自定义注解的Class对象来获取到对应的注解
+                        .getAnnotation(NoLoginIntercept.class);
+
+        if(noLoginIntercept!=null){
+            return true;
+        }
+
         String accessToken = request.getHeader(TokenConstant.ACCESS_TOKEN);
         log.info("accessToken:{},{}", accessToken,WebUtils.getRequestHeader(UserConstant.USER_ID));
         //判断token不为空
@@ -46,16 +57,6 @@ public class UserLoginInterceptor implements HandlerInterceptor {
             return true;
         }
 
-        //获取方法处理器
-        HandlerMethod handlerMethod = (HandlerMethod) handler;
-        NoLoginIntercept noLoginIntercept =
-                handlerMethod.getMethod()//这一步是获取到我们要访问的方法
-                        //然后根据我们制定的自定义注解的Class对象来获取到对应的注解
-                        .getAnnotation(NoLoginIntercept.class);
-
-        if(noLoginIntercept!=null){
-            return true;
-        }
         throw new YanHuoException(ResultCodeEnum.TOKEN_FAIL.getMessage(), ResultCodeEnum.TOKEN_FAIL.getCode());
     }
 

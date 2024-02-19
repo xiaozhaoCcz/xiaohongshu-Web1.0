@@ -43,7 +43,7 @@ public class AuthUserServiceImpl extends ServiceImpl<UserDao, User> implements A
         String accessToken = JwtUtils.getJwtToken(authUser.getId(), AuthConstant.ACCESS_TOKEN_EXPIRATION_TIME);
         String refreshToken = JwtUtils.getJwtToken(authUser.getId(), AuthConstant.REFRESH_TOKEN_EXPIRATION_TIME);
         //缓存当前登录用户 refreshToken 创建的起始时间，这个会在刷新accessToken方法中 判断是否要重新生成(刷新)refreshToken时用到
-        redisUtils.set(AuthConstant.REFRESH_TOKEN_START_TIME + authUser.getId(), String.valueOf(System.currentTimeMillis()), 3 * 60);
+        redisUtils.setEx(AuthConstant.REFRESH_TOKEN_START_TIME + authUser.getId(), String.valueOf(System.currentTimeMillis()), AuthConstant.REFRESH_TOKEN_EXPIRATION_TIME, TimeUnit.MILLISECONDS);
         //将用户信息保存在redis中
         redisUtils.set(AuthConstant.USER_KEY + authUser.getId(), JSONUtil.toJsonStr(authUser));
         map.put(TokenConstant.ACCESS_TOKEN, accessToken);
