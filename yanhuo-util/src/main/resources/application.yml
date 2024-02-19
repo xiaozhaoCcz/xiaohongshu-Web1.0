@@ -1,12 +1,12 @@
 server:
   port: 8805
+  servlet:
+    context-path: /util
 
 spring:
   application:
     name: yanhuo-util
   servlet:
-    servlet:
-      context-path: /util
     multipart:
       max-file-size: 1024MB
       max-request-size: 1024MB

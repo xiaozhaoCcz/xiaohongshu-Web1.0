@@ -34,7 +34,6 @@ public class YanHuoException extends RuntimeException{
         this.code = ResultCodeEnum.FAIL.getCode();
     }
 
-
     /**
      * 接收枚举类型对象
      * @param resultCodeEnum

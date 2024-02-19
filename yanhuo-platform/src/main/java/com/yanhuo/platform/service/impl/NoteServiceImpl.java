@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yanhuo.common.auth.AuthContextHolder;
 import com.yanhuo.common.exception.YanHuoException;
 import com.yanhuo.common.result.Result;
+import com.yanhuo.common.result.ResultCodeEnum;
 import com.yanhuo.common.utils.ConvertUtils;
 import com.yanhuo.platform.client.EsClient;
 import com.yanhuo.platform.client.OssClient;
@@ -17,6 +18,7 @@ import com.yanhuo.xo.dto.NoteDTO;
 import com.yanhuo.xo.entity.*;
 import com.yanhuo.xo.vo.NoteSearchVo;
 import com.yanhuo.xo.vo.NoteVo;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -57,6 +59,8 @@ public class NoteServiceImpl extends ServiceImpl<NoteDao, Note> implements NoteS
     @Autowired
     CommentService commentService;
 
+    @Autowired
+    CommentSyncService commentSyncService;
 
     @Autowired
     AlbumNoteRelationService albumNoteRelationService;
@@ -100,6 +104,9 @@ public class NoteServiceImpl extends ServiceImpl<NoteDao, Note> implements NoteS
     @Override
     public NoteVo getNoteById(String noteId) {
         Note note = this.getById(noteId);
+        if(note==null){
+            throw  new YanHuoException(ResultCodeEnum.FAIL);
+        }
         note.setViewCount(note.getViewCount() + 1);
         User user = userService.getById(note.getUid());
         NoteVo noteVo = ConvertUtils.sourceToTarget(note, NoteVo.class);
@@ -188,7 +195,9 @@ public class NoteServiceImpl extends ServiceImpl<NoteDao, Note> implements NoteS
         List<Note> noteList = this.listByIds(noteIds);
         // TODO 这里需要优化，数据一致性问题
         noteList.forEach(item->{
-            esClient.deleteNote(item.getId());
+            String noteId = item.getId();
+            esClient.deleteNote(noteId);
+
             String urls = item.getUrls();
             JSONArray objects = JSONUtil.parseArray(urls);
             Object[] array = objects.toArray();
@@ -197,16 +206,20 @@ public class NoteServiceImpl extends ServiceImpl<NoteDao, Note> implements NoteS
                 pathArr.add((String) o);
             }
             ossClient.deleteBatch(pathArr,type);
-
             // TODO 可以使用多线程优化，
             // 删除点赞图片，评论，标签关系，收藏关系
-            likeOrCollectionService.remove(new QueryWrapper<LikeOrCollection>().eq("like_or_collection_id", item));
-            List<Comment> commentList = commentService.list(new QueryWrapper<Comment>().eq("nid", item));
+            likeOrCollectionService.remove(new QueryWrapper<LikeOrCollection>().eq("like_or_collection_id", noteId));
+            List<Comment> commentList = commentService.list(new QueryWrapper<Comment>().eq("nid", noteId));
+            List<CommentSync> commentSyncList = commentSyncService.list(new QueryWrapper<CommentSync>().eq("nid", noteId));
             List<String> cids = commentList.stream().map(Comment::getId).collect(Collectors.toList());
-            likeOrCollectionService.remove(new QueryWrapper<LikeOrCollection>().in("like_or_collection_id", cids).eq("type", 2));
+            List<String> cids2 = commentSyncList.stream().map(CommentSync::getId).collect(Collectors.toList());
+            if(!cids.isEmpty()){
+                likeOrCollectionService.remove(new QueryWrapper<LikeOrCollection>().in("like_or_collection_id", cids).eq("type", 2));
+            }
             commentService.removeBatchByIds(cids);
-            tagNoteRelationService.remove(new QueryWrapper<TagNoteRelation>().eq("nid",item));
-            albumNoteRelationService.remove(new QueryWrapper<AlbumNoteRelation>().eq("nid",item));
+            commentSyncService.removeBatchByIds(cids2);
+            tagNoteRelationService.remove(new QueryWrapper<TagNoteRelation>().eq("nid",noteId));
+            albumNoteRelationService.remove(new QueryWrapper<AlbumNoteRelation>().eq("nid",noteId));
         });
         this.removeBatchByIds(noteIds);
     }

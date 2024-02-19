@@ -2,6 +2,7 @@ package com.yanhuo.xo.dto;
 
 import com.yanhuo.common.validator.group.AddGroup;
 import com.yanhuo.common.validator.group.DefaultGroup;
+import com.yanhuo.common.validator.group.UpdateGroup;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -16,6 +17,10 @@ import java.util.List;
 @Data
 @ApiModel(value = "笔记DTO")
 public class NoteDTO implements Serializable {
+
+    @ApiModelProperty("id")
+    @NotBlank(message = "标题不能为空", groups = UpdateGroup.class)
+    private String id;
 
     @ApiModelProperty("笔记标题")
     @NotBlank(message = "标题不能为空", groups = AddGroup.class)

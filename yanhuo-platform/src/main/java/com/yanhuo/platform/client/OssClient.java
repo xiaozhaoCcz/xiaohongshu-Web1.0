@@ -29,6 +29,12 @@ public interface OssClient {
     @PostMapping(value = "/util/oss/saveBatch/{type}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     Result<List<String>> saveBatch(@RequestPart("uploadFiles") MultipartFile[] files, @PathVariable Integer type);
 
+    /**
+     * 批量删除文件
+     * @param filePaths 文件路径
+     * @param type
+     * @return
+     */
     @PostMapping(value = "/util/oss/deleteBatch/{type}")
     Result<?> deleteBatch(@RequestBody List<String> filePaths, @PathVariable Integer type);
 }

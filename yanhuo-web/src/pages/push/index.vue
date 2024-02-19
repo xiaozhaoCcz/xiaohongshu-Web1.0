@@ -245,10 +245,11 @@ const pubslish = () => {
     const size = coverImage.width / coverImage.height;
     note.value.noteCoverHeight = size >= 1.3 ? 200 : 300;
     const noteData = JSON.stringify(note.value);
-    console.log("---noteData", noteData)
+    console.log("---noteData", note.value.id)
     params.append("noteData", noteData);
 
-    if (note.value.id !== null) {
+
+    if (note.value.id !== null && note.value.id !== undefined) {
       updateNote(params);
     } else {
       saveNote(params);
