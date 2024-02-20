@@ -2,11 +2,8 @@ package com.yanhuo.platform.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.yanhuo.common.result.Result;
-import com.yanhuo.common.validator.ValidatorUtils;
-import com.yanhuo.common.validator.group.UpdateGroup;
 import com.yanhuo.common.validator.myVaildator.noLogin.NoLoginIntercept;
 import com.yanhuo.platform.service.NoteService;
-import com.yanhuo.xo.dto.NoteDTO;
 import com.yanhuo.xo.vo.NoteVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -40,12 +37,13 @@ public class NoteController {
     /**
      * 保存笔记
      *
-     * @param noteDTO 笔记实体
-     * @return 笔记id
+     * @param noteData 笔记对象
+     * @param files    图片文件
+     * @return
      */
     @PostMapping("saveNoteByDTO")
-    public Result<?> saveNoteByDTO(@RequestParam("noteData")String noteData, @RequestParam("uploadFiles")MultipartFile[] files) {
-        String id = noteService.saveNoteByDTO(noteData,files);
+    public Result<?> saveNoteByDTO(@RequestParam("noteData") String noteData, @RequestParam("uploadFiles") MultipartFile[] files) {
+        String id = noteService.saveNoteByDTO(noteData, files);
         return Result.ok(id);
     }
 
@@ -64,12 +62,12 @@ public class NoteController {
     /**
      * 更新笔记
      *
-     * @param noteDTO 笔记实体
-     * @return 笔记id
+     * @param noteData 笔记对象
+     * @param files    图片文件
      */
     @PostMapping("updateNoteByDTO")
-    public Result<?> updateNoteByDTO(@RequestParam("noteData")String noteData, @RequestParam("uploadFiles")MultipartFile[] files) {
-        noteService.updateNoteByDTO(noteData,files);
+    public Result<?> updateNoteByDTO(@RequestParam("noteData") String noteData, @RequestParam("uploadFiles") MultipartFile[] files) {
+        noteService.updateNoteByDTO(noteData, files);
         return Result.ok();
     }
 
@@ -88,12 +86,13 @@ public class NoteController {
 
     /**
      * 置顶笔记
+     *
      * @param noteId 笔记id
      * @return
      */
     @GetMapping("pinnedNote")
-    public Result<?> pinnedNote(String noteId){
-       boolean flag =  noteService.pinnedNote(noteId);
-       return Result.ok(flag);
+    public Result<?> pinnedNote(String noteId) {
+        boolean flag = noteService.pinnedNote(noteId);
+        return Result.ok(flag);
     }
 }

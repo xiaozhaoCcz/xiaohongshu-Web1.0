@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public interface ChatClient {
     /**
      * 发送消息
+     *
      * @param message 消息实体
      * @return success
      */

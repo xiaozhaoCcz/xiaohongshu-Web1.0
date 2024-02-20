@@ -19,15 +19,17 @@ public class JwtUtils {
     //定义两个常量，1.设置过期时间 2.密钥（随机，由公司生成）
     public static final String APP_SECRET = "ukc8BDbRigUDaY6pZFfWus2jZWLPHO";
 
-    private JwtUtils(){}
+    private JwtUtils() {
+    }
 
     /**
      * 生成token
+     *
      * @param uid
      * @param expirationTime
      * @return
      */
-    public static String getJwtToken(String uid,long expirationTime){
+    public static String getJwtToken(String uid, long expirationTime) {
         return Jwts.builder()
                 //设置token的头信息
                 .setHeaderParam("typ", "JWT")
@@ -46,11 +48,12 @@ public class JwtUtils {
 
     /**
      * 判断token是否存在与有效
+     *
      * @param jwtToken
      * @return
      */
     public static boolean checkToken(String jwtToken) {
-        if(StringUtils.isEmpty(jwtToken)) {
+        if (StringUtils.isEmpty(jwtToken)) {
             return false;
         }
         try {
@@ -62,8 +65,10 @@ public class JwtUtils {
         }
         return true;
     }
+
     /**
      * 根据token信息得到getUserId
+     *
      * @param jwtToken
      * @return
      */
@@ -72,17 +77,19 @@ public class JwtUtils {
         Jws<Claims> claimsJws = Jwts.parser().setSigningKey(APP_SECRET).parseClaimsJws(jwtToken);
         //得到字符串的主题部分
         Claims claims = claimsJws.getBody();
-        return (String)claims.get("userId");
+        return (String) claims.get("userId");
     }
+
     /**
      * 判断token是否存在与有效
+     *
      * @param request
      * @return
      */
     public static boolean checkToken(HttpServletRequest request) {
         try {
             String jwtToken = request.getHeader(TokenConstant.ACCESS_TOKEN);
-            if(StringUtils.isEmpty(jwtToken)) {
+            if (StringUtils.isEmpty(jwtToken)) {
                 return false;
             }
             Jwts.parser().setSigningKey(APP_SECRET).parseClaimsJws(jwtToken);

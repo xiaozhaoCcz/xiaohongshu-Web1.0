@@ -23,6 +23,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(YanHuoException.class)
     @ResponseBody
     public Result error(YanHuoException exception) {
-        return Result.build(null,exception.getCode(),exception.getMessage());
+        return Result.build(null, exception.getCode(), exception.getMessage());
     }
 }

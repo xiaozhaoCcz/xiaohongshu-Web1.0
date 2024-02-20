@@ -26,7 +26,7 @@ public class  AlbumServiceImpl extends ServiceImpl<AlbumDao, Album> implements A
     UserService userService;
 
     @Override
-    public Page<Album> getAlbumPageByUserId(long currentPage, long pageSize,String userId) {
+    public Page<Album> getAlbumPageByUserId(long currentPage, long pageSize, String userId) {
         return this.page(new Page<>(currentPage, pageSize), new QueryWrapper<Album>().eq("uid", userId).orderByDesc("update_date"));
     }
 
@@ -53,11 +53,9 @@ public class  AlbumServiceImpl extends ServiceImpl<AlbumDao, Album> implements A
 
     }
 
-
     @Override
     public void updateAlbumByDTO(AlbumDTO albumDTO) {
         Album album = ConvertUtils.sourceToTarget(albumDTO, Album.class);
         this.updateById(album);
     }
-
 }

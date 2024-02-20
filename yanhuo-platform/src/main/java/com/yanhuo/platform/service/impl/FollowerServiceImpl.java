@@ -50,17 +50,17 @@ public class FollowerServiceImpl extends ServiceImpl<FollowerDao, Follower> impl
         List<Follower> followers = this.list(new QueryWrapper<Follower>().eq("uid", currentUid));
         List<String> fids = followers.stream().map(Follower::getFid).collect(Collectors.toList());
         fids.add(currentUid);
-        Page<Note> notePage =  noteService.page(new Page<>((int)currentPage,(int)pageSize),new QueryWrapper<Note>().in("uid", fids).orderByDesc("update_date"));
+        Page<Note> notePage = noteService.page(new Page<>((int) currentPage, (int) pageSize), new QueryWrapper<Note>().in("uid", fids).orderByDesc("update_date"));
         List<Note> notes = notePage.getRecords();
         List<TrendVo> trendVos = new ArrayList<>();
-        if (!notes.isEmpty()){
+        if (!notes.isEmpty()) {
             //得到所有用户的图片
             List<String> ids = notes.stream().map(Note::getUid).collect(Collectors.toList());
             List<User> users = userService.listByIds(ids);
-            HashMap<String,User> userMap = new HashMap<>();
-            users.forEach(item-> userMap.put(item.getId(),item));
+            HashMap<String, User> userMap = new HashMap<>();
+            users.forEach(item -> userMap.put(item.getId(), item));
             // 是否点赞
-            List<LikeOrCollection> likeOrCollections = likeOrCollectionService.list(new QueryWrapper<LikeOrCollection>().eq("uid", currentUid).eq("type",1));
+            List<LikeOrCollection> likeOrCollections = likeOrCollectionService.list(new QueryWrapper<LikeOrCollection>().eq("uid", currentUid).eq("type", 1));
             List<String> likeOrCollectionIds = likeOrCollections.stream().map(LikeOrCollection::getLikeOrCollectionId).collect(Collectors.toList());
 
             for (Note note : notes) {
@@ -78,10 +78,10 @@ public class FollowerServiceImpl extends ServiceImpl<FollowerDao, Follower> impl
                         .setIsLoading(false);
                 String urls = note.getUrls();
                 List<String> imgList = JSONUtil.toList(urls, String.class);
-                if(imgList.size()>4){
+                if (imgList.size() > 4) {
                     List<String> subList = imgList.subList(0, 4);
                     trendVo.setImgUrls(subList);
-                }else {
+                } else {
                     trendVo.setImgUrls(imgList);
                 }
                 trendVos.add(trendVo);
@@ -109,15 +109,15 @@ public class FollowerServiceImpl extends ServiceImpl<FollowerDao, Follower> impl
         // 得到当前用户
         User currentUser = userService.getById(userId);
         User followerUser = userService.getById(followerId);
-        if(isFollow(followerId)){
-            currentUser.setFollowerCount(currentUser.getFollowerCount()-1);
-            followerUser.setFanCount(followerUser.getFanCount()-1);
+        if (isFollow(followerId)) {
+            currentUser.setFollowerCount(currentUser.getFollowerCount() - 1);
+            followerUser.setFanCount(followerUser.getFanCount() - 1);
             this.remove(new QueryWrapper<Follower>().eq("uid", userId).eq("fid", followerId));
-        }else{
-            currentUser.setFollowerCount(currentUser.getFollowerCount()+1);
-            followerUser.setFanCount(followerUser.getFanCount()+1);
+        } else {
+            currentUser.setFollowerCount(currentUser.getFollowerCount() + 1);
+            followerUser.setFanCount(followerUser.getFanCount() + 1);
             this.save(follower);
-            chatUtils.sendMessage(followerId,2);
+            chatUtils.sendMessage(followerId, 2);
         }
         userService.updateById(currentUser);
         userService.updateById(followerUser);
@@ -127,7 +127,7 @@ public class FollowerServiceImpl extends ServiceImpl<FollowerDao, Follower> impl
     public boolean isFollow(String followerId) {
         String userId = AuthContextHolder.getUserId();
         long count = this.count(new QueryWrapper<Follower>().eq("uid", userId).eq("fid", followerId));
-        return count>0;
+        return count > 0;
     }
 
     @Override
@@ -135,7 +135,7 @@ public class FollowerServiceImpl extends ServiceImpl<FollowerDao, Follower> impl
         Page<FollowerVo> result = new Page<>();
         String userId = AuthContextHolder.getUserId();
 
-        Page<Follower> followerPage = this.page(new Page<>((int) currentPage, (int) pageSize), new QueryWrapper<Follower>().eq("fid", userId).ne("uid",userId).orderByDesc("create_date"));
+        Page<Follower> followerPage = this.page(new Page<>((int) currentPage, (int) pageSize), new QueryWrapper<Follower>().eq("fid", userId).ne("uid", userId).orderByDesc("create_date"));
         List<Follower> followerList = followerPage.getRecords();
         long total = followerPage.getTotal();
 
@@ -147,19 +147,18 @@ public class FollowerServiceImpl extends ServiceImpl<FollowerDao, Follower> impl
         Set<String> followerSet = followers.stream().map(Follower::getFid).collect(Collectors.toSet());
 
         List<FollowerVo> followerVoList = new ArrayList<>();
-        followerList.forEach(item->{
+        followerList.forEach(item -> {
             FollowerVo followerVo = new FollowerVo();
             User user = userMap.get(item.getUid());
             followerVo.setUid(user.getId())
-                  .setUsername(user.getUsername())
-                  .setAvatar(user.getAvatar())
-                  .setTime(item.getCreateDate().getTime())
-                  .setIsFollow(followerSet.contains(item.getUid()));
+                    .setUsername(user.getUsername())
+                    .setAvatar(user.getAvatar())
+                    .setTime(item.getCreateDate().getTime())
+                    .setIsFollow(followerSet.contains(item.getUid()));
             followerVoList.add(followerVo);
         });
         result.setRecords(followerVoList);
         result.setTotal(total);
         return result;
     }
-
 }

@@ -107,25 +107,25 @@ public class ChatServiceImpl extends ServiceImpl<ChatDao, Chat> implements ChatS
         String currentUid = AuthContextHolder.getUserId();
         QueryWrapper<Chat> queryWrapper = new QueryWrapper<Chat>()
                 .and(e -> e.eq("send_uid", currentUid).eq("accept_uid", acceptUid))
-                .or(e->e.eq("send_uid", acceptUid).eq("accept_uid", currentUid))
+                .or(e -> e.eq("send_uid", acceptUid).eq("accept_uid", currentUid))
                 .orderByDesc("timestamp");
         return this.page(new Page<>((int) currentPage, (int) pageSize), queryWrapper);
     }
 
     @Override
-    public void clearMessageCount(String sendUid,Integer type) {
-        if(type==3){
+    public void clearMessageCount(String sendUid, Integer type) {
+        if (type == 3) {
             String currentUid = AuthContextHolder.getUserId();
             ChatUserRelation chatUserRelation = chatUserRelationService.getOne(new QueryWrapper<ChatUserRelation>().eq("send_uid", sendUid).eq("accept_uid", currentUid));
-            if(chatUserRelation!=null){
+            if (chatUserRelation != null) {
                 chatUserRelation.setCount(0);
                 chatUserRelationService.updateById(chatUserRelation);
             }
-        }else{
+        } else {
             String messageCountKey = ImConstant.MESSAGE_COUNT_KEY + sendUid;
             String json = redisUtils.get(messageCountKey);
             CountMessage countMessage = JSONUtil.toBean(json, CountMessage.class);
-            switch (type){
+            switch (type) {
                 case 0:
                     countMessage.setLikeOrCollectionCount(0L);
                     break;

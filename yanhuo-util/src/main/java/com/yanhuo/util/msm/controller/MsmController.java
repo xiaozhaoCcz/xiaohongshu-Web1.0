@@ -37,6 +37,6 @@ public class MsmController {
     public void sendMsm(@RequestBody UserDTO userDTO) throws Exception {
 
         String code = msmService.sendMsm(userDTO.getPhone());
-        redisUtils.set(UserConstant.CODE+userDTO.getPhone(), code, 60 * 5L);
+        redisUtils.set(UserConstant.CODE + userDTO.getPhone(), code, 60 * 5L);
     }
 }

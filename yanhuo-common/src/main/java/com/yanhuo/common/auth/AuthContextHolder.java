@@ -5,7 +5,8 @@ package com.yanhuo.common.auth;
  * @author xiaozhao
  */
 public class AuthContextHolder {
-    private AuthContextHolder(){}
+    private AuthContextHolder() {
+    }
 
     //用户id
     private static ThreadLocal<String> userId = new ThreadLocal<>();

@@ -51,38 +51,38 @@ public class LikeOrCollectionServiceImpl extends ServiceImpl<LikeOrCollectionDao
     public void likeOrCollectionByDTO(LikeOrCollectionDTO likeOrCollectionDTO) {
         String currentUid = AuthContextHolder.getUserId();
         // 点赞
-        if(isLikeOrCollection(likeOrCollectionDTO)){
-            this.remove(new QueryWrapper<LikeOrCollection>().eq("uid",currentUid).eq("like_or_collection_id",likeOrCollectionDTO.getLikeOrCollectionId()).eq("type",likeOrCollectionDTO.getType()));
-            updateLikeCollectionCount(likeOrCollectionDTO,-1);
-        }else{
+        if (isLikeOrCollection(likeOrCollectionDTO)) {
+            this.remove(new QueryWrapper<LikeOrCollection>().eq("uid", currentUid).eq("like_or_collection_id", likeOrCollectionDTO.getLikeOrCollectionId()).eq("type", likeOrCollectionDTO.getType()));
+            updateLikeCollectionCount(likeOrCollectionDTO, -1);
+        } else {
             // 点赞评论或者笔记
             LikeOrCollection likeOrCollection = ConvertUtils.sourceToTarget(likeOrCollectionDTO, LikeOrCollection.class);
             likeOrCollection.setTimestamp(System.currentTimeMillis());
             likeOrCollection.setUid(currentUid);
             this.save(likeOrCollection);
-            updateLikeCollectionCount(likeOrCollectionDTO,1);
+            updateLikeCollectionCount(likeOrCollectionDTO, 1);
             // 不是当前用户才进行通知
-            if(!likeOrCollectionDTO.getPublishUid().equals(currentUid)){
-                chatUtils.sendMessage(likeOrCollectionDTO.getPublishUid(),0);
+            if (!likeOrCollectionDTO.getPublishUid().equals(currentUid)) {
+                chatUtils.sendMessage(likeOrCollectionDTO.getPublishUid(), 0);
             }
         }
     }
 
-    private void updateLikeCollectionCount(LikeOrCollectionDTO likeOrCollectionDTO,int val) {
-        switch (likeOrCollectionDTO.getType() ){
+    private void updateLikeCollectionCount(LikeOrCollectionDTO likeOrCollectionDTO, int val) {
+        switch (likeOrCollectionDTO.getType()) {
             case 1:
                 Note likeNote = noteService.getById(likeOrCollectionDTO.getLikeOrCollectionId());
-                likeNote.setLikeCount(likeNote.getLikeCount()+val);
+                likeNote.setLikeCount(likeNote.getLikeCount() + val);
                 noteService.updateById(likeNote);
                 break;
             case 2:
                 Comment comment = commentService.getById(likeOrCollectionDTO.getLikeOrCollectionId());
-                if(comment==null){
+                if (comment == null) {
                     CommentSync commentSync = commentSyncService.getById(likeOrCollectionDTO.getLikeOrCollectionId());
-                    commentSync.setLikeCount(commentSync.getLikeCount()+val);
+                    commentSync.setLikeCount(commentSync.getLikeCount() + val);
                     commentSyncService.updateById(commentSync);
-                }else{
-                    comment.setLikeCount(comment.getLikeCount()+val);
+                } else {
+                    comment.setLikeCount(comment.getLikeCount() + val);
                     commentService.updateById(comment);
                 }
                 break;
@@ -90,41 +90,41 @@ public class LikeOrCollectionServiceImpl extends ServiceImpl<LikeOrCollectionDao
                 String currentUid = AuthContextHolder.getUserId();
                 Note collectionNote = noteService.getById(likeOrCollectionDTO.getLikeOrCollectionId());
                 //收藏图片
-                collectionNote.setCollectionCount(collectionNote.getCollectionCount()+val);
+                collectionNote.setCollectionCount(collectionNote.getCollectionCount() + val);
                 noteService.updateById(collectionNote);
 
                 AlbumNoteRelation albumNoteRelation = new AlbumNoteRelation();
                 albumNoteRelation.setNid(collectionNote.getId());
-                if(val==1){
+                if (val == 1) {
                     Album album = albumService.getOne(new QueryWrapper<Album>().eq("uid", currentUid).eq("type", 0));
                     Integer imgCount = collectionNote.getCount();
-                    album.setImgCount(album.getImgCount()+imgCount);
-                    if(StringUtils.isBlank(album.getAlbumCover())){
+                    album.setImgCount(album.getImgCount() + imgCount);
+                    if (StringUtils.isBlank(album.getAlbumCover())) {
                         album.setAlbumCover(collectionNote.getNoteCover());
                     }
                     albumNoteRelation.setAid(album.getId());
                     albumService.updateById(album);
                     albumNoteRelationService.save(albumNoteRelation);
-                }else{
+                } else {
                     //
                     List<AlbumNoteRelation> albumNoteRelationList = albumNoteRelationService.list(new QueryWrapper<AlbumNoteRelation>().eq("nid", collectionNote.getId()));
                     Set<String> aids = albumNoteRelationList.stream().map(AlbumNoteRelation::getAid).collect(Collectors.toSet());
                     List<Album> albumList = albumService.listByIds(aids);
                     Album album = albumList.stream().filter(item -> item.getUid().equals(currentUid)).findFirst().orElse(null);
                     Integer imgCount = collectionNote.getCount();
-                    long nums  = album.getImgCount()-imgCount;
-                    if(nums<=0){
+                    long nums = album.getImgCount() - imgCount;
+                    if (nums <= 0) {
                         album.setAlbumCover(null);
                     }
                     album.setImgCount(nums);
                     albumService.updateById(album);
-                    albumNoteRelationService.remove(new QueryWrapper<AlbumNoteRelation>().eq("aid",album.getId()).eq("nid",collectionNote.getId()));
+                    albumNoteRelationService.remove(new QueryWrapper<AlbumNoteRelation>().eq("aid", album.getId()).eq("nid", collectionNote.getId()));
                 }
                 break;
             default:
                 // 收藏专辑
                 Album collectAlbum = albumService.getById(likeOrCollectionDTO.getLikeOrCollectionId());
-                collectAlbum.setCollectionCount(collectAlbum.getCollectionCount()+val);
+                collectAlbum.setCollectionCount(collectAlbum.getCollectionCount() + val);
                 albumService.updateById(collectAlbum);
                 break;
         }
@@ -133,8 +133,8 @@ public class LikeOrCollectionServiceImpl extends ServiceImpl<LikeOrCollectionDao
     @Override
     public boolean isLikeOrCollection(LikeOrCollectionDTO likeOrCollectionDTO) {
         String currentUid = AuthContextHolder.getUserId();
-        long count = this.count(new QueryWrapper<LikeOrCollection>().eq("uid",currentUid).eq("like_or_collection_id",likeOrCollectionDTO.getLikeOrCollectionId()).eq("type",likeOrCollectionDTO.getType()));
-        return count>0;
+        long count = this.count(new QueryWrapper<LikeOrCollection>().eq("uid", currentUid).eq("like_or_collection_id", likeOrCollectionDTO.getLikeOrCollectionId()).eq("type", likeOrCollectionDTO.getType()));
+        return count > 0;
     }
 
     @Override
@@ -142,7 +142,7 @@ public class LikeOrCollectionServiceImpl extends ServiceImpl<LikeOrCollectionDao
         Page<LikeOrCollectionVo> result = new Page<>();
         String currentUid = AuthContextHolder.getUserId();
 
-        Page<LikeOrCollection> likeOrCollectionPage = this.page(new Page<>((int) currentPage, (int) pageSize), new QueryWrapper<LikeOrCollection>().eq("publish_uid", currentUid).ne("uid",currentUid).orderByDesc("create_date"));
+        Page<LikeOrCollection> likeOrCollectionPage = this.page(new Page<>((int) currentPage, (int) pageSize), new QueryWrapper<LikeOrCollection>().eq("publish_uid", currentUid).ne("uid", currentUid).orderByDesc("create_date"));
         List<LikeOrCollection> likeOrCollectionList = likeOrCollectionPage.getRecords();
         long total = likeOrCollectionPage.getTotal();
 
@@ -150,44 +150,44 @@ public class LikeOrCollectionServiceImpl extends ServiceImpl<LikeOrCollectionDao
         // 得到所有用户
         Set<String> uids = likeOrCollectionList.stream().map(LikeOrCollection::getUid).collect(Collectors.toSet());
         Map<String, User> userMap = new HashMap<>(16);
-        if(!uids.isEmpty()){
+        if (!uids.isEmpty()) {
             userMap = userService.listByIds(uids).stream().collect(Collectors.toMap(User::getId, user -> user));
         }
 
         // notes
         Set<String> nids = likeOrCollectionList.stream().filter(e -> e.getType() == 1 || e.getType() == 3).map(LikeOrCollection::getLikeOrCollectionId).collect(Collectors.toSet());
         Map<String, Note> noteMap = new HashMap<>(16);
-        if(!nids.isEmpty()){
-            noteMap = noteService.listByIds(nids).stream().collect(Collectors.toMap(Note::getId,note -> note));
+        if (!nids.isEmpty()) {
+            noteMap = noteService.listByIds(nids).stream().collect(Collectors.toMap(Note::getId, note -> note));
         }
 
         // comments
         Set<String> cids = likeOrCollectionList.stream().filter(e -> e.getType() == 2).map(LikeOrCollection::getLikeOrCollectionId).collect(Collectors.toSet());
         Map<String, CommentVo> commentVoMap = new HashMap<>(16);
-        if(!cids.isEmpty()){
+        if (!cids.isEmpty()) {
             List<Comment> commentList = commentService.listByIds(cids);
             Set<String> noteIds = commentList.stream().map(Comment::getNid).collect(Collectors.toSet());
             Map<String, Note> noteMap1 = noteService.listByIds(noteIds).stream().collect(Collectors.toMap(Note::getId, note -> note));
 
-            commentList.forEach((item->{
+            commentList.forEach((item -> {
                 CommentVo commentVo = ConvertUtils.sourceToTarget(item, CommentVo.class);
                 Note note = noteMap1.get(item.getNid());
                 commentVo.setNoteCover(note.getNoteCover());
-                commentVoMap.put(item.getId(),commentVo);
+                commentVoMap.put(item.getId(), commentVo);
             }));
         }
 
         //albums
         Set<String> aids = likeOrCollectionList.stream().filter(e -> e.getType() == 4).map(LikeOrCollection::getLikeOrCollectionId).collect(Collectors.toSet());
         Map<String, Album> albumMap = new HashMap<>(16);
-        if(!aids.isEmpty()){
+        if (!aids.isEmpty()) {
             albumMap = albumService.listByIds(aids).stream().collect(Collectors.toMap(Album::getId, album -> album));
         }
 
         List<LikeOrCollectionVo> likeOrCollectionVoList = new ArrayList<>();
 
 
-        for (LikeOrCollection model: likeOrCollectionList) {
+        for (LikeOrCollection model : likeOrCollectionList) {
             LikeOrCollectionVo likeOrCollectionVo = new LikeOrCollectionVo();
             User user = userMap.get(model.getUid());
             likeOrCollectionVo.setUid(user.getId())
@@ -196,7 +196,7 @@ public class LikeOrCollectionServiceImpl extends ServiceImpl<LikeOrCollectionDao
                     .setTime(model.getTimestamp())
                     .setType(model.getType());
 
-            switch (model.getType()){
+            switch (model.getType()) {
                 case 2:
                     CommentVo commentVo = commentVoMap.get(model.getLikeOrCollectionId());
                     likeOrCollectionVo.setItemId(commentVo.getId())

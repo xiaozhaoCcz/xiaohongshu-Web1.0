@@ -10,13 +10,12 @@ import lombok.Getter;
 @Getter
 public enum ResultCodeEnum {
 
-    SUCCESS(200,"成功"),
+    SUCCESS(200, "成功"),
     FAIL(201, "失败"),
-    TOKEN_FAIL(401,"token异常"),
-    TOKEN_EXIST(501,"token过期"),
+    TOKEN_FAIL(401, "token异常"),
+    TOKEN_EXIST(501, "token过期"),
 
-    NOT_NULL(10001,"为空")
-    ;
+    NOT_NULL(10001, "为空");
 
     private final Integer code;
 

@@ -32,6 +32,7 @@ public class AlbumNoteRelationServiceImpl extends ServiceImpl<AlbumNoteRelationD
 
     @Autowired
     UserService userService;
+
     @Override
     public Page<NoteSearchVo> getNotePageByAlbumId(long currentPage, long pageSize, String albumId, String userId) {
         Page<NoteSearchVo> result = new Page<>();
@@ -41,11 +42,11 @@ public class AlbumNoteRelationServiceImpl extends ServiceImpl<AlbumNoteRelationD
         List<String> nids = records.stream().map(AlbumNoteRelation::getNid).collect(Collectors.toList());
         String currentUser = AuthContextHolder.getUserId();
         List<Note> noteList;
-        if(currentUser.equals(userId)){
+        if (currentUser.equals(userId)) {
             //表示是当前用户(能够查看所有的专辑，包括上传中的笔记)
             noteList = noteService.listByIds(nids);
-        }else{
-            noteList = noteService.list(new QueryWrapper<Note>().in("id",nids).eq("status",1));
+        } else {
+            noteList = noteService.list(new QueryWrapper<Note>().in("id", nids).eq("status", 1));
         }
         List<String> uids = noteList.stream().map(Note::getUid).collect(Collectors.toList());
         List<User> userList = userService.listByIds(uids);

@@ -22,15 +22,17 @@ public interface OssClient {
 
     /**
      * 远程调用上传文件服务（consumes = MediaType.MULTIPART_FORM_DATA_VALUE）
+     *
      * @param files
      * @param type
      * @return
      */
-    @PostMapping(value = "/util/oss/saveBatch/{type}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/util/oss/saveBatch/{type}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     Result<List<String>> saveBatch(@RequestPart("uploadFiles") MultipartFile[] files, @PathVariable Integer type);
 
     /**
      * 批量删除文件
+     *
      * @param filePaths 文件路径
      * @param type
      * @return

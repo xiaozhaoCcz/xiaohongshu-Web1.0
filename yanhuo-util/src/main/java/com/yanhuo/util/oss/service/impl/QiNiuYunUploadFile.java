@@ -22,22 +22,21 @@ import java.io.InputStream;
  * @author xiaozhao
  */
 public class QiNiuYunUploadFile implements OssFactory {
-    private    String accessKey;
+    private String accessKey;
 
-    private   String secretKey;
+    private String secretKey;
 
-    private   String bucketName ;
+    private String bucketName;
 
     private String domain;
 
-    public QiNiuYunUploadFile(){
+    public QiNiuYunUploadFile() {
         Environment bean = SpringContextUtils.getBean(Environment.class);
         this.domain = bean.getProperty("qiNiuYun.domain");
-        this.accessKey =  bean.getProperty("qiNiuYun.accessKey");
-        this.secretKey =  bean.getProperty("qiNiuYun.secretKey");
-        this.bucketName =  bean.getProperty("qiNiuYun.bucketName");
+        this.accessKey = bean.getProperty("qiNiuYun.accessKey");
+        this.secretKey = bean.getProperty("qiNiuYun.secretKey");
+        this.bucketName = bean.getProperty("qiNiuYun.bucketName");
     }
-
 
 
     @Override
@@ -50,7 +49,8 @@ public class QiNiuYunUploadFile implements OssFactory {
 
         String filePath = "";
         String originalFilename = file.getOriginalFilename();
-        String fileName = originalFilename.substring (originalFilename.lastIndexOf ("."));;
+        String fileName = originalFilename.substring(originalFilename.lastIndexOf("."));
+        ;
 
         //1 在文件名称里面添加随机唯一的值
         String uuid = UUID.randomUUID().toString().replaceAll("-", "");
@@ -75,7 +75,7 @@ public class QiNiuYunUploadFile implements OssFactory {
             //解析上传成功的结果
             DefaultPutRet putRet = new Gson().fromJson(response.bodyString(), DefaultPutRet.class);
 
-            filePath = "http://"+domain+"/"+putRet.key;
+            filePath = "http://" + domain + "/" + putRet.key;
             return filePath;
 
         } catch (Exception e) {
@@ -87,7 +87,7 @@ public class QiNiuYunUploadFile implements OssFactory {
 
     @Override
     public Boolean delete(String path) {
-        String replaceFileName = path.replace("http://"+domain+"/", "");
+        String replaceFileName = path.replace("http://" + domain + "/", "");
         Configuration cfg = new Configuration(Region.beimei());
 
         Auth auth = Auth.create(accessKey, secretKey);

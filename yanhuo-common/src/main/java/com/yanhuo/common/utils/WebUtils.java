@@ -14,16 +14,18 @@ import java.util.Objects;
  */
 @Slf4j
 public class WebUtils {
-    private WebUtils() {}
+    private WebUtils() {
+    }
 
     /**
      * 获取请求头中的内容
+     *
      * @param headerName 请求头name
      * @return 请求内容
      */
-    public static String getRequestHeader(String headerName){
+    public static String getRequestHeader(String headerName) {
         RequestAttributes ra = RequestContextHolder.getRequestAttributes();
-        if(Objects.isNull(ra)){
+        if (Objects.isNull(ra)) {
             log.error("服务里RequestAttributes对象为空");
             return null;
         }

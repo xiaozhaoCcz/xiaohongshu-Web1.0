@@ -24,19 +24,21 @@ public class AlbumController {
 
     /**
      * 根据用户id获取专辑
+     *
      * @param currentPage 当前页
-     * @param pageSize 分页数
-     * @param userId 用户id
+     * @param pageSize    分页数
+     * @param userId      用户id
      * @return 专辑数
      */
     @GetMapping("getAlbumPageByUserId/{currentPage}/{pageSize}")
-    public Result<?> getAlbumPageByUserId(@PathVariable long currentPage, @PathVariable long pageSize,String userId){
-        Page<Album> page =  albumService.getAlbumPageByUserId(currentPage,pageSize,userId);
+    public Result<?> getAlbumPageByUserId(@PathVariable long currentPage, @PathVariable long pageSize, String userId) {
+        Page<Album> page = albumService.getAlbumPageByUserId(currentPage, pageSize, userId);
         return Result.ok(page);
     }
 
     /**
      * 保存专辑
+     *
      * @param albumDTO 专辑实体
      * @return success
      */
@@ -50,6 +52,7 @@ public class AlbumController {
 
     /**
      * 根据专辑id获取专辑
+     *
      * @param albumId 专辑id
      * @return 专辑实体
      */
@@ -61,6 +64,7 @@ public class AlbumController {
 
     /**
      * 根据专辑id删除专辑
+     *
      * @param albumId 专辑id
      * @return success
      */
@@ -72,6 +76,7 @@ public class AlbumController {
 
     /**
      * 更新专辑
+     *
      * @param albumDTO 专辑实体
      * @return success
      */

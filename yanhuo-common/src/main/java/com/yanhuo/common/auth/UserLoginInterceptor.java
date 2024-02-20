@@ -23,16 +23,18 @@ public class UserLoginInterceptor implements HandlerInterceptor {
 
     /**
      * token拦截验证
-     * @param request current HTTP request
+     *
+     * @param request  current HTTP request
      * @param response current HTTP response
-     * @param handler chosen handler to execute, for type and/or instance evaluation
+     * @param handler  chosen handler to execute, for type and/or instance evaluation
      * @return
      */
     @Override
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response,
                              Object handler) {
-
+        String accessToken = request.getHeader(TokenConstant.ACCESS_TOKEN);
+        log.info("accessToken:{},{}", accessToken, WebUtils.getRequestHeader(UserConstant.USER_ID));
         //获取方法处理器
         HandlerMethod handlerMethod = (HandlerMethod) handler;
         NoLoginIntercept noLoginIntercept =
@@ -40,24 +42,29 @@ public class UserLoginInterceptor implements HandlerInterceptor {
                         //然后根据我们制定的自定义注解的Class对象来获取到对应的注解
                         .getAnnotation(NoLoginIntercept.class);
 
-        if(noLoginIntercept!=null){
+        if (noLoginIntercept != null) {
+            if (!StringUtils.isEmpty(accessToken)) {
+                setLocalUser(accessToken);
+            }
             return true;
         }
 
-        String accessToken = request.getHeader(TokenConstant.ACCESS_TOKEN);
-        log.info("accessToken:{},{}", accessToken,WebUtils.getRequestHeader(UserConstant.USER_ID));
         //判断token不为空
         if (!StringUtils.isEmpty(accessToken)) {
-            boolean flag = JwtUtils.checkToken(accessToken);
-            if (!flag) {
-                throw new YanHuoException(ResultCodeEnum.TOKEN_EXIST.getMessage(), ResultCodeEnum.TOKEN_EXIST.getCode());
-            }
-            String userId = JwtUtils.getUserId(accessToken);
-            AuthContextHolder.setUserId(userId);
+            setLocalUser(accessToken);
             return true;
         }
 
         throw new YanHuoException(ResultCodeEnum.TOKEN_FAIL.getMessage(), ResultCodeEnum.TOKEN_FAIL.getCode());
+    }
+
+    private void setLocalUser(String accessToken) {
+        boolean flag = JwtUtils.checkToken(accessToken);
+        if (!flag) {
+            throw new YanHuoException(ResultCodeEnum.TOKEN_EXIST.getMessage(), ResultCodeEnum.TOKEN_EXIST.getCode());
+        }
+        String userId = JwtUtils.getUserId(accessToken);
+        AuthContextHolder.setUserId(userId);
     }
 
     @Override

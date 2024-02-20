@@ -23,6 +23,7 @@ public class CategoryController {
 
     /**
      * 获取树形分类数据
+     *
      * @return 分类数据
      */
     @GetMapping("getCategoryTreeData")

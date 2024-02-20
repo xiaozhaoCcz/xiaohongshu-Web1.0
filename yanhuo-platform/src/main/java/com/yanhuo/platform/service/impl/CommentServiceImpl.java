@@ -39,6 +39,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
 
     @Autowired
     ChatUtils chatUtils;
+
     @Override
     public Page<CommentVo> getOneCommentPageByNoteId(long currentPage, long pageSize, String noteId) {
         return null;
@@ -58,7 +59,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
         commentSyncService.save(commentsync);
 
         Note note = noteService.getById(commentDTO.getNid());
-        note.setCommentCount(note.getCommentCount()+1);
+        note.setCommentCount(note.getCommentCount() + 1);
         noteService.updateById(note);
 
         CommentVo commentVo = ConvertUtils.sourceToTarget(commentsync, CommentVo.class);
@@ -69,14 +70,14 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
                 .setTime(commentsync.getCreateDate().getTime());
 
         // 一级评论数量加1
-        if(!"0".equals(commentDTO.getPid())){
+        if (!"0".equals(commentDTO.getPid())) {
             Comment parentComment = this.getById(commentDTO.getPid());
-            if(parentComment==null){
-             CommentSync commentSync = commentSyncService.getById(commentDTO.getPid());
-                commentSync.setTwoCommentCount(commentSync.getTwoCommentCount()+1);
+            if (parentComment == null) {
+                CommentSync commentSync = commentSyncService.getById(commentDTO.getPid());
+                commentSync.setTwoCommentCount(commentSync.getTwoCommentCount() + 1);
                 commentSyncService.updateById(commentSync);
-            }else{
-                parentComment.setTwoCommentCount(parentComment.getTwoCommentCount()+1);
+            } else {
+                parentComment.setTwoCommentCount(parentComment.getTwoCommentCount() + 1);
                 this.updateById(parentComment);
             }
 
@@ -110,13 +111,13 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
         Page<CommentVo> result = new Page<>();
         String currentUid = AuthContextHolder.getUserId();
 
-        Page<Comment> commentPage = this.page(new Page<>((int) currentPage, (int) pageSize), new QueryWrapper<Comment>().or(e->e.eq("note_uid",currentUid).or().eq("reply_uid", currentUid)).ne("uid", currentUid).orderByDesc("create_date"));
+        Page<Comment> commentPage = this.page(new Page<>((int) currentPage, (int) pageSize), new QueryWrapper<Comment>().or(e -> e.eq("note_uid", currentUid).or().eq("reply_uid", currentUid)).ne("uid", currentUid).orderByDesc("create_date"));
 
         List<Comment> commentList = commentPage.getRecords();
         long total = commentPage.getTotal();
 
         List<CommentVo> commentVoList = new ArrayList<>();
-        if(!commentList.isEmpty()) {
+        if (!commentList.isEmpty()) {
             Set<String> uids = commentList.stream().map(Comment::getUid).collect(Collectors.toSet());
             Map<String, User> userMap = userService.listByIds(uids).stream().collect(Collectors.toMap(User::getId, user -> user));
 
@@ -164,21 +165,21 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
         List<Comment> twoCommentList = twoCommentPage.getRecords();
         long total = twoCommentPage.getTotal();
 
-        if(!twoCommentList.isEmpty()){
+        if (!twoCommentList.isEmpty()) {
             Set<String> uids = twoCommentList.stream().map(Comment::getUid).collect(Collectors.toSet());
             List<User> users = userService.listByIds(uids);
             Map<String, User> userMap = users.stream().collect(Collectors.toMap(User::getId, user -> user));
             Set<String> replyUids = twoCommentList.stream().map(Comment::getReplyUid).collect(Collectors.toSet());
-            Map<String, User> replyUserMap=new HashMap<>(16);
-            if(!replyUids.isEmpty()){
+            Map<String, User> replyUserMap = new HashMap<>(16);
+            if (!replyUids.isEmpty()) {
                 List<User> replyUsers = userService.listByIds(replyUids);
-                replyUserMap= replyUsers.stream().collect(Collectors.toMap(User::getId, user -> user));
+                replyUserMap = replyUsers.stream().collect(Collectors.toMap(User::getId, user -> user));
             }
 
             List<CommentVo> commentVos = new ArrayList<>();
             List<LikeOrCollection> likeOrCollections = likeOrCollectionService.list(new QueryWrapper<LikeOrCollection>().eq("uid", currentUid).eq("type", 2));
             List<String> likeComments = likeOrCollections.stream().map(LikeOrCollection::getLikeOrCollectionId).collect(Collectors.toList());
-            for (Comment comment:twoCommentList) {
+            for (Comment comment : twoCommentList) {
                 CommentVo commentVo = ConvertUtils.sourceToTarget(comment, CommentVo.class);
                 User user = userMap.get(comment.getUid());
                 commentVo.setUsername(user.getUsername())
@@ -186,7 +187,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
                         .setTime(comment.getCreateDate().getTime())
                         .setIsLike(likeComments.contains(comment.getId()));
                 User replyUser = replyUserMap.get(comment.getReplyUid());
-                if(replyUser!=null){
+                if (replyUser != null) {
                     commentVo.setReplyUsername(replyUser.getUsername());
                 }
                 commentVos.add(commentVo);
@@ -201,15 +202,15 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
     public Page<CommentVo> getCommentPageWithCommentByNoteId(long currentPage, long pageSize, String noteId) {
         //先得到所有的一级评论
         Page<CommentVo> result = new Page<>();
-        Page<Comment> oneCommentPage = this.page(new Page<>((int) currentPage, (int) pageSize), new QueryWrapper<Comment>().eq("nid", noteId).eq("pid","0").orderByDesc("like_count"));
+        Page<Comment> oneCommentPage = this.page(new Page<>((int) currentPage, (int) pageSize), new QueryWrapper<Comment>().eq("nid", noteId).eq("pid", "0").orderByDesc("like_count"));
         List<Comment> oneCommentList = oneCommentPage.getRecords();
-        if(!oneCommentList.isEmpty()){
+        if (!oneCommentList.isEmpty()) {
             Set<String> oneUids = oneCommentList.stream().map(Comment::getUid).collect(Collectors.toSet());
             long onetotal = oneCommentPage.getTotal();
             String currentUid = AuthContextHolder.getUserId();
             //得到对应的二级评论
             List<String> oneIds = oneCommentList.stream().map(Comment::getId).collect(Collectors.toList());
-            List<Comment> twoCommentList = this.list(new QueryWrapper<Comment>().in("pid",oneIds).orderByDesc("like_count").orderByDesc("create_date"));
+            List<Comment> twoCommentList = this.list(new QueryWrapper<Comment>().in("pid", oneIds).orderByDesc("like_count").orderByDesc("create_date"));
             Set<String> twoUids = twoCommentList.stream().map(Comment::getUid).collect(Collectors.toSet());
             oneUids.addAll(twoUids);
 
@@ -221,15 +222,15 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
             List<String> likeComments = likeOrCollections.stream().map(LikeOrCollection::getLikeOrCollectionId).collect(Collectors.toList());
 
             Set<String> replyUids = twoCommentList.stream().map(Comment::getReplyUid).collect(Collectors.toSet());
-            Map<String, User> replyUserMap=new HashMap<>(16);
-            if(!replyUids.isEmpty()){
+            Map<String, User> replyUserMap = new HashMap<>(16);
+            if (!replyUids.isEmpty()) {
                 List<User> replyUsers = userService.listByIds(replyUids);
-                replyUserMap= replyUsers.stream().collect(Collectors.toMap(User::getId, user -> user));
+                replyUserMap = replyUsers.stream().collect(Collectors.toMap(User::getId, user -> user));
             }
 
 
             List<CommentVo> twoCommentVos = new ArrayList<>();
-            for (Comment twoComment:twoCommentList) {
+            for (Comment twoComment : twoCommentList) {
                 CommentVo commentVo = ConvertUtils.sourceToTarget(twoComment, CommentVo.class);
                 User user = userMap.get(twoComment.getUid());
                 commentVo.setUsername(user.getUsername())
@@ -237,7 +238,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
                         .setTime(twoComment.getCreateDate().getTime())
                         .setIsLike(likeComments.contains(twoComment.getId()));
                 User replyUser = replyUserMap.get(twoComment.getReplyUid());
-                if(replyUser!=null){
+                if (replyUser != null) {
                     commentVo.setReplyUsername(replyUser.getUsername());
                 }
                 twoCommentVos.add(commentVo);
@@ -256,7 +257,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
                         .setIsLike(likeComments.contains(oneComment.getId()));
                 List<CommentVo> children = twoCommentVoMap.get(oneComment.getId());
 
-                if (children!=null&&children.size() > 3) {
+                if (children != null && children.size() > 3) {
                     children = children.subList(0, 3);
                 }
                 commentVo.setChildren(children);
@@ -298,7 +299,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
             boolean flag2 = false;
 
             while (!flag) {
-                IPage<CommentVo> allOneCommentPage = this.getCommentPageWithCommentByNoteId(page1, limit1,comment.getNid());
+                IPage<CommentVo> allOneCommentPage = this.getCommentPageWithCommentByNoteId(page1, limit1, comment.getNid());
                 List<CommentVo> commentVoList = allOneCommentPage.getRecords();
                 List<String> pids = commentVoList.stream().map(CommentVo::getId).collect(Collectors.toList());
                 if (pids.contains(pid)) {
@@ -338,6 +339,4 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
     public void deleteCommentById(String commentId) {
 
     }
-
-
 }

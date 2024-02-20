@@ -39,7 +39,7 @@ public class RecordServiceImpl implements RecordService {
                 ));
             }
             builder.sort(o -> o.field(f -> f.field("searchCount").order(SortOrder.Desc)));
-            builder.highlight(h -> h.fields("content",m->m).preTags("<font color='black'>")
+            builder.highlight(h -> h.fields("content", m -> m).preTags("<font color='black'>")
                     .postTags("</font>"));
             builder.size(10);
             SearchRequest searchRequest = builder.build();
@@ -50,13 +50,13 @@ public class RecordServiceImpl implements RecordService {
             // 高亮查询
             for (Hit<RecordSearchVo> hit : hits) {
                 Map<String, List<String>> highlight = hit.highlight();
-                String content =  highlight.get("content").get(0);
+                String content = highlight.get("content").get(0);
                 RecordSearchVo recordSearchVo = hit.source();
                 recordSearchVo.setHighlightContent(content);
                 records.add(recordSearchVo);
             }
             return records;
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
@@ -68,8 +68,8 @@ public class RecordServiceImpl implements RecordService {
         try {
             BooleanResponse exists = elasticsearchClient.indices().exists(e -> e
                     .index(NoteConstant.RECOED_INDEX));
-            if(!exists.value()){
-               return records;
+            if (!exists.value()) {
+                return records;
             }
             SearchRequest.Builder builder = new SearchRequest.Builder().index(NoteConstant.RECOED_INDEX);
             builder.sort(o -> o.field(f -> f.field("searchCount").order(SortOrder.Desc)));
@@ -83,7 +83,7 @@ public class RecordServiceImpl implements RecordService {
                 records.add(recordSearchVo);
             }
             return records;
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
@@ -96,13 +96,13 @@ public class RecordServiceImpl implements RecordService {
 
             BooleanResponse exists = elasticsearchClient.indices().exists(e -> e
                     .index(NoteConstant.RECOED_INDEX));
-            if(!exists.value()){
+            if (!exists.value()) {
                 elasticsearchClient.indices().create(c -> c.index(NoteConstant.RECOED_INDEX));
             }
 
             SearchRequest.Builder builder = new SearchRequest.Builder().index(NoteConstant.RECOED_INDEX);
             if (StringUtils.isNotBlank(keyword)) {
-                builder.query(q->q.match(f->f.field("content").query(keyword.trim())));
+                builder.query(q -> q.match(f -> f.field("content").query(keyword.trim())));
             }
             builder.size(10);
             SearchRequest searchRequest = builder.build();
@@ -114,22 +114,21 @@ public class RecordServiceImpl implements RecordService {
             // 高亮查询
             for (Hit<RecordSearchVo> hit : hits) {
                 RecordSearchVo recordSearchVo = hit.source();
-                recordSearchVo.setSearchCount(recordSearchVo.getSearchCount()+1);
+                recordSearchVo.setSearchCount(recordSearchVo.getSearchCount() + 1);
                 UpdateResponse<RecordSearchVo> response = elasticsearchClient.update(u -> u.index(NoteConstant.RECOED_INDEX).id(hit.id()).doc(recordSearchVo), RecordSearchVo.class);
-                log.info("response",response.toString());
+                log.info("response", response.toString());
                 contents.add(recordSearchVo.getContent());
             }
 
-            if(StringUtils.isNotBlank(keyword)&&!contents.contains(keyword.trim())){
+            if (StringUtils.isNotBlank(keyword) && !contents.contains(keyword.trim())) {
                 RecordSearchVo recordSearchVo = new RecordSearchVo();
                 recordSearchVo.setContent(keyword);
                 recordSearchVo.setSearchCount(1L);
                 String id = RandomUtil.randomString(12);
                 elasticsearchClient.create(c -> c.index(NoteConstant.RECOED_INDEX).id(id).document(recordSearchVo));
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 }

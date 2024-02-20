@@ -8,13 +8,14 @@ import lombok.Data;
  * @author xiaozhao
  */
 @Data
-public class YanHuoException extends RuntimeException{
+public class YanHuoException extends RuntimeException {
 
     //异常状态码
     private Integer code;
 
     /**
      * 通过状态码和错误消息创建异常对象
+     *
      * @param message
      * @param code
      */
@@ -36,11 +37,11 @@ public class YanHuoException extends RuntimeException{
 
     /**
      * 接收枚举类型对象
+     *
      * @param resultCodeEnum
      */
     public YanHuoException(ResultCodeEnum resultCodeEnum) {
         super(resultCodeEnum.getMessage());
         this.code = resultCodeEnum.getCode();
     }
-
 }

@@ -9,9 +9,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupp
  * @author xiaozhao
  */
 @Configuration
-public class LoginMvcConfigureAdapter extends WebMvcConfigurationSupport{
+public class LoginMvcConfigureAdapter extends WebMvcConfigurationSupport {
     /**
      * 拦截器
+     *
      * @param registry
      */
     @Override
@@ -23,12 +24,13 @@ public class LoginMvcConfigureAdapter extends WebMvcConfigurationSupport{
 
     /**
      * 静态资源访问
+     *
      * @param registry
      */
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler(UploadFileConstant.OSS+"/**") //虚拟url路径
-                .addResourceLocations("file:"+UploadFileConstant.ADDRESS); //真实本地路径
+        registry.addResourceHandler(UploadFileConstant.OSS + "/**") //虚拟url路径
+                .addResourceLocations("file:" + UploadFileConstant.ADDRESS); //真实本地路径
         super.addResourceHandlers(registry);
     }
 }

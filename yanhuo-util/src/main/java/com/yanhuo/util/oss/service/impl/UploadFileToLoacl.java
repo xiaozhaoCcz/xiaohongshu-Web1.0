@@ -41,7 +41,7 @@ public class UploadFileToLoacl implements OssFactory {
             String suffixName = orgName.substring(orgName.lastIndexOf("."));
             String fileName;
             if (orgName.contains(".")) {
-                fileName =System.currentTimeMillis() + suffixName;
+                fileName = System.currentTimeMillis() + suffixName;
             } else {
                 throw new YanHuoException("文件类型错误");
             }
@@ -57,11 +57,11 @@ public class UploadFileToLoacl implements OssFactory {
     public Boolean delete(String path) {
         String prePath = UploadFileConstant.ADDRESS;
         String[] split = path.split(UploadFileConstant.OSS);
-        String filePath = prePath+split[1];
-        log.info("filePath:{}",filePath);
+        String filePath = prePath + split[1];
+        log.info("filePath:{}", filePath);
         File file = new File(filePath);
         if (file.exists()) {//文件是否存在
-          return file.delete();
+            return file.delete();
         }
         return false;
     }

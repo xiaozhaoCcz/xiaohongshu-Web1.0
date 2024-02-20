@@ -31,8 +31,8 @@ public class TagServiceImpl extends ServiceImpl<TagDao, Tag> implements TagServi
     @Override
     public Page<Tag> getPageTagByKeyword(long currentPage, long pageSize, String keyword) {
         QueryWrapper<Tag> queryWrapper = new QueryWrapper<>();
-        if(StringUtils.isNotBlank(keyword)){
-            queryWrapper.like("title",keyword);
+        if (StringUtils.isNotBlank(keyword)) {
+            queryWrapper.like("title", keyword);
         }
         queryWrapper.orderByDesc("like_count");
         return this.page(new Page<Tag>((int) currentPage, (int) pageSize), queryWrapper);

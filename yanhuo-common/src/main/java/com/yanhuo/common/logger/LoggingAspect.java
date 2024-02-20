@@ -48,8 +48,8 @@ public class LoggingAspect {
     /**
      * 匹配我们自己项目的repositories、service、rest端点的切面
      */
-    @Pointcut("within(com.yanhuo..*)"+
-            " || within(com.yanhuo.*.service..*)"+
+    @Pointcut("within(com.yanhuo..*)" +
+            " || within(com.yanhuo.*.service..*)" +
             " || within(com.yanhuo.*.controller..*)")
     public void applicationPackagePointcut() {
         // 方法为空，因为这只是一个切入点，实现在通知中。
@@ -59,7 +59,7 @@ public class LoggingAspect {
      * 记录方法抛出异常的通知
      *
      * @param joinPoint join point for advice
-     * @param e exception
+     * @param e         exception
      */
     @AfterThrowing(pointcut = "applicationPackagePointcut() && springBeanPointcut()", throwing = "e")
     public void logAfterThrowing(JoinPoint joinPoint, Throwable e) {
@@ -67,11 +67,11 @@ public class LoggingAspect {
         // 判断环境，dev、test or prod
         if (env.acceptsProfiles(Profiles.of(GlobalConstant.SPRING_PROFILE_DEVELOPMENT, GlobalConstant.SPRING_PROFILE_TEST))) {
             log.error("Exception in {}.{}() with cause = '{}' and exception = '{}'", joinPoint.getSignature().getDeclaringTypeName(),
-                    joinPoint.getSignature().getName(), e.getCause() != null? e.getCause() : "NULL", e.getMessage(), e);
+                    joinPoint.getSignature().getName(), e.getCause() != null ? e.getCause() : "NULL", e.getMessage(), e);
 
         } else {
             log.error("Exception in {}.{}() with cause = {}", joinPoint.getSignature().getDeclaringTypeName(),
-                    joinPoint.getSignature().getName(), e.getCause() != null? e.getCause() : "NULL");
+                    joinPoint.getSignature().getName(), e.getCause() != null ? e.getCause() : "NULL");
         }
 
     }
@@ -103,7 +103,5 @@ public class LoggingAspect {
 
             throw e;
         }
-
     }
-
 }

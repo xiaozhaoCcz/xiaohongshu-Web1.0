@@ -67,9 +67,9 @@ public class AuthUserController {
     @GetMapping("getUserInfoByToken")
     public Result<?> getUserInfoByToken(String accessToken) {
         boolean checkToken = JwtUtils.checkToken(accessToken);
-        if(!checkToken){
+        if (!checkToken) {
             //通过返回码 告诉客户端 accessToken过期了，需要调用刷新accessToken的接口
-            return Result.build(ResultCodeEnum.TOKEN_EXIST.getCode(),ResultCodeEnum.TOKEN_EXIST.getMessage());
+            return Result.build(ResultCodeEnum.TOKEN_EXIST.getCode(), ResultCodeEnum.TOKEN_EXIST.getMessage());
         }
         User user = authUserService.getUserInfoByToken(accessToken);
         return Result.ok(user);
@@ -143,9 +143,9 @@ public class AuthUserController {
     @NoLoginIntercept
     public Result<?> refreshToken(String refreshToken) {
         boolean checkToken = JwtUtils.checkToken(refreshToken);
-        if(!checkToken){
+        if (!checkToken) {
             //通过返回码 告诉客户端 refreshToken过期了，需要客户端就得跳转登录界面
-            return Result.build(ResultCodeEnum.TOKEN_FAIL.getCode(),ResultCodeEnum.TOKEN_FAIL.getMessage());
+            return Result.build(ResultCodeEnum.TOKEN_FAIL.getCode(), ResultCodeEnum.TOKEN_FAIL.getMessage());
         }
         Map<String, Object> map = authUserService.refreshToken(refreshToken);
         return Result.ok(map);

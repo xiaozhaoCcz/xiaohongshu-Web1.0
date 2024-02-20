@@ -19,10 +19,11 @@ import java.util.List;
 public interface EsClient {
 
     @RequestMapping("/search/note/test")
-    void test() ;
+    void test();
 
     /**
      * 增加一条笔记
+     *
      * @param noteSearchVo 笔记实体
      */
     @RequestMapping("/search/note/addNote")
@@ -30,6 +31,7 @@ public interface EsClient {
 
     /**
      * 修改一条笔记
+     *
      * @param noteSearchVo 笔记实体
      */
     @RequestMapping("/search/note/updateNote")
@@ -37,6 +39,7 @@ public interface EsClient {
 
     /**
      * 批量增加笔记
+     *
      * @param noteSearchVoList 笔记集合
      */
     @RequestMapping("/search/note/addNoteBulkData")
@@ -44,6 +47,7 @@ public interface EsClient {
 
     /**
      * 删除笔记
+     *
      * @param noteId
      */
     @RequestMapping("/search/note/deleteNote/{noteId}")

@@ -33,26 +33,26 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
     LikeOrCollectionService likeOrCollectionService;
 
     @Override
-    public Page<NoteSearchVo> getTrendPageByUser(long currentPage, long pageSize, String userId,Integer type) {
+    public Page<NoteSearchVo> getTrendPageByUser(long currentPage, long pageSize, String userId, Integer type) {
         Page<NoteSearchVo> resultPage;
-        if(type==1){
+        if (type == 1) {
             resultPage = this.getLikeOrCollectionPageByUser(currentPage, pageSize, userId);
-        }else{
-            resultPage = this.getLikeOrCollectionPageByUser(currentPage, pageSize, userId,type);
+        } else {
+            resultPage = this.getLikeOrCollectionPageByUser(currentPage, pageSize, userId, type);
         }
         return resultPage;
     }
 
-    private Page<NoteSearchVo> getLikeOrCollectionPageByUser(long currentPage, long pageSize, String userId){
+    private Page<NoteSearchVo> getLikeOrCollectionPageByUser(long currentPage, long pageSize, String userId) {
         Page<NoteSearchVo> noteSearchVoPage = new Page<>();
         // 得到当前用户发布的所有专辑
         String currentUserId = AuthContextHolder.getUserId();
         Page<Note> notePage;
-        if(currentUserId.equals(userId)){
+        if (currentUserId.equals(userId)) {
             //是当前用户
-            notePage =noteService.page(new Page<>((int)currentPage,(int)pageSize),new QueryWrapper<Note>().eq("uid",userId).orderByDesc("pinned","update_date"));
-        }else{
-            notePage =noteService.page(new Page<>((int)currentPage,(int)pageSize),new QueryWrapper<Note>().eq("uid",userId).eq("type",1).orderByDesc("pinned","update_date"));
+            notePage = noteService.page(new Page<>((int) currentPage, (int) pageSize), new QueryWrapper<Note>().eq("uid", userId).orderByDesc("pinned", "update_date"));
+        } else {
+            notePage = noteService.page(new Page<>((int) currentPage, (int) pageSize), new QueryWrapper<Note>().eq("uid", userId).eq("type", 1).orderByDesc("pinned", "update_date"));
         }
         List<Note> noteList = notePage.getRecords();
         long total = notePage.getTotal();
@@ -68,7 +68,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
             noteSearchVo.setUsername(user.getUsername())
                     .setAvatar(user.getAvatar())
                     .setTime(note.getUpdateDate().getTime());
-            if(!currentUserId.equals(userId)){
+            if (!currentUserId.equals(userId)) {
                 noteSearchVo.setViewCount(null);
             }
             noteSearchVoList.add(noteSearchVo);
@@ -79,16 +79,16 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
     }
 
 
-    private Page<NoteSearchVo> getLikeOrCollectionPageByUser(long currentPage, long pageSize, String userId,Integer type){
+    private Page<NoteSearchVo> getLikeOrCollectionPageByUser(long currentPage, long pageSize, String userId, Integer type) {
         Page<NoteSearchVo> noteSearchVoPage = new Page<>();
         Page<LikeOrCollection> likeOrCollectionPage;
         // 得到当前用户发布的所有图片
-        if(type==2){
+        if (type == 2) {
             // 所有点赞图片
-            likeOrCollectionPage = likeOrCollectionService.page(new Page<>(currentPage, pageSize), new QueryWrapper<LikeOrCollection>().eq("uid", userId).eq("type",1).orderByDesc("create_date"));
-        }else{
+            likeOrCollectionPage = likeOrCollectionService.page(new Page<>(currentPage, pageSize), new QueryWrapper<LikeOrCollection>().eq("uid", userId).eq("type", 1).orderByDesc("create_date"));
+        } else {
             // 所有收藏图片
-            likeOrCollectionPage = likeOrCollectionService.page(new Page<>(currentPage, pageSize), new QueryWrapper<LikeOrCollection>().eq("uid", userId).eq("type",3).orderByDesc("create_date"));
+            likeOrCollectionPage = likeOrCollectionService.page(new Page<>(currentPage, pageSize), new QueryWrapper<LikeOrCollection>().eq("uid", userId).eq("type", 3).orderByDesc("create_date"));
         }
 
         List<LikeOrCollection> likeOrCollectionList = likeOrCollectionPage.getRecords();
@@ -102,7 +102,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
 
         List<NoteSearchVo> noteSearchVoList = new ArrayList<>();
 
-        for (LikeOrCollection model: likeOrCollectionList) {
+        for (LikeOrCollection model : likeOrCollectionList) {
             Note note = noteMap.get(model.getLikeOrCollectionId());
             NoteSearchVo noteSearchVo = ConvertUtils.sourceToTarget(note, NoteSearchVo.class);
             User user = userMap.get(model.getPublishUid());

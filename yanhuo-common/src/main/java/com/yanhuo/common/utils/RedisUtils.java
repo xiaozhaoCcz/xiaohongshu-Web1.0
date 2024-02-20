@@ -40,6 +40,7 @@ public class RedisUtils {
     public Set<String> getListKey(String prefix) {
         return redisTemplate.keys(prefix.concat("*"));
     }
+
     /**
      * 删除key
      *
@@ -206,10 +207,10 @@ public class RedisUtils {
     }
 
 
-    public void set(String key, String value, long expire){
+    public void set(String key, String value, long expire) {
         redisTemplate.opsForValue().set(key, value);
-        if(expire != -1L){
-            expire(key, expire,TimeUnit.SECONDS);
+        if (expire != -1L) {
+            expire(key, expire, TimeUnit.SECONDS);
         }
     }
 

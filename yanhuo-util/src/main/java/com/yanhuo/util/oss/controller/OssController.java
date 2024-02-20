@@ -20,20 +20,22 @@ public class OssController {
 
     /**
      * 上传文件
+     *
      * @param file
      * @param type
      * @return
      */
     @PostMapping("save/{type}")
-    public Result<?> save(MultipartFile file, @PathVariable Integer type){
+    public Result<?> save(MultipartFile file, @PathVariable Integer type) {
         String path = ossService.save(file, type);
         return Result.ok(path);
     }
 
     /**
      * 批量上传文件
+     *
      * @param files
-     * @param type 类型
+     * @param type  类型
      * @return
      */
     @PostMapping(value = "saveBatch/{type}")
@@ -47,18 +49,20 @@ public class OssController {
 
     /**
      * 删除文件
+     *
      * @param path
      * @param type
      * @return
      */
     @GetMapping("delete/{type}")
-    public Result<?> delete(String path, @PathVariable Integer type){
+    public Result<?> delete(String path, @PathVariable Integer type) {
         ossService.delete(path, type);
         return Result.ok();
     }
 
     /**
      * 批量删除文件
+     *
      * @param filePaths
      * @param type
      * @return

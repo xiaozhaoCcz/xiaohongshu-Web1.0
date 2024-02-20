@@ -24,6 +24,7 @@ public class ChatController {
 
     /**
      * 发送消息
+     *
      * @param message 消息实体
      * @return success
      */
@@ -35,61 +36,65 @@ public class ChatController {
 
     /**
      * 获取所有的聊天记录
+     *
      * @param currentPage 分页
-     * @param pageSize 分页数
-     * @param acceptUid 接收方的用户id
+     * @param pageSize    分页数
+     * @param acceptUid   接收方的用户id
      * @return 聊天记录
      */
     @GetMapping("getAllChatRecord/{currentPage}/{pageSize}")
-    public Result<?> getAllChatRecord(@PathVariable long currentPage, @PathVariable long pageSize,String acceptUid){
-        Page<Chat> page =  chatService.getAllChatRecord(currentPage, pageSize,acceptUid);
+    public Result<?> getAllChatRecord(@PathVariable long currentPage, @PathVariable long pageSize, String acceptUid) {
+        Page<Chat> page = chatService.getAllChatRecord(currentPage, pageSize, acceptUid);
         return Result.ok(page);
     }
 
     /**
      * 获取当前用户下所有聊天的用户信息
+     *
      * @return 聊天的用户信息
      */
     @GetMapping("getChatUserList")
-    public Result<?> getChatUserList(){
+    public Result<?> getChatUserList() {
         List<ChatUserRelationVo> list = chatService.getChatUserList();
         return Result.ok(list);
     }
 
     /**
      * 得到所有聊天的记录数量
+     *
      * @return 聊天数量
      */
     @GetMapping("getCountMessage")
-    public Result<?> getCountMessage(){
-       CountMessage countMessage =  chatService.getCountMessage();
-       return Result.ok(countMessage);
+    public Result<?> getCountMessage() {
+        CountMessage countMessage = chatService.getCountMessage();
+        return Result.ok(countMessage);
     }
 
     @GetMapping("deleteMsg")
-    public String deleteMsg(){
+    public String deleteMsg() {
         return null;
     }
 
     @GetMapping("deleteAllChatRecord")
-    public String deleteAllChatRecord(){
+    public String deleteAllChatRecord() {
         return null;
     }
 
     @GetMapping("deleteChatUser")
-    public String deleteChatUser(){
+    public String deleteChatUser() {
         return null;
     }
 
     /**
      * 清除聊天数量
+     *
      * @param sendUid 发送方的用户id
-     * @param type 类型
+     * @param type    类型
      * @return success
      */
     @GetMapping("clearMessageCount")
-    public Result<?> clearMessageCount(String sendUid,Integer type){
-        chatService.clearMessageCount(sendUid,type);
+    public Result<?> clearMessageCount(String sendUid, Integer type) {
+        chatService.clearMessageCount(sendUid, type);
         return Result.ok();
     }
 }

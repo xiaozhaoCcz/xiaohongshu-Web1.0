@@ -72,19 +72,19 @@ public class NoteServiceImpl extends ServiceImpl<NoteDao, Note> implements NoteS
     Integer type;
 
     @NotNull
-    private StringBuilder getTags(Note note,NoteDTO noteDTO) {
+    private StringBuilder getTags(Note note, NoteDTO noteDTO) {
         List<String> tagList = noteDTO.getTagList();
         List<TagNoteRelation> tagNoteRelationList = new ArrayList<>();
         List<Tag> tagList1 = tagService.list();
         Map<String, Tag> tagMap = tagList1.stream().collect(Collectors.toMap(Tag::getTitle, tag -> tag));
-        StringBuilder tags= new StringBuilder();
-        if(!tagList.isEmpty()){
+        StringBuilder tags = new StringBuilder();
+        if (!tagList.isEmpty()) {
             for (String tag : tagList) {
                 TagNoteRelation tagNoteRelation = new TagNoteRelation();
-                if(tagMap.containsKey(tag)){
+                if (tagMap.containsKey(tag)) {
                     Tag tagModel = tagMap.get(tag);
                     tagNoteRelation.setTid(tagModel.getId());
-                }else{
+                } else {
                     Tag model = new Tag();
                     model.setTitle(tag);
                     model.setLikeCount(1L);
@@ -104,8 +104,8 @@ public class NoteServiceImpl extends ServiceImpl<NoteDao, Note> implements NoteS
     @Override
     public NoteVo getNoteById(String noteId) {
         Note note = this.getById(noteId);
-        if(note==null){
-            throw  new YanHuoException(ResultCodeEnum.FAIL);
+        if (note == null) {
+            throw new YanHuoException(ResultCodeEnum.FAIL);
         }
         note.setViewCount(note.getViewCount() + 1);
         User user = userService.getById(note.getUid());
@@ -119,7 +119,7 @@ public class NoteServiceImpl extends ServiceImpl<NoteDao, Note> implements NoteS
 
         String currentUid = AuthContextHolder.getUserId();
         List<LikeOrCollection> likeOrCollectionList = likeOrCollectionService.list(new QueryWrapper<LikeOrCollection>().eq("like_or_collection_id", noteId).eq("uid", currentUid));
-        if(!likeOrCollectionList.isEmpty()) {
+        if (!likeOrCollectionList.isEmpty()) {
             Set<Integer> types = likeOrCollectionList.stream().map(LikeOrCollection::getType).collect(Collectors.toSet());
             noteVo.setIsLike(types.contains(1));
             noteVo.setIsCollection(types.contains(3));
@@ -144,10 +144,10 @@ public class NoteServiceImpl extends ServiceImpl<NoteDao, Note> implements NoteS
     public String saveNoteByDTO(String noteData, MultipartFile[] files) {
         String currentUid = AuthContextHolder.getUserId();
         NoteDTO noteDTO = JSONUtil.toBean(noteData, NoteDTO.class);
-        Note note =ConvertUtils.sourceToTarget(noteDTO, Note.class);
+        Note note = ConvertUtils.sourceToTarget(noteDTO, Note.class);
         note.setUid(currentUid);
-        boolean  save = this.save(note);
-        if(!save){
+        boolean save = this.save(note);
+        if (!save) {
             return null;
         }
         // TODO 存在数据一致性问题，需要往专辑中添加
@@ -165,8 +165,8 @@ public class NoteServiceImpl extends ServiceImpl<NoteDao, Note> implements NoteS
         try {
             Result<List<String>> result = ossClient.saveBatch(files, type);
             dataList = result.getData();
-        }catch (Exception e){
-           e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         String[] urlArr = dataList.toArray(new String[dataList.size()]);
         String urls = JSONUtil.toJsonStr(urlArr);
@@ -188,13 +188,12 @@ public class NoteServiceImpl extends ServiceImpl<NoteDao, Note> implements NoteS
     }
 
 
-
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteNoteByIds(List<String> noteIds) {
         List<Note> noteList = this.listByIds(noteIds);
         // TODO 这里需要优化，数据一致性问题
-        noteList.forEach(item->{
+        noteList.forEach(item -> {
             String noteId = item.getId();
             esClient.deleteNote(noteId);
 
@@ -205,7 +204,7 @@ public class NoteServiceImpl extends ServiceImpl<NoteDao, Note> implements NoteS
             for (Object o : array) {
                 pathArr.add((String) o);
             }
-            ossClient.deleteBatch(pathArr,type);
+            ossClient.deleteBatch(pathArr, type);
             // TODO 可以使用多线程优化，
             // 删除点赞图片，评论，标签关系，收藏关系
             likeOrCollectionService.remove(new QueryWrapper<LikeOrCollection>().eq("like_or_collection_id", noteId));
@@ -213,27 +212,27 @@ public class NoteServiceImpl extends ServiceImpl<NoteDao, Note> implements NoteS
             List<CommentSync> commentSyncList = commentSyncService.list(new QueryWrapper<CommentSync>().eq("nid", noteId));
             List<String> cids = commentList.stream().map(Comment::getId).collect(Collectors.toList());
             List<String> cids2 = commentSyncList.stream().map(CommentSync::getId).collect(Collectors.toList());
-            if(!cids.isEmpty()){
+            if (!cids.isEmpty()) {
                 likeOrCollectionService.remove(new QueryWrapper<LikeOrCollection>().in("like_or_collection_id", cids).eq("type", 2));
             }
             commentService.removeBatchByIds(cids);
             commentSyncService.removeBatchByIds(cids2);
-            tagNoteRelationService.remove(new QueryWrapper<TagNoteRelation>().eq("nid",noteId));
-            albumNoteRelationService.remove(new QueryWrapper<AlbumNoteRelation>().eq("nid",noteId));
+            tagNoteRelationService.remove(new QueryWrapper<TagNoteRelation>().eq("nid", noteId));
+            albumNoteRelationService.remove(new QueryWrapper<AlbumNoteRelation>().eq("nid", noteId));
         });
         this.removeBatchByIds(noteIds);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void  updateNoteByDTO(String noteData, MultipartFile[] files) {
+    public void updateNoteByDTO(String noteData, MultipartFile[] files) {
         // TODO 需要解决数据一致性问题
         String currentUid = AuthContextHolder.getUserId();
         NoteDTO noteDTO = JSONUtil.toBean(noteData, NoteDTO.class);
-        Note note =ConvertUtils.sourceToTarget(noteDTO, Note.class);
+        Note note = ConvertUtils.sourceToTarget(noteDTO, Note.class);
         note.setUid(currentUid);
         boolean flag = this.updateById(note);
-        if(!flag){
+        if (!flag) {
             return;
         }
         Category category = categoryService.getById(note.getCid());
@@ -242,7 +241,7 @@ public class NoteServiceImpl extends ServiceImpl<NoteDao, Note> implements NoteS
         try {
             Result<List<String>> result = ossClient.saveBatch(files, type);
             dataList = result.getData();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         // 删除原来图片的地址
@@ -253,7 +252,7 @@ public class NoteServiceImpl extends ServiceImpl<NoteDao, Note> implements NoteS
         for (Object o : array) {
             pathArr.add((String) o);
         }
-        ossClient.deleteBatch(pathArr,type);
+        ossClient.deleteBatch(pathArr, type);
 
         String[] urlArr = dataList.toArray(new String[dataList.size()]);
         String newUrls = JSONUtil.toJsonStr(urlArr);
@@ -262,7 +261,7 @@ public class NoteServiceImpl extends ServiceImpl<NoteDao, Note> implements NoteS
         this.updateById(note);
 
         // 删除原来的标签绑定关系
-        tagNoteRelationService.remove(new QueryWrapper<TagNoteRelation>().eq("nid",note.getId()));
+        tagNoteRelationService.remove(new QueryWrapper<TagNoteRelation>().eq("nid", note.getId()));
         // 重新绑定标签关系
         StringBuilder tags = getTags(note, noteDTO);
 
@@ -287,12 +286,12 @@ public class NoteServiceImpl extends ServiceImpl<NoteDao, Note> implements NoteS
     public boolean pinnedNote(String noteId) {
         String currentUid = AuthContextHolder.getUserId();
         Note note = this.getById(noteId);
-        if(note.getPinned().equals(1)){
-           note.setPinned(0);
-        }else{
+        if (note.getPinned().equals(1)) {
+            note.setPinned(0);
+        } else {
             List<Note> noteList = this.list(new QueryWrapper<Note>().eq("uid", currentUid));
             long count = noteList.stream().filter(item -> item.getPinned() == 1).count();
-            if(count>=2) {
+            if (count >= 2) {
                 throw new YanHuoException("最多只能置顶2个笔记");
             }
             note.setPinned(1);

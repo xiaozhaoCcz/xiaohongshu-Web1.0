@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
  */
 @Component
 @Slf4j
-public class NoteJobHandler{
+public class NoteJobHandler {
 
     @Autowired
     EsClient esClient;
@@ -58,12 +58,12 @@ public class NoteJobHandler{
             user = userMap.get(note.getUid());
             //懒得优化了
             List<TagNoteRelation> tagNoteRelationList = tagNoteRelationService.list(new QueryWrapper<TagNoteRelation>().eq("nid", note.getId()));
-            if(!tagNoteRelationList.isEmpty()){
+            if (!tagNoteRelationList.isEmpty()) {
                 Set<String> tids = tagNoteRelationList.stream().map(TagNoteRelation::getTid).collect(Collectors.toSet());
                 List<Tag> tags = tagService.listByIds(tids);
                 String tagStr = tags.stream().map(Tag::getTitle).collect(Collectors.joining(","));
                 noteSearchVo.setTags(tagStr);
-            }else{
+            } else {
                 noteSearchVo.setTags("");
             }
 
@@ -75,7 +75,7 @@ public class NoteJobHandler{
                     .setCategoryName(category.getTitle())
                     .setCategoryParentName(parentCategory.getTitle())
                     .setTime(note.getUpdateDate().getTime())
-                            .setIsLoading(false);
+                    .setIsLoading(false);
             noteSearchVoList.add(noteSearchVo);
         }
         esClient.addNoteBulkData(noteSearchVoList);

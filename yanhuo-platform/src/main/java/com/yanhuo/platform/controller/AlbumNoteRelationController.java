@@ -23,10 +23,11 @@ public class AlbumNoteRelationController {
 
     /**
      * 得到当前专辑下的所有笔记
+     *
      * @param currentPage 当前页
-     * @param pageSize 分页数
-     * @param albumId 专辑id
-     * @param userId 用户id
+     * @param pageSize    分页数
+     * @param albumId     专辑id
+     * @param userId      用户id
      * @return 查询的笔记
      */
     @GetMapping("getNotePageByAid/{currentPage}/{pageSize}")

@@ -38,8 +38,9 @@ public class NoteController {
 
     /**
      * 分页查询笔记
+     *
      * @param currentPage 当前页
-     * @param pageSize 分页数
+     * @param pageSize    分页数
      * @return Page<NoteSearchVo>
      */
     @NoLoginIntercept
@@ -83,6 +84,7 @@ public class NoteController {
 
     /**
      * 删除es中的笔记
+     *
      * @param noteId
      */
     @RequestMapping("deleteNote/{noteId}")

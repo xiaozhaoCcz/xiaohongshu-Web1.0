@@ -20,7 +20,7 @@ public class OssServiceImpl implements OssService {
         switch (type) {
             case 0:
                 // 本地上传图片
-                factory =   new UploadFileToLoacl();
+                factory = new UploadFileToLoacl();
                 break;
             case 1:
                 factory = new QiNiuYunUploadFile();
@@ -28,8 +28,8 @@ public class OssServiceImpl implements OssService {
             default:
                 break;
         }
-        if(factory!=null){
-           return factory.save(file);
+        if (factory != null) {
+            return factory.save(file);
         }
         return null;
     }
@@ -38,8 +38,8 @@ public class OssServiceImpl implements OssService {
     public List<String> saveBatch(MultipartFile[] files, Integer type) {
         List<String> result = new ArrayList<>();
         // 需要进行加锁，不然会出现多次添加
-        for (MultipartFile file : files){
-            result.add(save(file,type));
+        for (MultipartFile file : files) {
+            result.add(save(file, type));
         }
         return result;
     }
@@ -50,7 +50,7 @@ public class OssServiceImpl implements OssService {
         switch (type) {
             case 0:
                 // 本地上传图片
-               factory =  new UploadFileToLoacl();
+                factory = new UploadFileToLoacl();
                 break;
             case 1:
                 factory = new QiNiuYunUploadFile();
@@ -63,8 +63,8 @@ public class OssServiceImpl implements OssService {
 
     @Override
     public void batchDelete(List<String> filePaths, Integer type) {
-        for (String path : filePaths){
-           delete(path,type);
+        for (String path : filePaths) {
+            delete(path, type);
         }
     }
 }

@@ -80,12 +80,12 @@ public class AuthUserServiceImpl extends ServiceImpl<UserDao, User> implements A
     public Map<String, Object> loginByCode(AuthUserDTO authUserDTO) {
         Map<String, Object> map = new HashMap<>(2);
         User currentUser;
-        if(StringUtils.isNotBlank(authUserDTO.getPhone())){
+        if (StringUtils.isNotBlank(authUserDTO.getPhone())) {
             currentUser = this.getOne(new QueryWrapper<User>().eq("phone", authUserDTO.getPhone()));
-        }else{
+        } else {
             currentUser = this.getOne(new QueryWrapper<User>().eq("email", authUserDTO.getEmail()));
         }
-        if(checkCode(authUserDTO)||currentUser==null){
+        if (checkCode(authUserDTO) || currentUser == null) {
             throw new YanHuoException(AuthConstant.LOGIN_FAIL);
         }
         setUserInfoAndToken(map, currentUser);

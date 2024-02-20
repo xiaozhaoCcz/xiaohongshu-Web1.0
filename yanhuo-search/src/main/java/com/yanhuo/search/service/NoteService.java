@@ -59,5 +59,4 @@ public interface NoteService extends IService<Note> {
      */
     void deleteNote(String noteId);
 
-
 }

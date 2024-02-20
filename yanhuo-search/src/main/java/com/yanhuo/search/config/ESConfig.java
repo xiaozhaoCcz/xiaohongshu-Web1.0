@@ -41,12 +41,12 @@ public class ESConfig {
                 restClient, new JacksonJsonpMapper()
         );
         // 创建API客户端
-        client= new ElasticsearchClient(transport);
+        client = new ElasticsearchClient(transport);
         return client;
     }
 
 
-    public void close(){
+    public void close() {
         if (client != null) {
             try {
                 transport.close();
@@ -55,6 +55,5 @@ public class ESConfig {
                 log.error("关闭es连接异常");
             }
         }
-
     }
 }

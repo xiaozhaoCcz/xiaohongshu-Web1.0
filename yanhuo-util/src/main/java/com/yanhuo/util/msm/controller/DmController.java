@@ -38,7 +38,7 @@ public class DmController {
         try {
             String content = RandomUtil.randomNumbers(4);
             dmService.sendDm(userDTO.getEmail(), content);
-            redisUtils.set(UserConstant.CODE+userDTO.getEmail(), content, 60 * 5L);
+            redisUtils.set(UserConstant.CODE + userDTO.getEmail(), content, 60 * 5L);
         } catch (Exception e) {
             e.printStackTrace();
         }

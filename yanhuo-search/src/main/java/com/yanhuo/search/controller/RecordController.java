@@ -20,31 +20,34 @@ public class RecordController {
 
     /**
      * 获取搜索记录
-     * @param keyword  关键词
+     *
+     * @param keyword 关键词
      * @return 记录集合
      */
     @GetMapping("getRecordByKeyWord")
-    public Result<?> getRecordByKeyWord(String keyword){
+    public Result<?> getRecordByKeyWord(String keyword) {
         return Result.ok(recordService.getRecordByKeyWord(keyword));
     }
 
     /**
      * 热门关键词
+     *
      * @return list
      */
     @NoLoginIntercept
     @GetMapping("getHotRecord")
-    public Result<?> getHotRecord(){
+    public Result<?> getHotRecord() {
         return Result.ok(recordService.getHotRecord());
     }
 
     /**
      * 增加搜索记录
+     *
      * @param keyword 关键词
      * @return success
      */
     @GetMapping("addRecord")
-    public Result<?> addRecord(String keyword){
+    public Result<?> addRecord(String keyword) {
         recordService.addRecord(keyword);
         return Result.ok();
     }

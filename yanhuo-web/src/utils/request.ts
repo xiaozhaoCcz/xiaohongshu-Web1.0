@@ -91,9 +91,9 @@ service.interceptors.response.use(
       if (data.code == 401) {
         window.localStorage.clear();
         ElMessage.error("登录过期，请重新登陆");
-        setTimeout(() => {
-          window.location.href = "/"
-        }, 1000)
+        // setTimeout(() => {
+        //   window.location.href = "/"
+        // }, 1000)
       } else {
         ElMessage.error(data.message);
       }
