@@ -9,13 +9,21 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
 
 /**
  * @author xiaozhao
  */
 public class FeignRequestInterceptor implements RequestInterceptor {
+    private static final String[] WHITE_METHODS = {"addNoteBulkData"};
+
     @Override
     public void apply(RequestTemplate template) {
+        String methodName = template.methodMetadata().method().getName();
+        if (Arrays.asList(WHITE_METHODS).contains(methodName)) {
+            return;
+        }
+
         // 从header获取X-token
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
         ServletRequestAttributes attr = (ServletRequestAttributes) requestAttributes;
