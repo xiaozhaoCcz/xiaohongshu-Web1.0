@@ -87,10 +87,14 @@ public class ChatServiceImpl extends ServiceImpl<ChatDao, Chat> implements ChatS
     @Override
     public List<ChatUserRelationVo> getChatUserList() {
         String currentUid = AuthContextHolder.getUserId();
+        List<ChatUserRelationVo> result = new ArrayList<>();
         List<ChatUserRelation> chatUserRelationList = chatUserRelationService.list(new QueryWrapper<ChatUserRelation>().eq("accept_uid", currentUid).orderByDesc("create_date"));
+        if (chatUserRelationList.isEmpty()) {
+            return result;
+        }
         Set<String> uids = chatUserRelationList.stream().map(ChatUserRelation::getSendUid).collect(Collectors.toSet());
         Map<String, User> userMap = userDao.selectBatchIds(uids).stream().collect(Collectors.toMap(User::getId, user -> user));
-        List<ChatUserRelationVo> result = new ArrayList<>();
+
         chatUserRelationList.forEach(item -> {
             ChatUserRelationVo chatUserRelationVo = ConvertUtils.sourceToTarget(item, ChatUserRelationVo.class);
             User user = userMap.get(item.getSendUid());
