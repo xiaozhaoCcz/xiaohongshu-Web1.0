@@ -113,9 +113,17 @@ const toMain = (noteId: string) => {
   mainShow.value = true;
 };
 
-const close = (nid: string, isLike: boolean) => {
+const close = (nid: string, val: any) => {
   const index = trendData.value.findIndex((item) => item.nid === nid);
-  trendData.value[index].isLike = isLike;
+  console.log("---val", val, index);
+  const _data = trendData.value[index];
+  if (_data.isLike != val.isLike) {
+    _data.isLike = val.isLike;
+    _data.likeCount += val.isLike ? 1 : -1;
+  }
+  if (val.isComment) {
+    _data.commentCount += 1;
+  }
   mainShow.value = false;
 };
 

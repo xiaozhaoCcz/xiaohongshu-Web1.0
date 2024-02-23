@@ -119,11 +119,11 @@ public class NoteServiceImpl extends ServiceImpl<NoteDao, Note> implements NoteS
 
         String currentUid = AuthContextHolder.getUserId();
         List<LikeOrCollection> likeOrCollectionList = likeOrCollectionService.list(new QueryWrapper<LikeOrCollection>().eq("like_or_collection_id", noteId).eq("uid", currentUid));
-        if (!likeOrCollectionList.isEmpty()) {
-            Set<Integer> types = likeOrCollectionList.stream().map(LikeOrCollection::getType).collect(Collectors.toSet());
-            noteVo.setIsLike(types.contains(1));
-            noteVo.setIsCollection(types.contains(3));
-        }
+
+        Set<Integer> types = likeOrCollectionList.stream().map(LikeOrCollection::getType).collect(Collectors.toSet());
+        noteVo.setIsLike(types.contains(1));
+        noteVo.setIsCollection(types.contains(3));
+
 
         //得到标签
         List<TagNoteRelation> tagNoteRelationList = tagNoteRelationService.list(new QueryWrapper<TagNoteRelation>().eq("nid", noteId));

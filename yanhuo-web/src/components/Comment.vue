@@ -188,6 +188,7 @@ const addComment = () => {
     }
     dataList.value[oneIndex.value].children.splice(twoIndex.value + 1, 0, comment);
   }
+  computedTotal.value += 1
 };
 
 const loadTwoMore = (oneCommentId: string, index: number) => {
@@ -220,6 +221,7 @@ const reback = (oneCommentId: string, index: number) => {
 };
 
 const getCommentData = () => {
+  computedTotal.value = 0;
   getCommentPageWithCommentByNoteId(props.currentPage, pageSize, props.nid).then(
     (res: any) => {
       const { records, total } = res.data;
@@ -254,8 +256,8 @@ watch(
     console.log("评论功能", newNid, oldNid, props.currentPage);
     if (newNid !== oldNid) {
       dataList.value = [];
+      getCommentData();
     }
-    getCommentData();
     if (newSeed !== oldSeed) {
       addComment();
     }

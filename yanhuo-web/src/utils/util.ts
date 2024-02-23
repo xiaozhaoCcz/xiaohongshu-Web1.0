@@ -4,9 +4,9 @@ import axios from 'axios'
 export const formatDate = (t: number): string => {
   t = t || Date.now();
   const time = new Date(t);
-  let str = time.getFullYear();
+  let str = time.getFullYear() as any;
   str += "-";
-  str = time.getMonth() < 9 ? "0" + (time.getMonth() + 1) : time.getMonth() + 1;
+  str = time.getMonth() < 9 ? "0" + (time.getMonth() + 1) : (time.getMonth() + 1);
   str += "-";
   str += time.getDate() < 10 ? "0" + time.getDate() : time.getDate();
   str += " ";

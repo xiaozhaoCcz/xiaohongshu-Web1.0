@@ -180,6 +180,10 @@ const seed = ref("");
 const commentIds = ref<Array<string>>([]);
 const noteScroller = ref(null);
 const isLogin = ref(false);
+const likeOrComment = ref({
+  isLike: false,
+  isComment: false,
+});
 
 watch(
   () => [props.nowTime],
@@ -191,6 +195,7 @@ watch(
         noteInfo.value = res.data;
         noteInfo.value.imgList = JSON.parse(res.data.urls);
         noteInfo.value.time = formateTime(res.data.time);
+        likeOrComment.value.isLike = noteInfo.value.isLike
       });
     }
   }
@@ -219,7 +224,8 @@ const close = () => {
   if (isLogin.value) {
     syncCommentByIds(commentIds.value).then(() => {
       commentIds.value = [];
-      emit("clickMain", props.nid, noteInfo.value.isLike);
+
+      emit("clickMain", props.nid, likeOrComment.value);
     });
   } else {
     emit("clickMain");
@@ -249,6 +255,7 @@ const likeOrCollection = (type: number, val: number) => {
     if (type == 1) {
       noteInfo.value.isLike = val == 1;
       noteInfo.value.likeCount += val;
+      likeOrComment.value.isLike = val == 1;
     } else {
       noteInfo.value.isCollection = val == 1;
       noteInfo.value.collectionCount += val;
@@ -327,6 +334,7 @@ const saveComment = () => {
     showSaveBtn.value = false;
     seed.value = getRandomString(12);
     commentIds.value.push(res.data.id);
+    likeOrComment.value.isComment = true;
   });
 };
 
