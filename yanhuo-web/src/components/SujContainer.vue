@@ -25,8 +25,11 @@
       <div class="sug-box">
         <div class="header">猜你想搜</div>
         <div class="sug-wrapper">
-          <div class="sug-item query-trending query-trending hotspot" v-for="(item, index) in recommendRecords"
-            :key="index">
+          <div
+            class="sug-item query-trending query-trending hotspot"
+            v-for="(item, index) in recommendRecords"
+            :key="index"
+          >
             <div class="sug-text">
               {{ item }}
             </div>
@@ -48,7 +51,10 @@
               <p class="hotspot-index">{{ index + 1 }}</p>
               <div class="hotspot-title" @click="searchPage(item.content)">
                 <span class="text">{{ item.content }}</span>
-                <img src="https://sns-img-qc.xhscdn.com/search/trends/icon/label/new/version/1" crossorigin="anonymous" />
+                <img
+                  src="https://sns-img-qc.xhscdn.com/search/trends/icon/label/new/version/1"
+                  crossorigin="anonymous"
+                />
               </div>
               <span class="hotspot-score">{{ item.searchCount }}</span>
             </div>

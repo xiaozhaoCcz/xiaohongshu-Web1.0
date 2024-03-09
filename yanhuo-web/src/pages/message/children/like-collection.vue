@@ -31,6 +31,7 @@
     </ul>
   </div>
 </template>
+
 <script lang="ts" setup>
 import { ref } from "vue";
 import { getNoticeLikeOrCollection } from "@/api/likeOrCollection";
@@ -51,7 +52,7 @@ const toPage = (nid: string) => {
 };
 
 const toUser = (uid: string) => {
-  router.push({ name: "user", state: { uid: uid } });
+  router.push({ name: "user", query: { uid: uid } });
 };
 
 const getPageData = () => {
@@ -75,6 +76,7 @@ const initData = () => {
 };
 initData();
 </script>
+
 <style lang="less" scoped>
 textarea {
   overflow: auto;

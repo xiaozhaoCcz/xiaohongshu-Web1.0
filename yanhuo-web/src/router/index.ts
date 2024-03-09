@@ -21,17 +21,17 @@ export const routes = [
       {
         path: "/dashboard",
         component: Dashboard,
-        name: "dashboard", 
+        name: "dashboard",
       },
       {
         path: "/followTrend",
         component: () => import("@/pages/follow-trend/follow-trend.vue"),
-        name: "followTrend", 
+        name: "followTrend",
       },
       {
         path: "/notice",
         component: () => import("@/pages/message/index.vue"),
-        name: "notice", 
+        name: "notice",
       },
       {
         path: "/user",
@@ -41,7 +41,7 @@ export const routes = [
       {
         path: "/push",
         component: () => import("@/pages/push/index.vue"),
-        name: "push", 
+        name: "push",
       },
     ],
   },

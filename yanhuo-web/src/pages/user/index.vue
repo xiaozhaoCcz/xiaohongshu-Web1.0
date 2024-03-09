@@ -18,7 +18,8 @@
                   </div>
                 </div>
                 <div class="user-content">
-                  <span class="user-redId">小红书号：{{ userInfo.yxId }}</span><span class="user-IP"> IP属地：广东</span>
+                  <span class="user-redId">小红书号：{{ userInfo.yxId }}</span
+                  ><span class="user-IP"> IP属地：广东</span>
                 </div>
               </div>
             </div>
@@ -40,13 +41,16 @@
             <div class="data-info">
               <div class="user-interactions">
                 <div>
-                  <span class="count">{{ userInfo.trendCount }}</span><span class="shows">作品</span>
+                  <span class="count">{{ userInfo.trendCount }}</span
+                  ><span class="shows">作品</span>
                 </div>
                 <div>
-                  <span class="count">{{ userInfo.followerCount }}</span><span class="shows">关注</span>
+                  <span class="count">{{ userInfo.followerCount }}</span
+                  ><span class="shows">关注</span>
                 </div>
                 <div>
-                  <span class="count">{{ userInfo.fanCount }}</span><span class="shows">粉丝</span>
+                  <span class="count">{{ userInfo.fanCount }}</span
+                  ><span class="shows">粉丝</span>
                 </div>
               </div>
             </div>
@@ -66,16 +70,22 @@
     <div class="reds-sticky-box user-page-sticky" style="--1ee3a37c: all 0.4s cubic-bezier(0.2, 0, 0.25, 1) 0s">
       <div class="reds-sticky" style="">
         <div class="tertiary center reds-tabs-list" style="padding: 0px 12px">
-          <div :class="type == 1 ? 'reds-tab-item active' : 'reds-tab-item'"
-            style="padding: 0px 16px; margin-right: 0px; font-size: 16px">
+          <div
+            :class="type == 1 ? 'reds-tab-item active' : 'reds-tab-item'"
+            style="padding: 0px 16px; margin-right: 0px; font-size: 16px"
+          >
             <!----><!----><span @click="toPage(1)">笔记</span>
           </div>
-          <div :class="type == 2 ? 'reds-tab-item active' : 'reds-tab-item'"
-            style="padding: 0px 16px; margin-right: 0px; font-size: 16px">
+          <div
+            :class="type == 2 ? 'reds-tab-item active' : 'reds-tab-item'"
+            style="padding: 0px 16px; margin-right: 0px; font-size: 16px"
+          >
             <!----><!----><span @click="toPage(2)">点赞</span>
           </div>
-          <div :class="type == 3 ? 'reds-tab-item active' : 'reds-tab-item'"
-            style="padding: 0px 16px; margin-right: 0px; font-size: 16px">
+          <div
+            :class="type == 3 ? 'reds-tab-item active' : 'reds-tab-item'"
+            style="padding: 0px 16px; margin-right: 0px; font-size: 16px"
+          >
             <!----><!----><span @click="toPage(3)">收藏</span>
           </div>
           <!---->
@@ -85,13 +95,18 @@
     </div>
     <div class="feeds-tab-container" style="--1ee3a37c: all 0.4s cubic-bezier(0.2, 0, 0.25, 1) 0s">
       <!-- <router-view /> -->
-      <Chat v-if="chatShow" :acceptUid="uid" class="animate__animated animate__zoomIn animate__delay-0.5s"
-        @click-chat="close"></Chat>
+      <Chat
+        v-if="chatShow"
+        :acceptUid="uid"
+        class="animate__animated animate__zoomIn animate__delay-0.5s"
+        @click-chat="close"
+      ></Chat>
 
       <Note :type="type"></Note>
     </div>
   </div>
 </template>
+
 <script lang="ts" setup>
 import { ChatLineRound } from "@element-plus/icons-vue";
 import { ref } from "vue";
@@ -100,10 +115,13 @@ import Note from "@/components/Note.vue";
 import { useUserStore } from "@/store/userStore";
 import Chat from "@/components/Chat.vue";
 import { followById, isFollow } from "@/api/follower";
+import { useRoute } from "vue-router";
+const route = useRoute();
 const userStore = useUserStore();
 const currentUid = userStore.getUserInfo().id;
 const userInfo = ref<any>({});
-const uid = history.state.uid;
+//const uid = history.state.uid;
+const uid = route.query.uid as string;
 const type = ref(1);
 const chatShow = ref(false);
 const _isFollow = ref(false);
@@ -137,6 +155,7 @@ const initData = () => {
 
 initData();
 </script>
+
 <style lang="less" scoped>
 .user-page {
   background: #fff;
@@ -281,7 +300,7 @@ initData();
               }
             }
 
-            .user-interactions>div {
+            .user-interactions > div {
               height: 100%;
               display: flex;
               align-items: center;
@@ -315,7 +334,7 @@ initData();
     background: hsla(0, 0%, 100%, 0.98);
 
     .reds-tabs-list {
-      screen and (min-width: 1728px) {
+      @media screen and (min-width: 1728px) {
         width: 1445.33333px;
       }
 

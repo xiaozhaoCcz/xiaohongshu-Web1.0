@@ -37,6 +37,7 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   (response: AxiosResponse) => {
     const { code } = response.data;
+    console.log(response, code);
     if (code === 200) {
       return response.data;
     }
@@ -51,6 +52,7 @@ service.interceptors.response.use(
       // 无感刷新Token
       if (!isRefreshing) {
         isRefreshing = true;
+        storage.set("accessToken", "");
         const refreshToken = storage.get("refreshToken") as string;
         console.log("refreshToken", refreshToken);
         return userStore
@@ -84,20 +86,12 @@ service.interceptors.response.use(
           });
         });
       }
+    } else if (code == 401) {
+      ElMessage.error("登录过期，请重新登陆");
+      window.localStorage.clear();
+      window.location.href = "/"
     }
-    Promise.reject(response).catch((error: any) => {
-      console.log("错误请求", error);
-      const { data } = error;
-      if (data.code == 401) {
-        window.localStorage.clear();
-        ElMessage.error("登录过期，请重新登陆");
-        // setTimeout(() => {
-        //   window.location.href = "/"
-        // }, 1000)
-      } else {
-        ElMessage.error(data.message);
-      }
-    });
+    return Promise.reject(response.data);
   }
 );
 

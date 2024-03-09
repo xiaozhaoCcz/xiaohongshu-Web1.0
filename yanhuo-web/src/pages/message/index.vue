@@ -18,8 +18,11 @@
                 </div>
               </div>
             </el-badge>
-            <el-badge :value="_countMessage.likeOrCollectionCount" :max="99"
-              :hidden="_countMessage.likeOrCollectionCount == 0">
+            <el-badge
+              :value="_countMessage.likeOrCollectionCount"
+              :max="99"
+              :hidden="_countMessage.likeOrCollectionCount == 0"
+            >
               <div :class="type === 0 ? 'reds-tab-item active tab-item' : 'reds-tab-item tab-item'">
                 <div class="badge-container" @click="toPage(0)">
                   <span>赞和收藏</span>
@@ -43,8 +46,13 @@
       <Follower v-if="type == 2"></Follower>
       <!-- <router-view /> -->
 
-      <Main v-show="mainShow" :nid="nid" :nowTime="new Date()"
-        class="animate__animated animate__zoomIn animate__delay-0.5s" @click-main="close"></Main>
+      <Main
+        v-show="mainShow"
+        :nid="nid"
+        :nowTime="new Date()"
+        class="animate__animated animate__zoomIn animate__delay-0.5s"
+        @click-main="close"
+      ></Main>
 
       <el-backtop :bottom="80" :right="24">
         <div class="back-top">

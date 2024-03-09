@@ -16,8 +16,9 @@
             </div>
           </div>
           <div class="extra">
-            <el-button type="info" round size="large" v-if="item.isFollow"
-              @click="follow(item.uid, index, 1)">已关注</el-button>
+            <el-button type="info" round size="large" v-if="item.isFollow" @click="follow(item.uid, index, 1)"
+              >已关注</el-button
+            >
             <el-button type="danger" round size="large" v-else @click="follow(item.uid, index, -1)">回关</el-button>
           </div>
         </div>
@@ -25,6 +26,7 @@
     </ul>
   </div>
 </template>
+
 <script lang="ts" setup>
 import { ref } from "vue";
 import { getNoticeFollower } from "@/api/follower";
@@ -61,7 +63,7 @@ const loadMore = () => {
 };
 
 const toUser = (uid: string) => {
-  router.push({ name: "user", state: { uid: uid } });
+  router.push({ name: "user", query: { uid: uid } });
 };
 
 const initData = () => {
@@ -69,6 +71,7 @@ const initData = () => {
 };
 initData();
 </script>
+
 <style lang="less" scoped>
 textarea {
   overflow: auto;

@@ -1,12 +1,19 @@
 <template>
-  <div class="note-detail-mask" style="transition: background-color 0.4s ease 0s;
-  hsla(0,0%,100%,0.98)">
+  <div
+    class="note-detail-mask"
+    style="transition: background-color 0.4s ease 0s;
+  hsla(0,0%,100%,0.98)"
+  >
     <div class="note-container">
       <div class="media-container">
         <el-carousel height="90vh" :autoplay="false">
           <el-carousel-item v-for="(item, index) in noteInfo.imgList" :key="index">
-            <el-image style="width: 100%; height: 100%" :src="item" fit="contain"
-              class="animate__animated animate__zoomIn animate__delay-0.5s" />
+            <el-image
+              style="width: 100%; height: 100%"
+              :src="item"
+              fit="contain"
+              class="animate__animated animate__zoomIn animate__delay-0.5s"
+            />
           </el-carousel-item>
         </el-carousel>
       </div>
@@ -19,8 +26,9 @@
               <span class="name">{{ noteInfo.username }}</span>
             </div>
             <div class="follow-btn" v-if="currentUid !== noteInfo.uid">
-              <el-button type="info" size="large" round v-if="noteInfo.isFollow"
-                @click="follow(noteInfo.uid, 1)">已关注</el-button>
+              <el-button type="info" size="large" round v-if="noteInfo.isFollow" @click="follow(noteInfo.uid, 1)"
+                >已关注</el-button
+              >
               <el-button type="danger" size="large" round v-else @click="follow(noteInfo.uid, 0)">关注</el-button>
             </div>
             <div class="follow-btn" v-else>
@@ -30,7 +38,9 @@
                 </el-button>
                 <template #dropdown>
                   <el-dropdown-menu>
-                    <el-dropdown-item v-if="noteInfo.pinned === 0" @click="pinned(noteInfo.id, 1)">置顶</el-dropdown-item>
+                    <el-dropdown-item v-if="noteInfo.pinned === 0" @click="pinned(noteInfo.id, 1)"
+                      >置顶</el-dropdown-item
+                    >
                     <el-dropdown-item v-else @click="pinned(noteInfo.id, 0)">取消置顶</el-dropdown-item>
                     <el-dropdown-item @click="deleteNote(noteInfo.id)">删除</el-dropdown-item>
                     <el-dropdown-item @click="toEdit(noteInfo.id)">编辑</el-dropdown-item>
@@ -55,8 +65,13 @@
 
             <!-- 评论 -->
             <div class="comments-el">
-              <Comment :nid="props.nid" :currentPage="currentPage" :replyComment="replyComment" :seed="seed"
-                @click-comment="clickComment"></Comment>
+              <Comment
+                :nid="props.nid"
+                :currentPage="currentPage"
+                :replyComment="replyComment"
+                :seed="seed"
+                @click-comment="clickComment"
+              ></Comment>
             </div>
             <!--  -->
           </div>
@@ -64,14 +79,15 @@
           <div class="interactions-footer">
             <div class="buttons">
               <div class="left">
-                <span class="like-wrapper"><span class="like-lottie" v-if="noteInfo.isCollection"
-                    @click="likeOrCollection(3, -1)">
+                <span class="like-wrapper"
+                  ><span class="like-lottie" v-if="noteInfo.isCollection" @click="likeOrCollection(3, -1)">
                     <StarFilled style="width: 0.9em; height: 0.9em; color: #333" />
                   </span>
                   <span class="like-lottie" v-else @click="likeOrCollection(3, 1)">
                     <Star style="width: 0.8em; height: 0.8em; color: #333" />
                   </span>
-                  <span class="count">{{ noteInfo.collectionCount }}</span></span>
+                  <span class="count">{{ noteInfo.collectionCount }}</span></span
+                >
                 <span class="collect-wrapper">
                   <span class="like-lottie" v-if="noteInfo.isLike" @click="likeOrCollection(1, -1)">
                     <i class="iconfont icon-follow-fill" style="width: 0.8em; height: 0.8em; color: #333"></i>
@@ -79,21 +95,24 @@
                   <span class="like-lottie" v-else @click="likeOrCollection(1, 1)">
                     <i class="iconfont icon-follow" style="width: 0.8em; height: 0.8em; color: #333"></i>
                   </span>
-                  <span class="count">{{ noteInfo.likeCount }}</span></span>
+                  <span class="count">{{ noteInfo.likeCount }}</span></span
+                >
                 <span class="chat-wrapper">
-                  <span class="like-lottie">
-                    <ChatRound style="width: 0.8em; height: 0.8em; color: #333" />
-                  </span><span class="count">{{ noteInfo.commentCount }}</span></span>
+                  <span class="like-lottie"> <ChatRound style="width: 0.8em; height: 0.8em; color: #333" /> </span
+                  ><span class="count">{{ noteInfo.commentCount }}</span></span
+                >
               </div>
               <div class="share-wrapper"></div>
             </div>
-            <div :class="showSaveBtn
-              ? 'comment-wrapper active comment-comp '
-              : 'comment-wrapper comment-comp '
-              ">
+            <div :class="showSaveBtn ? 'comment-wrapper active comment-comp ' : 'comment-wrapper comment-comp '">
               <div class="input-wrapper">
-                <input class="comment-input" v-model="commentValue" type="text" :placeholder="commentPlaceVal"
-                  @input="commenInput" />
+                <input
+                  class="comment-input"
+                  v-model="commentValue"
+                  type="text"
+                  :placeholder="commentPlaceVal"
+                  @input="commenInput"
+                />
                 <div class="input-buttons" @click="clearCommeent" v-show="showSaveBtn">
                   <Close style="width: 1.2em; height: 1.2em" />
                 </div>
@@ -191,11 +210,11 @@ watch(
     currentPage.value = 1;
     if (props.nid !== null && props.nid !== "") {
       getNoteById(props.nid).then((res: any) => {
-        console.log("---note", res.data)
+        console.log("---note", res.data);
         noteInfo.value = res.data;
         noteInfo.value.imgList = JSON.parse(res.data.urls);
         noteInfo.value.time = formateTime(res.data.time);
-        likeOrComment.value.isLike = noteInfo.value.isLike
+        likeOrComment.value.isLike = noteInfo.value.isLike;
       });
     }
   }
@@ -203,10 +222,7 @@ watch(
 
 const noLoginNotice = () => {
   if (!isLogin.value) {
-    ElMessage({
-      message: "用户未登录",
-      type: "warning",
-    });
+    ElMessage.warning("用户未登录");
     return false;
   }
   return true;
@@ -217,14 +233,13 @@ const toUser = (uid: string) => {
   if (!_login) {
     return;
   }
-  router.push({ name: "user", state: { uid: uid } });
+  router.push({ name: "user", query: { uid: uid } });
 };
 
 const close = () => {
   if (isLogin.value) {
     syncCommentByIds(commentIds.value).then(() => {
       commentIds.value = [];
-
       emit("clickMain", props.nid, likeOrComment.value);
     });
   } else {
@@ -264,28 +279,29 @@ const likeOrCollection = (type: number, val: number) => {
 };
 
 const pinned = (noteId: string, type: number) => {
-  pinnedNote(noteId).then((res: any) => {
-    if (res.data) {
-      noteInfo.value.pinned = type;
-    }
-  })
-}
+  pinnedNote(noteId)
+    .then((res: any) => {
+      if (res.data) {
+        noteInfo.value.pinned = type;
+      }
+    })
+    .catch(() => {
+      ElMessage.error("最多只能置顶2个笔记");
+    });
+};
 
 const deleteNote = (noteId: string) => {
   const data = [] as Array<string>;
   data.push(noteId);
   deleteNoteByIds(data).then(() => {
-    ElMessage({
-      message: "删除成功",
-      type: "success",
-    });
+    ElMessage.success("删除成功");
     emit("clickMain");
-  })
-}
+  });
+};
 
 const toEdit = (noteId: string) => {
   router.push({ path: "/push", query: { date: Date.now(), noteId: noteId } });
-}
+};
 
 const clickComment = (comment: any) => {
   commentObject.value = comment;
@@ -295,8 +311,7 @@ const clickComment = (comment: any) => {
 const commenInput = (e: any) => {
   const { value } = e.target;
   commentValue.value = value;
-  showSaveBtn.value =
-    commentValue.value.length > 0 || commentObject.value.pid !== undefined;
+  showSaveBtn.value = commentValue.value.length > 0 || commentObject.value.pid !== undefined;
 };
 
 const saveComment = () => {
@@ -398,7 +413,9 @@ initData();
     cursor: pointer;
 
     .close-mask-white {
-      box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.04), 0 1px 2px 0 rgba(0, 0, 0, 0.02);
+      box-shadow:
+        0 2px 8px 0 rgba(0, 0, 0, 0.04),
+        0 1px 2px 0 rgba(0, 0, 0, 0.02);
       border: 1px solid rgba(0, 0, 0, 0.08);
     }
 
@@ -419,12 +436,16 @@ initData();
   .note-container {
     width: 86%;
     height: 90%;
-    transition: transform 0.4s ease 0s, width 0.4s ease 0s;
+    transition:
+      transform 0.4s ease 0s,
+      width 0.4s ease 0s;
     transform: translate(104px, 32px) scale(1);
     overflow: visible;
 
     display: flex;
-    box-shadow: 0 8px 64px 0 rgba(0, 0, 0, 0.04), 0 1px 4px 0 rgba(0, 0, 0, 0.02);
+    box-shadow:
+      0 8px 64px 0 rgba(0, 0, 0, 0.04),
+      0 1px 4px 0 rgba(0, 0, 0, 0.02);
     border-radius: 20px;
     background: #f8f8f8;
     transform-origin: left top;

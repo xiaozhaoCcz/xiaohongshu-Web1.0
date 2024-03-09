@@ -1,6 +1,9 @@
 <template>
-  <div class="container" style="transition: background-color 0.4s ease 0s;
-  hsla(0,0%,100%,0.98)">
+  <div
+    class="container"
+    style="transition: background-color 0.4s ease 0s;
+  hsla(0,0%,100%,0.98)"
+  >
     <div class="chat-container">
       <header class="chat-header">
         <div class="header-left"></div>
@@ -194,10 +197,14 @@ onMounted(async () => {
     margin: 0 auto;
     height: 90%;
     min-width: 800px;
-    transition: transform 0.4s ease 0s, width 0.4s ease 0s;
+    transition:
+      transform 0.4s ease 0s,
+      width 0.4s ease 0s;
     transform: translate(104px, 32px) scale(1);
     overflow: visible;
-    box-shadow: 0 8px 64px 0 rgba(0, 0, 0, 0.04), 0 1px 4px 0 rgba(0, 0, 0, 0.02);
+    box-shadow:
+      0 8px 64px 0 rgba(0, 0, 0, 0.04),
+      0 1px 4px 0 rgba(0, 0, 0, 0.02);
     border-radius: 20px;
     background-color: #fff;
     transform-origin: left top;
@@ -289,7 +296,9 @@ onMounted(async () => {
     cursor: pointer;
 
     .close-mask-white {
-      box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.04), 0 1px 2px 0 rgba(0, 0, 0, 0.02);
+      box-shadow:
+        0 2px 8px 0 rgba(0, 0, 0, 0.04),
+        0 1px 2px 0 rgba(0, 0, 0, 0.02);
       border: 1px solid rgba(0, 0, 0, 0.08);
     }
 

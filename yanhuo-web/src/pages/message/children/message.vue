@@ -23,10 +23,15 @@
         </div>
       </li>
     </ul>
-    <Chat v-if="chatShow" :acceptUid="acceptUid" class="animate__animated animate__zoomIn animate__delay-0.5s"
-      @click-chat="close"></Chat>
+    <Chat
+      v-if="chatShow"
+      :acceptUid="acceptUid"
+      class="animate__animated animate__zoomIn animate__delay-0.5s"
+      @click-chat="close"
+    ></Chat>
   </div>
 </template>
+
 <script lang="ts" setup>
 import { useImStore } from "@/store/imStore";
 import { ref, watchEffect } from "vue";
@@ -42,7 +47,7 @@ const chatShow = ref(false);
 const acceptUid = ref("");
 
 const toUser = (uid: string) => {
-  router.push({ name: "user", state: { uid: uid } });
+  router.push({ name: "user", query: { uid: uid } });
 };
 
 watchEffect(() => {
@@ -81,6 +86,7 @@ const close = (uid: string) => {
   });
 };
 </script>
+
 <style lang="less" scoped>
 .message-container {
   width: 40rem;

@@ -19,18 +19,36 @@
               </div>
               <div class="interaction-imgs" @click="toMain(item.nid)">
                 <div class="details-box" v-for="(url, index) in item.imgUrls" :key="index">
-                  <el-image v-if="!item.isLoading" :src="url" @load="handleLoad(item)" style="height: 230px; width: 100%">
+                  <el-image
+                    v-if="!item.isLoading"
+                    :src="url"
+                    @load="handleLoad(item)"
+                    style="height: 230px; width: 100%"
+                  >
                   </el-image>
-                  <el-image v-else :src="url" class="note-img animate__animated animate__fadeIn animate__delay-0.5s"
-                    fit="cover"></el-image>
+                  <el-image
+                    v-else
+                    :src="url"
+                    class="note-img animate__animated animate__fadeIn animate__delay-0.5s"
+                    fit="cover"
+                  ></el-image>
                 </div>
               </div>
               <div class="interaction-footer">
                 <div class="icon-item">
-                  <i class="iconfont icon-follow-fill" style="width: 1em; height: 1em"
-                    @click="like(item.nid, item.uid, index, -1)" v-if="item.isLike"></i>
-                  <i class="iconfont icon-follow" style="width: 1em; height: 1em"
-                    @click="like(item.nid, item.uid, index, 1)" v-else></i><span class="count">{{ item.likeCount }}</span>
+                  <i
+                    class="iconfont icon-follow-fill"
+                    style="width: 1em; height: 1em"
+                    @click="like(item.nid, item.uid, index, -1)"
+                    v-if="item.isLike"
+                  ></i>
+                  <i
+                    class="iconfont icon-follow"
+                    style="width: 1em; height: 1em"
+                    @click="like(item.nid, item.uid, index, 1)"
+                    v-else
+                  ></i
+                  ><span class="count">{{ item.likeCount }}</span>
                 </div>
                 <div class="icon-item">
                   <ChatRound style="width: 0.9em; height: 0.9em" /><span class="count">{{ item.commentCount }}</span>
@@ -47,19 +65,25 @@
         <Refresh style="width: 1.2em; height: 1.2em" color="rgba(51, 51, 51, 0.8)" />
       </div>
       <FloatingBtn @click-refresh="refresh"></FloatingBtn>
-      <Main v-show="mainShow" :nid="nid" :nowTime="new Date()"
-        class="animate__animated animate__zoomIn animate__delay-0.5s" @click-main="close"></Main>
+      <Main
+        v-show="mainShow"
+        :nid="nid"
+        :nowTime="new Date()"
+        class="animate__animated animate__zoomIn animate__delay-0.5s"
+        @click-main="close"
+      ></Main>
     </div>
     <div v-else>
       <el-empty description="用户未登录" />
     </div>
   </div>
 </template>
+
 <script lang="ts" setup>
 import { ChatRound, More, Refresh } from "@element-plus/icons-vue";
 import { ref } from "vue";
 import { getFollowTrendPage } from "@/api/follower";
-import { formateTime } from "@/utils/util";
+import { formateTime, refreshTab } from "@/utils/util";
 import FloatingBtn from "@/components/FloatingBtn.vue";
 import Main from "@/pages/main/main.vue";
 import type { LikeOrCollectionDTO } from "@/type/likeOrCollection";
@@ -88,7 +112,8 @@ const handleLoad = (item: any) => {
 };
 
 const toUser = (uid: string) => {
-  router.push({ name: "user", state: { uid: uid } });
+  //router.push({ name: "user", state: { uid: uid } });
+  router.push({ name: "user", query: { uid: uid } });
 };
 
 const getFollowTrends = () => {
@@ -128,25 +153,7 @@ const close = (nid: string, val: any) => {
 };
 
 const refresh = () => {
-  let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
-  const clientHeight =
-    window.innerHeight || Math.min(document.documentElement.clientHeight, document.body.clientHeight);
-  if (scrollTop <= clientHeight * 2) {
-    const timeTop = setInterval(() => {
-      document.documentElement.scrollTop = document.body.scrollTop = scrollTop -= 100;
-      if (scrollTop <= 0) {
-        clearInterval(timeTop);
-        topLoading.value = true;
-        setTimeout(() => {
-          currentPage.value = 1;
-          trendData.value = [];
-          getFollowTrends();
-          topLoading.value = false;
-        }, 500);
-      }
-    }, 10); //定时调用函数使其更顺滑
-  } else {
-    document.documentElement.scrollTop = 0;
+  refreshTab(() => {
     topLoading.value = true;
     setTimeout(() => {
       currentPage.value = 1;
@@ -154,7 +161,7 @@ const refresh = () => {
       getFollowTrends();
       topLoading.value = false;
     }, 500);
-  }
+  });
 };
 
 const like = (nid: string, uid: string, index: number, val: number) => {

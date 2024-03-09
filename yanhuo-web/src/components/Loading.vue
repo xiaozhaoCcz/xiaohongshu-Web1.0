@@ -66,7 +66,7 @@
   animation: animationShape4 7s linear infinite;
 }
 
-.shape-4>div {
+.shape-4 > div {
   width: 100%;
   height: 100%;
   border-radius: 50%;

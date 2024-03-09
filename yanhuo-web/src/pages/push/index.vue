@@ -3,8 +3,15 @@
     <div v-if="isLogin" class="push-container" id="tagContainer">
       <div class="header"><span class="header-icon"></span><span class="header-title">发布图文</span></div>
       <div class="img-list">
-        <el-upload v-model:file-list="fileList" action="http://localhost:88/api/util/oss/saveBatch/0"
-          list-type="picture-card" multiple :limit="9" :headers="uploadHeader" :auto-upload="false">
+        <el-upload
+          v-model:file-list="fileList"
+          action="http://localhost:88/api/util/oss/saveBatch/0"
+          list-type="picture-card"
+          multiple
+          :limit="9"
+          :headers="uploadHeader"
+          :auto-upload="false"
+        >
           <el-icon>
             <Plus />
           </el-icon>
@@ -16,10 +23,22 @@
       </div>
       <el-divider style="margin: 12px; width: 576px" />
       <div class="push-content">
-        <el-input v-model="note.title" maxlength="20" show-word-limit type="text" placeholder="请输入标题"
-          class="input-title" />
-        <p id="post-textarea" ref="postContent" class="post-content" contenteditable="true" data-tribute="true"
-          placeholder="填写更全面的描述信息，让更多的人看到你吧！"></p>
+        <el-input
+          v-model="note.title"
+          maxlength="20"
+          show-word-limit
+          type="text"
+          placeholder="请输入标题"
+          class="input-title"
+        />
+        <p
+          id="post-textarea"
+          ref="postContent"
+          class="post-content"
+          contenteditable="true"
+          data-tribute="true"
+          placeholder="填写更全面的描述信息，让更多的人看到你吧！"
+        ></p>
 
         <div v-infinite-scroll="loadMoreData" class="scroll-tag-container" v-show="showTagState">
           <p v-for="(item, index) in selectTagList" :key="index" class="scrollbar-tag-item" @click="selectTag(item)">
@@ -29,13 +48,20 @@
       </div>
 
       <div class="categorys">
-        <el-cascader v-model="categoryList" :options="options" @change="handleChange" :props="props"
-          placeholder="请选择分类" />
+        <el-cascader
+          v-model="categoryList"
+          :options="options"
+          @change="handleChange"
+          :props="props"
+          placeholder="请选择分类"
+        />
       </div>
       <div class="btns">
         <button class="css-fm44j css-osq2ks dyn">
-          <span class="btn-content" @click="addTag"># 话题</span></button><button class="css-fm44j css-osq2ks dyn">
-          <span class="btn-content"><span>@</span> 用户</span></button><button class="css-fm44j css-osq2ks dyn">
+          <span class="btn-content" @click="addTag"># 话题</span></button
+        ><button class="css-fm44j css-osq2ks dyn">
+          <span class="btn-content"><span>@</span> 用户</span></button
+        ><button class="css-fm44j css-osq2ks dyn">
           <span class="btn-content">
             <div class="smile"></div>
             表情
@@ -58,6 +84,7 @@
     </div>
   </div>
 </template>
+
 <script lang="ts" setup>
 import { ref, onMounted } from "vue";
 import { Plus } from "@element-plus/icons-vue";
@@ -122,7 +149,7 @@ onMounted(() => {
   });
 
   // replace(/<[^>]*>[^<]*(<[^>]*>)?/gi,"")
-  document.getElementById("post-textarea")!.addEventListener("input", () => { });
+  document.getElementById("post-textarea")!.addEventListener("input", () => {});
 });
 
 const addTag = () => {
@@ -159,62 +186,42 @@ const handleChange = (ids: Array<any>) => {
 
 const getNoteByIdMethod = (noteId: string) => {
   getNoteById(noteId).then((res) => {
-    console.log("---edit", res.data)
+    console.log("---edit", res.data);
     const { data } = res;
     note.value = data;
     const urls = JSON.parse(data.urls);
-    console.log(urls)
+    console.log(urls);
     urls.forEach((item: string) => {
-      const fileName = item.substring(item.lastIndexOf("/") + 1)
-      console.log(fileName)
+      const fileName = item.substring(item.lastIndexOf("/") + 1);
+      console.log(fileName);
       getFileFromUrl(item, fileName).then((res: any) => {
-        fileList.value.push({ name: fileName, url: item, raw: res })
-      })
-    })
+        fileList.value.push({ name: fileName, url: item, raw: res });
+      });
+    });
     categoryList.value.push(data.cpid);
     categoryList.value.push(data.cid);
-    document.getElementById("post-textarea")!.innerHTML += data.content
+    document.getElementById("post-textarea")!.innerHTML += data.content;
     data.tagList.forEach((item: any) => {
-      document.getElementById("post-textarea")!.innerHTML += `<a href='#' style='text-decoration:none'>#${item.title}</a>`;
-    })
-  })
-}
+      document.getElementById("post-textarea")!.innerHTML +=
+        `<a href='#' style='text-decoration:none'>#${item.title}</a>`;
+    });
+  });
+};
 
 // 上传图片功能
 const pubslish = () => {
   //验证
-  if (fileList.value.length <= 0) {
-    ElMessage({
-      message: "图片数量不能为空",
-      type: "error",
-    });
+  if (fileList.value.length <= 0 || note.value.title === null || categoryList.value.length <= 0) {
+    ElMessage.error("请选择图片，标签，分类～");
     return;
   }
-
-  if (note.value.title === null) {
-    ElMessage({
-      message: "标题或内容不能为空",
-      type: "error",
-    });
-    return;
-  }
-
-  if (categoryList.value.length <= 0) {
-    ElMessage({
-      message: "请选择分类",
-      type: "error",
-    });
-    return;
-  }
-
   pushLoading.value = true;
-
   let params = new FormData();
   //注意此处对文件数组进行了参数循环添加
 
   fileList.value.forEach((file: any) => {
     params.append("uploadFiles", file.raw);
-    console.log(file.raw)
+    console.log(file.raw);
   });
 
   note.value.count = fileList.value.length;
@@ -224,10 +231,10 @@ const pubslish = () => {
   note.value.cid = categoryList.value[1];
   note.value.tagList = [];
   const _content = getHtmlContent(document.getElementById("post-textarea")!.innerHTML);
-  console.log(_content)
+  console.log(_content);
   _content.forEach((item: string) => {
-    note.value.tagList.push(item.replace("#", ""))
-  })
+    note.value.tagList.push(item.replace("#", ""));
+  });
 
   const coverImage = new Image();
   coverImage.src = fileList.value[0].url!;
@@ -242,32 +249,36 @@ const pubslish = () => {
     } else {
       saveNote(params);
     }
-    setTimeout(() => {
-      pushLoading.value = false;
-    }, 5000);
   };
 };
 
 const updateNote = (params: FormData) => {
-  updateNoteByDTO(params).then(() => {
-    resetData();
-    ElMessage({
-      message: "修改成功",
-      type: "success",
+  updateNoteByDTO(params)
+    .then(() => {
+      resetData();
+      ElMessage.success("修改笔记成功");
+    })
+    .catch(() => {
+      ElMessage.error("修改图片失败");
+    })
+    .finally(() => {
+      pushLoading.value = false;
     });
-  });
-}
+};
 
 const saveNote = (params: FormData) => {
-  saveNoteByDTO(params).then(() => {
-    resetData();
-    ElMessage({
-      message: "发布成功",
-      type: "success",
+  saveNoteByDTO(params)
+    .then(() => {
+      resetData();
+      ElMessage.success("发布笔记成功");
+    })
+    .catch(() => {
+      ElMessage.error("发布图片失败");
+    })
+    .finally(() => {
+      pushLoading.value = false;
     });
-
-  });
-}
+};
 
 const resetData = () => {
   note.value = {};
@@ -275,7 +286,7 @@ const resetData = () => {
   categoryList.value = [];
   fileList.value = [];
   pushLoading.value = false;
-}
+};
 
 const initData = () => {
   isLogin.value = userStore.isLogin();
@@ -283,7 +294,7 @@ const initData = () => {
     const noteId = route.query.noteId as string;
     console.log("---noteId", noteId);
     if (noteId !== "" && noteId !== undefined) {
-      getNoteByIdMethod(noteId)
+      getNoteByIdMethod(noteId);
     }
     getCategoryTreeData().then((res) => {
       options.value = res.data;
@@ -293,6 +304,7 @@ const initData = () => {
 
 initData();
 </script>
+
 <style lang="less" scoped>
 :deep(.el-upload-list--picture-card .el-upload-list__item) {
   width: 80px;

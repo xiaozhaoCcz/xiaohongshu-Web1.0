@@ -87,6 +87,7 @@
     </ul>
   </div>
 </template>
+
 <script lang="ts" setup>
 // import { ChatRound, Star } from "@element-plus/icons-vue";
 import { ref } from "vue";
@@ -115,7 +116,7 @@ const toMain = (nid: string) => {
 };
 
 const toUser = (uid: string) => {
-  router.push({ name: "user", state: { uid: uid } });
+  router.push({ name: "user", query: { uid: uid } });
 };
 
 const getPageData = () => {
@@ -135,6 +136,7 @@ const initData = () => {
 };
 initData();
 </script>
+
 <style lang="less" scoped>
 textarea {
   overflow: auto;
@@ -376,4 +378,5 @@ textarea {
       }
     }
   }
-}</style>
+}
+</style>

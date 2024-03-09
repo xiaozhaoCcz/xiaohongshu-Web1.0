@@ -4,8 +4,12 @@
       <div class="scroll-container channel-scroll-container">
         <div class="content-container">
           <div :class="categoryClass == '0' ? 'channel active' : 'channel'" @click="getNoteList">推荐</div>
-          <div :class="categoryClass == item.id ? 'channel active' : 'channel'" v-for="item in categoryList"
-            :key="item.id" @click="getNoteListByCategory(item.id)">
+          <div
+            :class="categoryClass == item.id ? 'channel active' : 'channel'"
+            v-for="item in categoryList"
+            :key="item.id"
+            @click="getNoteListByCategory(item.id)"
+          >
             {{ item.title }}
           </div>
         </div>
@@ -13,23 +17,34 @@
     </div>
     <div class="loading-container"></div>
     <div class="feeds-container" v-infinite-scroll="loadMoreData" :infinite-scroll-distance="50">
-      <div class="feeds-loading-top" v-show="topLoading">
+      <div class="feeds-loading-top animate__animated animate__zoomIn animate__delay-0.5s" v-show="topLoading">
         <Loading style="width: 1.2em; height: 1.2em"></Loading>
       </div>
 
-      <Waterfall :list="noteList" :width="options.width" :gutter="options.gutter"
-        :hasAroundGutter="options.hasAroundGutter" :animation-effect="options.animationEffect"
-        :animation-duration="options.animationDuration" :animation-delay="options.animationDelay"
-        :breakpoints="options.breakpoints" style="min-width: 740px">
+      <Waterfall
+        :list="noteList"
+        :width="options.width"
+        :gutter="options.gutter"
+        :hasAroundGutter="options.hasAroundGutter"
+        :animation-effect="options.animationEffect"
+        :animation-duration="options.animationDuration"
+        :animation-delay="options.animationDelay"
+        :breakpoints="options.breakpoints"
+        style="min-width: 740px"
+      >
         <template #item="{ item }">
           <el-skeleton style="width: 240px" :loading="!item.isLoading" animated>
             <template #template>
-              <el-image :src="item.noteCover" :style="{
-                width: '240px',
-                maxHeight: '300px',
-                height: item.noteCoverHeight + 'px',
-                borderRadius: '8px',
-              }" @load="handleLoad(item)"></el-image>
+              <el-image
+                :src="item.noteCover"
+                :style="{
+                  width: '240px',
+                  maxHeight: '300px',
+                  height: item.noteCoverHeight + 'px',
+                  borderRadius: '8px',
+                }"
+                @load="handleLoad(item)"
+              ></el-image>
               <div style="padding: 14px">
                 <el-skeleton-item variant="h3" style="width: 100%" />
                 <div style="display: flex; align-items: center; margin-top: 2px; height: 16px">
@@ -42,14 +57,20 @@
                 </div>
               </div>
             </template>
+
             <template #default>
               <div class="card" style="max-width: 240px">
-                <el-image :src="item.noteCover" :style="{
-                  width: '240px',
-                  maxHeight: '300px',
-                  height: item.noteCoverHeight + 'px',
-                  borderRadius: '8px',
-                }" fit="cover" @click="toMain(item.id)"></el-image>
+                <el-image
+                  :src="item.noteCover"
+                  :style="{
+                    width: '240px',
+                    maxHeight: '300px',
+                    height: item.noteCoverHeight + 'px',
+                    borderRadius: '8px',
+                  }"
+                  fit="cover"
+                  @click="toMain(item.id)"
+                ></el-image>
                 <div class="footer">
                   <a class="title">
                     <span>{{ item.title }}</span>
@@ -77,10 +98,16 @@
       </div>
     </div>
     <FloatingBtn @click-refresh="refresh"></FloatingBtn>
-    <Main v-show="mainShow" :nid="nid" :nowTime="new Date()" class="animate__animated animate__zoomIn animate__delay-0.5s"
-      @click-main="close"></Main>
+    <Main
+      v-show="mainShow"
+      :nid="nid"
+      :nowTime="new Date()"
+      class="animate__animated animate__zoomIn animate__delay-0.5s"
+      @click-main="close"
+    ></Main>
   </div>
 </template>
+
 <script lang="ts" setup>
 import { Waterfall } from "vue-waterfall-plugin-next";
 import "vue-waterfall-plugin-next/dist/style.css";
@@ -94,6 +121,7 @@ import FloatingBtn from "@/components/FloatingBtn.vue";
 import { options } from "@/constant/constant";
 import { useSearchStore } from "@/store/searchStore";
 import Loading from "@/components/Loading.vue";
+import { refreshTab } from "@/utils/util";
 const searchStore = useSearchStore();
 const topLoading = ref(false);
 const noteList = ref<Array<NoteSearch>>([]);
@@ -137,34 +165,17 @@ const handleLoad = (item: any) => {
 };
 
 const refresh = () => {
-  let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
-  const clientHeight =
-    window.innerHeight || Math.min(document.documentElement.clientHeight, document.body.clientHeight);
-
-  if (scrollTop <= clientHeight * 2) {
-    const timeTop = setInterval(() => {
-      document.documentElement.scrollTop = document.body.scrollTop = scrollTop -= 100;
-      if (scrollTop <= 0) {
-        clearInterval(timeTop);
-        topLoading.value = true;
-        setTimeout(() => {
-          currentPage.value = 1;
-          noteList.value = [];
-          getNoteList();
-          topLoading.value = false;
-        }, 1000);
-      }
-    }, 10); //定时调用函数使其更顺滑
-  } else {
-    document.documentElement.scrollTop = 0;
+  // 使用回调函数优化代码
+  refreshTab(() => {
     topLoading.value = true;
+    console.log(111);
     setTimeout(() => {
       currentPage.value = 1;
       noteList.value = [];
       getNoteList();
       topLoading.value = false;
     }, 1000);
-  }
+  });
 };
 
 const loadMoreData = () => {
@@ -228,6 +239,7 @@ const initData = () => {
 
 initData();
 </script>
+
 <style lang="less" scoped>
 .feeds-page {
   flex: 1;
@@ -305,17 +317,6 @@ initData();
       text-align: center;
       line-height: 6vh;
       height: 6vh;
-    }
-
-    .feeds-loading-top {
-      -webkit-animation: move_1 0.5s;
-    }
-
-    @-webkit-keyframes move_1 {
-      0% {
-        -webkit-transform: translateY(-20px);
-        opacity: 0;
-      }
     }
 
     .noteImg {

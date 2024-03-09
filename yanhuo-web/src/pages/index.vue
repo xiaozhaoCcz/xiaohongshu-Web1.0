@@ -8,8 +8,16 @@
         </a>
         <div class="tool-box"></div>
         <div class="input-box" id="sujContainer">
-          <input type="text" v-model="keyword" class="search-input" placeholder="搜索小红书" @input="changeInput"
-            @focus="focusInput" @keyup.enter="searchPage" ref="SearchInput" />
+          <input
+            type="text"
+            v-model="keyword"
+            class="search-input"
+            placeholder="搜索小红书"
+            @input="changeInput"
+            @focus="focusInput"
+            @keyup.enter="searchPage"
+            ref="SearchInput"
+          />
           <div class="input-button">
             <div class="close-icon" v-show="showClose" @click="clearInput">
               <Close style="width: 1.2em; height: 1.2em; margin-right: 20px; margin-top: 5px" />
@@ -41,7 +49,8 @@
             <Bell style="width: 1em; height: 1em; margin-right: 8px" />
 
             <el-badge is-dot class="item" v-if="messageCount > 0 && userInfo != null">
-              <span class="channel"> 消息</span></el-badge>
+              <span class="channel"> 消息</span></el-badge
+            >
             <span class="channel" v-else>消息</span>
           </li>
           <li :class="activeLink == 3 ? 'active-channel' : ''" @click="toLink(3)">
@@ -275,7 +284,7 @@ const toLink = (num: number) => {
   activeLink.value = num;
   const url = routerList[num];
   if (url === "/user") {
-    router.push({ name: "user", state: { uid: userInfo.value.id } });
+    router.push({ name: "user", query: { uid: userInfo.value.id } });
     return;
   }
   router.push({ path: url });

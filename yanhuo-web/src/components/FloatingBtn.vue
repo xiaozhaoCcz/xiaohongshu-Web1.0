@@ -49,7 +49,9 @@ const refresh = () => {
     height: 40px;
     background: #fff;
     border: 1px solid rgba(0, 0, 0, 0.08);
-    box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.02);
+    box-shadow:
+      0 2px 8px 0 rgba(0, 0, 0, 0.1),
+      0 1px 2px 0 rgba(0, 0, 0, 0.02);
     border-radius: 100px;
     color: rgba(51, 51, 51, 0.8);
     display: flex;

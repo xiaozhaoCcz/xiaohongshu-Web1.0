@@ -1,17 +1,29 @@
 <template>
   <div class="feeds-container" v-infinite-scroll="loadMoreData" :infinite-scroll-distance="50">
-    <Waterfall :list="noteList" :width="options.width" :gutter="options.gutter" :hasAroundGutter="options.hasAroundGutter"
-      :animation-effect="options.animationEffect" :animation-duration="options.animationDuration"
-      :animation-delay="options.animationDelay" :breakpoints="options.breakpoints" style="min-width: 740px">
+    <Waterfall
+      :list="noteList"
+      :width="options.width"
+      :gutter="options.gutter"
+      :hasAroundGutter="options.hasAroundGutter"
+      :animation-effect="options.animationEffect"
+      :animation-duration="options.animationDuration"
+      :animation-delay="options.animationDelay"
+      :breakpoints="options.breakpoints"
+      style="min-width: 740px"
+    >
       <template #item="{ item }">
         <el-skeleton style="width: 240px" :loading="!item.isLoading" animated>
           <template #template>
-            <el-image :src="item.noteCover" :style="{
-              width: '240px',
-              maxHeight: '300px',
-              height: item.noteCoverHeight + 'px',
-              borderRadius: '8px',
-            }" @load="handleLoad(item)"></el-image>
+            <el-image
+              :src="item.noteCover"
+              :style="{
+                width: '240px',
+                maxHeight: '300px',
+                height: item.noteCoverHeight + 'px',
+                borderRadius: '8px',
+              }"
+              @load="handleLoad(item)"
+            ></el-image>
             <div style="padding: 14px">
               <el-skeleton-item variant="h3" style="width: 100%" />
               <div style="display: flex; align-items: center; margin-top: 2px; height: 16px">
@@ -24,14 +36,20 @@
               </div>
             </div>
           </template>
+
           <template #default>
             <div class="card" style="max-width: 240px">
-              <el-image :src="item.noteCover" :style="{
-                width: '240px',
-                maxHeight: '300px',
-                height: item.noteCoverHeight + 'px',
-                borderRadius: '8px',
-              }" fit="cover" @click="toMain(item.id)"></el-image>
+              <el-image
+                :src="item.noteCover"
+                :style="{
+                  width: '240px',
+                  maxHeight: '300px',
+                  height: item.noteCoverHeight + 'px',
+                  borderRadius: '8px',
+                }"
+                fit="cover"
+                @click="toMain(item.id)"
+              ></el-image>
               <div class="footer">
                 <a class="title">
                   <span>{{ item.title }}</span>
@@ -48,9 +66,7 @@
                 </div>
               </div>
               <div class="top-tag-area" v-show="type === 1 && item.pinned === 1">
-                <div class="top-wrapper">
-                  置顶
-                </div>
+                <div class="top-wrapper">置顶</div>
               </div>
             </div>
           </template>
@@ -59,9 +75,15 @@
     </Waterfall>
   </div>
 
-  <Main v-show="mainShow" :nid="nid" :nowTime="new Date()" class="animate__animated animate__zoomIn animate__delay-0.5s"
-    @click-main="close"></Main>
+  <Main
+    v-show="mainShow"
+    :nid="nid"
+    :nowTime="new Date()"
+    class="animate__animated animate__zoomIn animate__delay-0.5s"
+    @click-main="close"
+  ></Main>
 </template>
+
 <script lang="ts" setup>
 import { Waterfall } from "vue-waterfall-plugin-next";
 import "vue-waterfall-plugin-next/dist/style.css";
@@ -69,6 +91,8 @@ import { ref, watch } from "vue";
 import { getTrendPageByUser } from "@/api/user";
 import Main from "@/pages/main/main.vue";
 import { options } from "@/constant/constant";
+import { useRoute } from "vue-router";
+const route = useRoute();
 
 const props = defineProps({
   type: {
@@ -88,7 +112,7 @@ watch(
 
 const noteList = ref<Array<any>>([]);
 const noteTotal = ref(0);
-const uid = history.state.uid;
+const uid = route.query.uid as string;
 const currentPage = ref(1);
 const pageSize = 10;
 const nid = ref("");
@@ -103,7 +127,6 @@ const close = () => {
 };
 
 const toMain = (noteId: string) => {
-  // console.log("11", nid);
   // router.push({ name: "main", state: { nid: nid } });
   nid.value = noteId;
   mainShow.value = true;
@@ -133,6 +156,7 @@ const initData = () => {
 
 initData();
 </script>
+
 <style lang="less" scoped>
 .feeds-container {
   position: relative;
@@ -169,7 +193,6 @@ initData();
       }
     }
   }
-
 
   .footer {
     padding: 12px;
