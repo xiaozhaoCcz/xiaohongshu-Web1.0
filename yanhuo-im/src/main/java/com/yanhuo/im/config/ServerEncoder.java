@@ -39,7 +39,6 @@ public class ServerEncoder implements Encoder.Text<Message> {
              */
             JsonMapper jsonMapper = new JsonMapper();
             return jsonMapper.writeValueAsString(message);
-
         } catch (JsonProcessingException e) {
             e.printStackTrace();
             return null;

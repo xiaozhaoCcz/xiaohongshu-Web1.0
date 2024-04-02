@@ -1,24 +1,21 @@
-package com.yanhuo.im.service.impl;
+package com.yanhuo.im.factory;
 
 import cn.hutool.json.JSONUtil;
 import com.yanhuo.common.constant.ImConstant;
+import com.yanhuo.common.im.Message;
 import com.yanhuo.common.utils.RedisUtils;
 import com.yanhuo.im.entity.CountMessage;
-import com.yanhuo.common.im.Message;
-import com.yanhuo.im.factory.MessageFactory;
-
 
 /**
  * @author xiaozhao
  */
-public class CountMessageServiceImpl implements MessageFactory {
+public class ChatCountMessage implements MessageFactory{
 
     RedisUtils redisUtils;
 
-    CountMessageServiceImpl(RedisUtils redisUtils) {
+    public ChatCountMessage(RedisUtils redisUtils){
         this.redisUtils = redisUtils;
     }
-
     @Override
     public void sendMessage(Message message) {
         String messageCountKey = ImConstant.MESSAGE_COUNT_KEY + message.getAcceptUid();

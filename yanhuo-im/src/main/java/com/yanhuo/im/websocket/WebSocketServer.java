@@ -20,10 +20,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Slf4j
 public class WebSocketServer {
     //静态变量，用来记录当前在线连接数。应该把它设计成线程安全的。
-    private static AtomicInteger onlineNum = new AtomicInteger();
+    private static final AtomicInteger ONLINE_NUM = new AtomicInteger();
 
     //concurrent包的线程安全Set，用来存放每个客户端对应的WebSocketServer对象。
-    private static ConcurrentHashMap<String, Session> sessionPools = new ConcurrentHashMap<>();
+    private  static final ConcurrentHashMap<String, Session> SESSION_POOLS = new ConcurrentHashMap<>();
 
     private final Object lockObj = new Object();
 
@@ -43,7 +43,7 @@ public class WebSocketServer {
 
     //给指定用户发送信息
     public void sendInfo(Message message) {
-        Session session = sessionPools.get(message.getAcceptUid());
+        Session session = SESSION_POOLS.get(message.getAcceptUid());
         try {
             sendMessage(session, message);
         } catch (Exception e) {
@@ -53,7 +53,7 @@ public class WebSocketServer {
 
     // 群发消息
     public void broadcast(Message message) {
-        for (Session session : sessionPools.values()) {
+        for (Session session : SESSION_POOLS.values()) {
             try {
                 sendMessage(session, message);
             } catch (Exception e) {
@@ -65,17 +65,17 @@ public class WebSocketServer {
     //建立连接成功调用
     @OnOpen
     public void onOpen(Session session, @PathParam(value = "uid") String uid) {
-        sessionPools.put(uid, session);
+        SESSION_POOLS.put(uid, session);
         addOnlineCount();
-        log.info("{}加入webSocket！当前人数为={}", uid, onlineNum);
+        log.info("{}加入webSocket！当前人数为={}", uid, ONLINE_NUM);
     }
 
     //关闭连接时调用
     @OnClose
     public void onClose(@PathParam(value = "uid") String uid) {
-        sessionPools.remove(uid);
+        SESSION_POOLS.remove(uid);
         subOnlineCount();
-        log.info("{}断开webSocket连接！当前人数为={}", uid, onlineNum);
+        log.info("{}断开webSocket连接！当前人数为={}", uid, ONLINE_NUM);
     }
 
     //收到客户端信息后，根据接收人的username把消息推下去或者群发
@@ -94,18 +94,18 @@ public class WebSocketServer {
     }
 
     public static void addOnlineCount() {
-        onlineNum.incrementAndGet();
+        ONLINE_NUM.incrementAndGet();
     }
 
     public static void subOnlineCount() {
-        onlineNum.decrementAndGet();
+        ONLINE_NUM.decrementAndGet();
     }
 
     public static AtomicInteger getOnlineNumber() {
-        return onlineNum;
+        return ONLINE_NUM;
     }
 
     public static ConcurrentMap<String, Session> getSessionPools() {
-        return sessionPools;
+        return SESSION_POOLS;
     }
 }

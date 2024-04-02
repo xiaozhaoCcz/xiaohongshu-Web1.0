@@ -53,4 +53,6 @@ public interface ChatService extends IService<Chat> {
      * @return success
      */
     void clearMessageCount(String sendUid, Integer type);
+
+    boolean closeChat(String sendUid);
 }

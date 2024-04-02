@@ -1,8 +1,10 @@
 package com.yanhuo.im.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.yanhuo.common.auth.AuthContextHolder;
 import com.yanhuo.common.result.Result;
 import com.yanhuo.common.im.Message;
+import com.yanhuo.common.validator.myVaildator.noLogin.NoLoginIntercept;
 import com.yanhuo.im.entity.CountMessage;
 import com.yanhuo.im.service.ChatService;
 import com.yanhuo.xo.entity.Chat;
@@ -29,6 +31,7 @@ public class ChatController {
      * @return success
      */
     @PostMapping("sendMsg")
+    @NoLoginIntercept
     public Result<?> sendMsg(@RequestBody Message message) {
         chatService.sendMsg(message);
         return Result.ok();
@@ -96,5 +99,10 @@ public class ChatController {
     public Result<?> clearMessageCount(String sendUid, Integer type) {
         chatService.clearMessageCount(sendUid, type);
         return Result.ok();
+    }
+
+    @RequestMapping("closeChat/{sendUid}")
+    public boolean closeChat(@PathVariable("sendUid") String sendUid){
+        return chatService.closeChat(sendUid);
     }
 }

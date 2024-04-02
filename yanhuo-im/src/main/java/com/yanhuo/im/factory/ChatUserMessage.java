@@ -1,11 +1,9 @@
-package com.yanhuo.im.service.impl;
+package com.yanhuo.im.factory;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yanhuo.common.im.Message;
 import com.yanhuo.common.utils.ConvertUtils;
 import com.yanhuo.im.service.ChatService;
-import com.yanhuo.im.service.ChatUserRelationService;
 import com.yanhuo.im.websocket.WebSocketServer;
 import com.yanhuo.xo.dao.ChatUserRelationDao;
 import com.yanhuo.xo.dao.UserDao;
@@ -13,9 +11,6 @@ import com.yanhuo.xo.entity.Chat;
 import com.yanhuo.xo.entity.ChatUserRelation;
 import com.yanhuo.xo.entity.User;
 import com.yanhuo.xo.vo.ChatUserRelationVo;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,24 +18,28 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+
 /**
  * @author xiaozhao
  */
-@Service
-public class ChatUserRelationServiceImpl extends ServiceImpl<ChatUserRelationDao, ChatUserRelation> implements ChatUserRelationService {
+public class ChatUserMessage implements MessageFactory {
 
-    @Autowired
-    WebSocketServer webSocketServer;
+    private final WebSocketServer webSocketServer;
 
-    @Autowired
-    ChatService chatService;
+    private final ChatService chatService;
 
-    @Autowired
-    UserDao userDao;
+    private final UserDao userDao;
 
+    private final ChatUserRelationDao chatUserRelationDao;
+
+    public ChatUserMessage(WebSocketServer webSocketServer, ChatService chatService, UserDao userDao, ChatUserRelationDao chatUserRelationDao) {
+        this.webSocketServer = webSocketServer;
+        this.chatService = chatService;
+        this.userDao = userDao;
+        this.chatUserRelationDao = chatUserRelationDao;
+    }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public void sendMessage(Message message) {
         String content = String.valueOf(message.getContent());
         // 当前用户插入
@@ -58,50 +57,31 @@ public class ChatUserRelationServiceImpl extends ServiceImpl<ChatUserRelationDao
 
     private void saveMessage(Message message, Integer type) {
         String content = String.valueOf(message.getContent());
-        ChatUserRelation chatUserRelation = null;
-        if (type == 0) {
-            chatUserRelation = this.getOne(new QueryWrapper<ChatUserRelation>().eq("send_uid", message.getSendUid()).eq("accept_uid", message.getAcceptUid()));
-        } else {
-            chatUserRelation = this.getOne(new QueryWrapper<ChatUserRelation>().eq("send_uid", message.getAcceptUid()).eq("accept_uid", message.getSendUid()));
-        }
+        String sendUid = type == 0 ? message.getSendUid() : message.getAcceptUid();
+        String acceptUid = type == 0 ? message.getAcceptUid() : message.getSendUid();
+        ChatUserRelation chatUserRelation = chatUserRelationDao.selectOne(new QueryWrapper<ChatUserRelation>().eq("send_uid", sendUid).eq("accept_uid", acceptUid));
 
         if (chatUserRelation != null) {
             chatUserRelation.setContent(content);
             chatUserRelation.setTimestamp(System.currentTimeMillis());
-            if (type == 0) {
-                chatUserRelation.setCount(chatUserRelation.getCount() + 1);
-            } else {
-                chatUserRelation.setCount(0);
-            }
-            this.updateById(chatUserRelation);
+            chatUserRelation.setCount(type == 0 ? chatUserRelation.getCount() + 1 : 0);
+            chatUserRelationDao.updateById(chatUserRelation);
         } else {
             chatUserRelation = new ChatUserRelation();
-            if (type == 0) {
-                chatUserRelation.setSendUid(message.getSendUid());
-                chatUserRelation.setAcceptUid(message.getAcceptUid());
-                chatUserRelation.setCount(1);
-            } else {
-                chatUserRelation.setSendUid(message.getAcceptUid());
-                chatUserRelation.setAcceptUid(message.getSendUid());
-                chatUserRelation.setCount(0);
-            }
+            chatUserRelation.setSendUid(sendUid);
+            chatUserRelation.setAcceptUid(acceptUid);
+            chatUserRelation.setCount(type == 0 ? 1 : 0);
             chatUserRelation.setContent(content);
             chatUserRelation.setTimestamp(System.currentTimeMillis());
-            this.save(chatUserRelation);
+            chatUserRelationDao.insert(chatUserRelation);
         }
     }
 
     public void getUserChatList(Message message, Integer type) {
-        List<ChatUserRelation> chatUserRelationList;
-        if (type == 0) {
-            chatUserRelationList = this.list(new QueryWrapper<ChatUserRelation>().eq("accept_uid", message.getSendUid()).orderByDesc("create_date"));
-        } else {
-            chatUserRelationList = this.list(new QueryWrapper<ChatUserRelation>().eq("accept_uid", message.getAcceptUid()).orderByDesc("create_date"));
-        }
-
+        String acceptUid = type == 0 ? message.getSendUid() : message.getAcceptUid();
+        List<ChatUserRelation> chatUserRelationList = chatUserRelationDao.selectList(new QueryWrapper<ChatUserRelation>().eq("accept_uid", acceptUid).orderByDesc("create_date"));
         Set<String> uids = chatUserRelationList.stream().map(ChatUserRelation::getSendUid).collect(Collectors.toSet());
         Map<String, User> userMap = userDao.selectBatchIds(uids).stream().collect(Collectors.toMap(User::getId, user -> user));
-
         List<ChatUserRelationVo> chatUserRelationVoList = new ArrayList<>();
         chatUserRelationList.forEach(item -> {
             ChatUserRelationVo chatUserRelationVo = ConvertUtils.sourceToTarget(item, ChatUserRelationVo.class);
@@ -113,11 +93,7 @@ public class ChatUserRelationServiceImpl extends ServiceImpl<ChatUserRelationDao
         });
 
         Message currentUserMessage = new Message();
-        if (type == 0) {
-            currentUserMessage.setAcceptUid(message.getSendUid());
-        } else {
-            currentUserMessage.setAcceptUid(message.getAcceptUid());
-        }
+        currentUserMessage.setAcceptUid(acceptUid);
         currentUserMessage.setContent(chatUserRelationVoList);
         currentUserMessage.setMsgType(5);
         webSocketServer.sendInfo(currentUserMessage);

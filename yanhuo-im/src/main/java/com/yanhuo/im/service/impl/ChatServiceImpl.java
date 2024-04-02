@@ -10,11 +10,13 @@ import com.yanhuo.common.utils.ConvertUtils;
 import com.yanhuo.common.utils.RedisUtils;
 import com.yanhuo.common.im.Message;
 import com.yanhuo.im.entity.CountMessage;
+import com.yanhuo.im.factory.ChatCountMessage;
+import com.yanhuo.im.factory.ChatUserMessage;
 import com.yanhuo.im.factory.MessageFactory;
 import com.yanhuo.im.service.ChatService;
-import com.yanhuo.im.service.ChatUserRelationService;
 import com.yanhuo.im.websocket.WebSocketServer;
 import com.yanhuo.xo.dao.ChatDao;
+import com.yanhuo.xo.dao.ChatUserRelationDao;
 import com.yanhuo.xo.dao.UserDao;
 import com.yanhuo.xo.entity.Chat;
 import com.yanhuo.xo.entity.ChatUserRelation;
@@ -22,7 +24,6 @@ import com.yanhuo.xo.entity.User;
 import com.yanhuo.xo.vo.ChatUserRelationVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -43,7 +44,7 @@ public class ChatServiceImpl extends ServiceImpl<ChatDao, Chat> implements ChatS
     RedisUtils redisUtils;
 
     @Autowired
-    ChatUserRelationService chatUserRelationService;
+    ChatUserRelationDao chatUserRelationDao;
 
     @Autowired
     UserDao userDao;
@@ -57,16 +58,17 @@ public class ChatServiceImpl extends ServiceImpl<ChatDao, Chat> implements ChatS
         // 过滤发送的请求类型
         switch (message.getMsgType()) {
             case 0:
-                messageFactory = new CountMessageServiceImpl(redisUtils);
-                messageFactory.sendMessage(message);
+                messageFactory = new ChatCountMessage(redisUtils);
                 break;
             case 1:
-                chatUserRelationService.sendMessage(message);
+                messageFactory = new ChatUserMessage(webSocketServer, this, userDao, chatUserRelationDao);
                 break;
             default:
                 break;
         }
-
+        if (messageFactory != null) {
+            messageFactory.sendMessage(message);
+        }
     }
 
     @Override
@@ -88,7 +90,7 @@ public class ChatServiceImpl extends ServiceImpl<ChatDao, Chat> implements ChatS
     public List<ChatUserRelationVo> getChatUserList() {
         String currentUid = AuthContextHolder.getUserId();
         List<ChatUserRelationVo> result = new ArrayList<>();
-        List<ChatUserRelation> chatUserRelationList = chatUserRelationService.list(new QueryWrapper<ChatUserRelation>().eq("accept_uid", currentUid).orderByDesc("create_date"));
+        List<ChatUserRelation> chatUserRelationList = chatUserRelationDao.selectList(new QueryWrapper<ChatUserRelation>().eq("accept_uid", currentUid).orderByDesc("create_date"));
         if (chatUserRelationList.isEmpty()) {
             return result;
         }
@@ -120,10 +122,10 @@ public class ChatServiceImpl extends ServiceImpl<ChatDao, Chat> implements ChatS
     public void clearMessageCount(String sendUid, Integer type) {
         if (type == 3) {
             String currentUid = AuthContextHolder.getUserId();
-            ChatUserRelation chatUserRelation = chatUserRelationService.getOne(new QueryWrapper<ChatUserRelation>().eq("send_uid", sendUid).eq("accept_uid", currentUid));
+            ChatUserRelation chatUserRelation = chatUserRelationDao.selectOne(new QueryWrapper<ChatUserRelation>().eq("send_uid", sendUid).eq("accept_uid", currentUid));
             if (chatUserRelation != null) {
                 chatUserRelation.setCount(0);
-                chatUserRelationService.updateById(chatUserRelation);
+                chatUserRelationDao.updateById(chatUserRelation);
             }
         } else {
             String messageCountKey = ImConstant.MESSAGE_COUNT_KEY + sendUid;
@@ -142,5 +144,16 @@ public class ChatServiceImpl extends ServiceImpl<ChatDao, Chat> implements ChatS
             }
             redisUtils.set(messageCountKey, JSONUtil.toJsonStr(countMessage));
         }
+    }
+
+    @Override
+    public boolean closeChat(String sendUid) {
+        try {
+            webSocketServer.onClose(sendUid);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 }
