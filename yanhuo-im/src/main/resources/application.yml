@@ -1,0 +1,13 @@
+
+spring:
+  application:
+    name: yanhuo-im
+  profiles:
+    active: test
+
+server:
+  port: 8802
+  servlet:
+    context-path: /im
+
+

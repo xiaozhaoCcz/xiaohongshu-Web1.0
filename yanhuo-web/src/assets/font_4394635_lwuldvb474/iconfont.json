@@ -1,0 +1,23 @@
+{
+  "id": "4394635",
+  "name": "yanhuo",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "34453000",
+      "name": "follow",
+      "font_class": "follow",
+      "unicode": "e83b",
+      "unicode_decimal": 59451
+    },
+    {
+      "icon_id": "34453001",
+      "name": "follow-fill",
+      "font_class": "follow-fill",
+      "unicode": "e83c",
+      "unicode_decimal": 59452
+    }
+  ]
+}
