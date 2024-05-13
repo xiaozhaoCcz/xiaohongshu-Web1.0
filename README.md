@@ -87,16 +87,6 @@ npm run dev
 
 ![image text](./doc/img/7.png)
 
-## 测试账号
-烟火web测试账号 xiaozhao \
-烟火web测试密码 123456
-
-烟火web测试账号 qwer \
-烟火web测试密码 123456
-
-烟火web测试账号 qwer1234 \
-烟火web测试密码 123456
-
 ## 联系我
 如果有什么问题可以加群讨论，群号：879599115
 
