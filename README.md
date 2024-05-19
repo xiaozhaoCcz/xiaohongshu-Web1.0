@@ -81,13 +81,17 @@ npm run dev
   ![image text](./doc/img/admin3.png)
 - 启动`yanhuo-auth`,`yanhuo-gateway`,`yanhuo-im`,`yanhuo-platform`,`yanhuo-search`,`yanhuo-util`即可运行项目。
 
-- 启动项目后会发现没有任何数据，这是因为es中还没有同步数据，我们需要启动`xxl-job`（运行xxl-job这里就不展开了，去git上面搜索xxl-job然后下载下来更改数据库后就可以启动了）并配置数据
-  - xxl-job添加执行器
-    ![image text](./doc/img/admin4.png)
-  - 添加定时任务
-    ![image text](./doc/img/5.png)
-  - 然后运行任务，观察日志运行情况，如果显示成功则数据同步成功
-    ![image text](./doc/img/6.png)
+- 启动项目后会发现没有任何数据，这是因为es中还没有同步数据(这里有两种方式同步数据，一种是直接运行test方法，另一种是使用`xxljob`,想学习`xxljob`的同学可以看第二种方法)
+  
+  - 方法1,直接运行`PlatformApplicationTests`里面`syncEsData`方法
+    ![image text](./doc/img/20.png)
+  - 方法2，我们需要启动`xxl-job`（运行xxl-job这里就不展开了，去git上面搜索xxl-job然后下载下来更改数据库后就可以启动了）并配置数据
+    - xxl-job添加执行器
+      ![image text](./doc/img/admin4.png)
+    - 添加定时任务
+      ![image text](./doc/img/5.png)
+    - 然后运行任务，观察日志运行情况，如果显示成功则数据同步成功
+      ![image text](./doc/img/6.png)
 ### 成功运行
 
 ![image text](./doc/img/7.png)
