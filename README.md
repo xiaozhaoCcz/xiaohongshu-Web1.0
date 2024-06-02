@@ -16,9 +16,9 @@
 
 **这个项目尽量做得简单，所以没有考虑接口的性能，所有功能都是直接对数据库进行操作**
 
-**目前git上面是1.0版本，基本功能都完成，2.0版本花费时间更多，因为之前项目白嫖太多2.0版本决定收费(演示的项目也是2.0版本)，维护服务器的费用，后续bug也会在2.0版本上修改**
+**目前git上面是1.0版本，基本功能都完成，2.0版本花费时间更多，因为之前项目白嫖太多2.0版本决定收费(演示的项目也是2.0版本，2.0版本包括移动端和web端源代码)，维护服务器的费用，后续bug也会在2.0版本上修改**
 
-[qq群] **879599115**，需要2.0版本源码加微信**18572755162（定价150元）**
+[qq群] **879599115**，需要2.0版本源码加微信**18572755162（定价300元，单买web端或移动端各150元）**
 
 ## 重点
 - 此项目没有后台管理系统，还有这个项目不适合初学者，可以帮忙运行，但必须此项目所需的运行环境要配置好，买了以后不支持退款，请考虑好再买！！！
@@ -37,6 +37,7 @@
 
 ## 仿小红书项目2.0版本优势
 - 包括微服务项目和单体项目，支持多服务启动和单服务启动
+- 2.0版本支持移动端和apk安装包下载
 - 2.0版本支持多数据源
 - 2.0新增功能：
   - 新增注册功能
@@ -61,7 +62,10 @@
 
 
 ## 项目地址
-http://ccimgvideo.top/
+目前移动端app刚开始做，页面比较丑，后面会慢慢优化（仅支持安卓下载）
+- pc端浏览器进入是web页面，手机浏览器进入是移动端页面 http://ccimgvideo.top/
+- apk下载地址 https://gitee.com/xzjsccz/yanhuo-springboot-vue/releases/download/yanhuo1.0.0/yanhuo1.0.0.apk
+
 
 ## API接口文档
 https://console-docs.apipost.cn/preview/43d05f344c62117e/63d199bf052ccf41
@@ -170,7 +174,7 @@ npm run dev
 | axios	  | -  |  
 |  其他组件   | -  |  
 
-## 项目截图
+## web端项目截图
 
 |                                 |                                 |
 |:-------------------------------:|:-------------------------------:|
@@ -180,6 +184,17 @@ npm run dev
 | ![image text](./doc/img/13.png) | ![image text](./doc/img/14.png) |
 | ![image text](./doc/img/15.png) | ![image text](./doc/img/18.png) |
 | ![image text](./doc/img/17.png) |  |
+
+## 移动端项目截图
+
+|                                  |                                   |
+|:--------------------------------:|:---------------------------------:|
+| ![image text](./doc/m-img/5.jpg) | ![image text](./doc/m-img/6.jpg)  |
+| ![image text](./doc/m-img/9.jpg) | ![image text](./doc/m-img/10.jpg) |
+| ![image text](./doc/m-img/3.jpg) | ![image text](./doc/m-img/2.jpg)  |
+| ![image text](./doc/m-img/1.jpg) | ![image text](./doc/m-img/4.jpg)  |
+| ![image text](./doc/m-img/7.jpg) | ![image text](./doc/m-img/8.jpg)  |
+
 
 ## 视频演示
 https://www.bilibili.com/video/BV1kN4y1n7gz/?spm_id_from=333.1007.top_right_bar_window_history.content.click
