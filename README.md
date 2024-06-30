@@ -20,9 +20,22 @@
 
 [qq群] **879599115**，需要2.0版本源码加微信**18572755162（定价400元，单买web端或移动端各200元）**
 
+## 项目地址
+目前移动端app刚开始做，页面比较丑，后面会慢慢优化（仅支持安卓下载）
+- web端地址 http://ccimgvideo.top/
+- 移动端地址 http://ccimgvideo.top/m
+- 后端管理系统地址 http://ccimgvideo.top/admin
+- apk下载地址 https://gitee.com/xzjsccz/yanhuo-springboot-vue/releases/download/yanhuo1.0.0/yanhuo1.0.0.apk
+
 ## 重点
 - 这个项目不适合初学者，可以帮忙运行，但必须此项目所需的运行环境要配置好！！！，买了以后不支持退款，请考虑好再买！！！
 - 需要自己配置七牛云的oss服务或minio服务，不熟悉的先去了解
+
+## 项目价格
+| 2.0web端 | 2.0移动端 | 2.0web端+2.0移动端+后台管理系统 |      
+|:-------:|:------:|-----------------------|
+|  200¥   |  200¥  | 800¥                  |  
+
 
 ## 仿小红书项目1.0版本功能介绍
 - 瀑布流展示笔记，懒加载笔记图片
@@ -59,21 +72,6 @@
 - 优化ui页面和前后端代码
 ![image text](./doc/img/k.png)
 ![image text](./doc/img/k2.png)
-
-
-
-
-## 项目地址
-目前移动端app刚开始做，页面比较丑，后面会慢慢优化（仅支持安卓下载）
-- web端地址 http://ccimgvideo.top/
-- 移动端地址 http://ccimgvideo.top/m
-- 后端管理系统地址 http://ccimgvideo.top/admin
-- apk下载地址 https://gitee.com/xzjsccz/yanhuo-springboot-vue/releases/download/yanhuo1.0.0/yanhuo1.0.0.apk
-
-## 项目价格
-| 2.0web端 | 2.0移动端 | 2.0web端+2.0移动端+后台管理系统 |      
-|:-------:|:------:|-----------------------|
-|  200¥   |  200¥  | 800¥                  |  
 
 
 ## API接口文档
