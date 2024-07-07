@@ -26,7 +26,11 @@
 - 移动端地址 http://ccimgvideo.top/m
 - 后端管理系统地址 http://ccimgvideo.top/admin
 - apk下载地址 https://gitee.com/xzjsccz/yanhuo-springboot-vue/releases/download/yanhuo1.0.0/yanhuo1.0.0.apk
-
+ 
+测试帐号：
+- 帐号: xiaozhao2  密码: xiaozhao2
+- 帐号:xiaozhao3 密码: xiaozhao3
+  
 ## 重点
 - 这个项目不适合初学者，可以帮忙运行，但必须此项目所需的运行环境要配置好！！！，买了以后不支持退款，请考虑好再买！！！
 - 需要自己配置七牛云的oss服务或minio服务，不熟悉的先去了解
@@ -53,6 +57,8 @@
 - 2.0版本支持移动端和apk安装包下载
 - 2.0版本支持多数据源
 - 2.0新增功能：
+  - web端新增发送视频笔记，支持视频笔记修改！！！
+  - 支持笔记好友分享
   - 新增注册功能
   - 新增个人信息修改功能，可更换头像，设置标签
   - 查看用户关注，粉丝功能
