@@ -25,6 +25,9 @@ public class OssServiceImpl implements OssService {
             case 1:
                 factory = new QiNiuYunUploadFile();
                 break;
+            case 2:
+                factory = new TencentUploadFile();
+                break;
             default:
                 break;
         }
@@ -54,6 +57,9 @@ public class OssServiceImpl implements OssService {
                 break;
             case 1:
                 factory = new QiNiuYunUploadFile();
+                break;
+            case 2:
+                factory = new TencentUploadFile();
                 break;
             default:
                 break;

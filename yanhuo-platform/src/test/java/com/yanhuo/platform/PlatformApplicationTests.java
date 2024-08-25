@@ -64,6 +64,7 @@ public class PlatformApplicationTests {
     TagService tagService;
 
 
+    // 直接允许此方法同步es数据
     @Test
     public void syncEsData(){
         log.info("es数据同步开始--------------------------------");

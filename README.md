@@ -21,19 +21,19 @@
 [qq群] **879599115**，需要2.0版本源码加微信**18572755162（定价400元，单买web端或移动端各200元）**
 
 ## 项目地址
-目前移动端app刚开始做，页面比较丑，后面会慢慢优化（仅支持安卓下载）
+服务器被攻击无法访问了，大家有兴趣可以看最后的演示视频
+https://www.bilibili.com/video/BV1kN4y1n7gz/?spm_id_from=333.1007.top_right_bar_window_history.content.click
 - web端地址 http://ccimgvideo.top/
 - 移动端地址 http://ccimgvideo.top/m
 - 后端管理系统地址 http://ccimgvideo.top/admin
-- apk下载地址 https://gitee.com/xzjsccz/yanhuo-springboot-vue/releases/download/yanhuo1.0.0/yanhuo1.0.0.apk
  
 测试帐号：
 - 帐号: xiaozhao2  密码: xiaozhao2
-- 帐号:xiaozhao3 密码: xiaozhao3
+- 帐号: xiaozhao3 密码: xiaozhao3
   
 ## 重点
 - 这个项目不适合初学者，可以帮忙运行，但必须此项目所需的运行环境要配置好！！！，买了以后不支持退款，请考虑好再买！！！
-- 需要自己配置七牛云的oss服务或minio服务，不熟悉的先去了解
+- 支持七牛云存储，腾讯云存储,minio存储，需要自己配置
 
 ## 项目价格
 | 2.0web端 | 2.0移动端 | 2.0web端+2.0移动端+后台管理系统 |      
@@ -68,13 +68,13 @@
   - 私聊消息支持发送图片
   - 新增minio对象存储功能
   - 多线程+aop记录用户的登陆信息(ip,城市，浏览器类型)和操作信息
-- 使用aop+redis+注解方式防止用户重复发布笔记和修改笔记
+- 使用`aop+redis+注解`方式防止用户重复发布笔记和修改笔记
 - 修复main页面打开，滚动评论，主页面也会滚动bug
 - 修复main页面评论显示异常bug，评论数量显示异常bug
 - 使用多线程进行消息通知，解决用户退出main页面卡顿bug
 - 使用mq优化发布笔记和修改笔记功能，提升响应速度
-- 使用mq+redis优化点赞,收藏,评论功能，测试qps提升2倍多
-- other模块有自己学习的一些技术代码
+- 使用`mq+redis`优化点赞,收藏,评论功能，测试qps提升2倍多
+- `other`模块有自己学习的一些技术代码
 - 优化ui页面和前后端代码
 ![image text](./doc/img/k.png)
 ![image text](./doc/img/k2.png)
@@ -144,7 +144,7 @@ npm run dev
 
 - 使用springboot+mybatis_plus+vue3+ts+websocket技术
 - 使用gateway做网关过滤，对发送的请求做过滤。（部分请求放行，比如登录请求，首页数据请求）
-- 支持本地图片存储，七牛云存储。
+- 支持本地图片存储，七牛云存储,腾讯云存储。
 - 使用ElasticSearch做内容搜索
 - 使用websocket做私信聊天和实时通知
 - 使用redis做对象缓存
