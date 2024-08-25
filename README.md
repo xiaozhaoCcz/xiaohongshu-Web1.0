@@ -21,9 +21,9 @@
 [qq群] **879599115**，需要2.0版本源码加微信**18572755162（定价400元，单买web端或移动端各200元）**
 
 ## 项目地址
-服务器被攻击无法访问了，大家有兴趣可以看最后的演示视频
-https://www.bilibili.com/video/BV1kN4y1n7gz/?spm_id_from=333.1007.top_right_bar_window_history.content.click
-- web端地址 http://ccimgvideo.top/
+服务器被攻击无法访问了，目前只有web端能够访问，后续会把移动端和后台管理系统补上
+演示地址：https://www.bilibili.com/video/BV1kN4y1n7gz/?spm_id_from=333.1007.top_right_bar_window_history.content.click
+- web端地址 http://103.40.13.86:23501/
 - 移动端地址 http://ccimgvideo.top/m
 - 后端管理系统地址 http://ccimgvideo.top/admin
  
