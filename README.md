@@ -10,7 +10,9 @@
 
 - 所有功能都是自己一个开发完成，1.0版本可能还存在些小bug。
 - **推荐项目** 如果想自己做一个仿小红书项目，我这里也提供了免费的前端仿小红书源码 https://gitee.com/xzjsccz/xiaohongshu
-- **推荐项目** excel校验工具项目https://gitee.com/xzjsccz/cc-excel-util, 使用反射和设计模式，可以写在简历上绝对是一个加分项目
+- **推荐项目** 
+  - excel校验工具项目 https://gitee.com/xzjsccz/cc-excel-util, 使用反射和设计模式，可以写在简历上绝对是一个加分项目
+  - 任务编排工具 https://gitee.com/xzjsccz/cc-easy-admin 使用图算法结合多线程做任务编排
 
 **数据库文件在`doc/yanhuo-test.sql`**
 
@@ -20,14 +22,34 @@
 
 **全套2.0版本可以直接拿来做毕业设计！！！**
 
-[qq群] **879599115**，需要2.0版本源码加微信**18572755162（定价400元，单买web端或移动端各200元）**
+[qq群] **879599115**，需要2.0版本源码加微信**18572755162（定价400元，单买web端或移动端各200元，推荐web端）**
+
+## web端项目截图
+
+|                                 |                                 |
+|:-------------------------------:|:-------------------------------:|
+| ![image text](./doc/img/7.png)  | ![image text](./doc/img/9.png)  |
+| ![image text](./doc/img/10.png) | ![image text](./doc/img/11.png) |
+| ![image text](./doc/img/16.png) | ![image text](./doc/img/12.png) |
+| ![image text](./doc/img/13.png) | ![image text](./doc/img/14.png) |
+| ![image text](./doc/img/15.png) | ![image text](./doc/img/18.png) |
+| ![image text](./doc/img/17.png) |  |
+
+## 移动端项目截图
+
+|                                  |                                   |
+|:--------------------------------:|:---------------------------------:|
+| ![image text](./doc/m-img/5.jpg) | ![image text](./doc/m-img/6.jpg)  |
+| ![image text](./doc/m-img/9.jpg) | ![image text](./doc/m-img/10.jpg) |
+| ![image text](./doc/m-img/3.jpg) | ![image text](./doc/m-img/2.jpg)  |
+| ![image text](./doc/m-img/1.jpg) | ![image text](./doc/m-img/4.jpg)  |
+| ![image text](./doc/m-img/7.jpg) | ![image text](./doc/m-img/8.jpg)  |
 
 ## 项目地址
-服务器被攻击了，目前只有web端能够访问，后续会把移动端和后台管理系统补上
 演示地址：https://www.bilibili.com/video/BV1kN4y1n7gz/?spm_id_from=333.1007.top_right_bar_window_history.content.click
-- web端地址 http://103.40.13.86:23501/
-- 移动端地址 http://ccimgvideo.top/m
-- 后端管理系统地址 http://ccimgvideo.top/admin
+- web端地址 http://175.178.249.190/
+- 后端管理系统地址 http://175.178.249.190/admin
+- 移动端地址 http://175.178.249.190/m 
  
 测试帐号：
 - 帐号: xiaozhao2  密码: xiaozhao2
@@ -191,26 +213,6 @@ npm run dev
 | axios	  | -  |  
 |  其他组件   | -  |  
 
-## web端项目截图
-
-|                                 |                                 |
-|:-------------------------------:|:-------------------------------:|
-| ![image text](./doc/img/7.png)  | ![image text](./doc/img/9.png)  |
-| ![image text](./doc/img/10.png) | ![image text](./doc/img/11.png) |
-| ![image text](./doc/img/16.png) | ![image text](./doc/img/12.png) |
-| ![image text](./doc/img/13.png) | ![image text](./doc/img/14.png) |
-| ![image text](./doc/img/15.png) | ![image text](./doc/img/18.png) |
-| ![image text](./doc/img/17.png) |  |
-
-## 移动端项目截图
-
-|                                  |                                   |
-|:--------------------------------:|:---------------------------------:|
-| ![image text](./doc/m-img/5.jpg) | ![image text](./doc/m-img/6.jpg)  |
-| ![image text](./doc/m-img/9.jpg) | ![image text](./doc/m-img/10.jpg) |
-| ![image text](./doc/m-img/3.jpg) | ![image text](./doc/m-img/2.jpg)  |
-| ![image text](./doc/m-img/1.jpg) | ![image text](./doc/m-img/4.jpg)  |
-| ![image text](./doc/m-img/7.jpg) | ![image text](./doc/m-img/8.jpg)  |
 
 
 ## 视频演示
