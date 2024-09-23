@@ -24,26 +24,6 @@
 
 [qq群] **879599115**，需要2.0版本源码加微信**18572755162（定价400元，单买web端或移动端各200元，推荐web端）**
 
-## web端项目截图
-
-|                                 |                                 |
-|:-------------------------------:|:-------------------------------:|
-| ![image text](./doc/img/7.png)  | ![image text](./doc/img/9.png)  |
-| ![image text](./doc/img/10.png) | ![image text](./doc/img/11.png) |
-| ![image text](./doc/img/16.png) | ![image text](./doc/img/12.png) |
-| ![image text](./doc/img/13.png) | ![image text](./doc/img/14.png) |
-| ![image text](./doc/img/15.png) | ![image text](./doc/img/18.png) |
-| ![image text](./doc/img/17.png) |  |
-
-## 移动端项目截图
-
-|                                  |                                   |
-|:--------------------------------:|:---------------------------------:|
-| ![image text](./doc/m-img/5.jpg) | ![image text](./doc/m-img/6.jpg)  |
-| ![image text](./doc/m-img/9.jpg) | ![image text](./doc/m-img/10.jpg) |
-| ![image text](./doc/m-img/3.jpg) | ![image text](./doc/m-img/2.jpg)  |
-| ![image text](./doc/m-img/1.jpg) | ![image text](./doc/m-img/4.jpg)  |
-| ![image text](./doc/m-img/7.jpg) | ![image text](./doc/m-img/8.jpg)  |
 
 ## 项目地址
 演示地址：https://www.bilibili.com/video/BV1kN4y1n7gz/?spm_id_from=333.1007.top_right_bar_window_history.content.click
@@ -104,6 +84,27 @@
 
 ![image text](./doc/img/k.png)
 ![image text](./doc/img/k2.png)
+
+## web端项目截图
+
+|                                 |                                 |
+|:-------------------------------:|:-------------------------------:|
+| ![image text](./doc/img/7.png)  | ![image text](./doc/img/9.png)  |
+| ![image text](./doc/img/10.png) | ![image text](./doc/img/11.png) |
+| ![image text](./doc/img/16.png) | ![image text](./doc/img/12.png) |
+| ![image text](./doc/img/13.png) | ![image text](./doc/img/14.png) |
+| ![image text](./doc/img/15.png) | ![image text](./doc/img/18.png) |
+| ![image text](./doc/img/17.png) |  |
+
+## 移动端项目截图
+
+|                                  |                                   |
+|:--------------------------------:|:---------------------------------:|
+| ![image text](./doc/m-img/5.jpg) | ![image text](./doc/m-img/6.jpg)  |
+| ![image text](./doc/m-img/9.jpg) | ![image text](./doc/m-img/10.jpg) |
+| ![image text](./doc/m-img/3.jpg) | ![image text](./doc/m-img/2.jpg)  |
+| ![image text](./doc/m-img/1.jpg) | ![image text](./doc/m-img/4.jpg)  |
+| ![image text](./doc/m-img/7.jpg) | ![image text](./doc/m-img/8.jpg)  |
 
 
 ## API接口文档
