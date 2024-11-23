@@ -12,8 +12,7 @@
 - **推荐项目** 如果想自己做一个仿小红书项目，我这里也提供了免费的前端仿小红书源码 https://gitee.com/xzjsccz/xiaohongshu
 - **推荐项目** 
   - excel校验工具项目 https://gitee.com/xzjsccz/cc-excel-util, 使用反射和设计模式，可以写在简历上绝对是一个加分项目
-  - 任务编排工具 https://gitee.com/xzjsccz/cc-easy-admin 使用图算法结合多线程做任务编排
-
+  - 任务编排工具 https://gitee.com/xzjsccz/cc-job-admin 基于xxl-job实现的可视化任务编排工具，支持多任务串并联
 **数据库文件在`doc/yanhuo-test.sql`**
 
 **这个项目尽量做得简单，所以没有考虑接口的性能，所有功能都是直接对数据库进行操作**
