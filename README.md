@@ -29,7 +29,7 @@
 演示地址：https://www.bilibili.com/video/BV1kN4y1n7gz/?spm_id_from=333.1007.top_right_bar_window_history.content.click
 - web端地址 http://175.178.249.190/
 - 后端管理系统地址 http://175.178.249.190/admin
-- 移动端地址 http://175.178.249.190/m 
+- 移动端地址 http://175.178.249.190/m （移动端目前部署有问题，演示请看上方的演示地址）
  
 测试帐号：
 - 帐号: xiaozhao2  密码: xiaozhao2
