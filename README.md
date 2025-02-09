@@ -15,6 +15,7 @@
   - 任务编排工具 https://gitee.com/xzjsccz/cc-job-admin 基于xxl-job实现的可视化任务编排工具，支持多任务串并联
   - 异步任务调度工具 https://gitee.com/xzjsccz/async-task-tool 基于async-tool工具修改，新增任务重试，子任务停止，任务组停止功能
   - rpc工具 https://gitee.com/xzjsccz/xxl-rpc-pro 对xxl-rpc功能修改
+  - 博客系统 https://gitee.com/xzjsccz/cc_blog 基于墨笺博客进行修改部署 项目地址: http://175.178.249.190/blog/
 
 **数据库文件在`doc/yanhuo-test.sql`**
 
