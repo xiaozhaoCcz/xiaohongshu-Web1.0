@@ -30,7 +30,6 @@ import java.util.*;
 @Slf4j
 public class NoteServiceImpl extends ServiceImpl<NoteDao, Note> implements NoteService {
 
-
     @Autowired
     ElasticsearchClient elasticsearchClient;
 

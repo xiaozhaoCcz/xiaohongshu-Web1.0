@@ -29,3 +29,10 @@ qiNiuYun:
   accessKey:
   secretKey:
   bucketName:
+
+
+tencent:
+  accessKey:  #你的秘钥id
+  secretKey:   #你的秘钥
+  region:  #你存储桶所在的区域
+  bucket:  #你的存储桶名称
